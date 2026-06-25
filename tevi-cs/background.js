@@ -16,10 +16,9 @@ const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
 const SUPABASE_URL = 'https://qjemyvydivekolywleji.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZW15dnlkaXZla29seXdsZWppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzczNDEsImV4cCI6MjA5NTY1MzM0MX0._MrcyUkfXLIxXaDxcdv5xENbJBYPKTDbrimGrZIcV0s';
 const EDGE_FUNC = SUPABASE_URL + '/functions/v1/cs-bot-logger';
 const WAPI = 'https://wapi.flowstreamx.com';
-const FIREBASE_AUTH = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty';
-const FIREBASE_KEY = 'AIzaSyAtd4p5rj5Q8GRbpwW_KAc6oD-XrPj53uI';
 const DEVICE_ID = 'tevi-cs-bot-' + Date.now();
 const WAPI_SIGN_KEY = 'PRDKqnSNCKrMDF9hAt0PSJ6';
 
@@ -94,108 +93,233 @@ async function wapiFetch(method, path, body, token) {
   return { status: res.status, data };
 }
 
-async function firebaseFetch(method, path, body) {
-  const url = FIREBASE_AUTH + path;
-  const opts = {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-  };
-  const res = await fetch(url, opts);
-  let data;
-  const text = await res.text().catch(() => '');
-  try { data = JSON.parse(text); } catch { data = text; }
-  return { status: res.status, data };
+// firebaseFetch removed — no longer needed with Tevi token capture
+
+// ── Supabase Token Store ───────────────────────────────────────────────
+
+/**
+ * Sync Tevi token to Supabase tevi_auth_tokens table
+ * Called whenever we get a fresh/refreshed token
+ */
+async function syncTokenToSupabase(tokenInfo) {
+  if (!tokenInfo?.access_token) return;
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/sync_tevi_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({
+        p_uid: tokenInfo.uid,
+        p_token: tokenInfo.access_token,
+        p_refresh_token: tokenInfo.refresh_token || null,
+        p_expires_at: tokenInfo.expires_at || null,
+        p_display_name: tokenInfo.display_name || null,
+        p_username: MY_SLUG,
+      }),
+    });
+    if (res.ok) {
+      log('INFO', '[SUPABASE] Token synced for uid=' + tokenInfo.uid);
+    } else {
+      // Table might not have RPC, try upsert directly
+      await supabaseUpsertToken(tokenInfo);
+    }
+  } catch (e) {
+    log('WARN', '[SUPABASE] Token sync failed: ' + e.message);
+  }
+}
+
+async function supabaseUpsertToken(tokenInfo) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/tevi_auth_tokens?uid=eq.${tokenInfo.uid}&username=eq.${MY_SLUG}`, {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+    });
+    const method = res.ok && (await res.text()) ? 'PATCH' : 'POST';
+    await fetch(`${SUPABASE_URL}/rest/v1/tevi_auth_tokens`, {
+      method: res.ok && (await res.clone().text()) ? 'PATCH' : 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+        'Upsert': 'true',
+      },
+      body: JSON.stringify([{
+        uid: tokenInfo.uid,
+        token: tokenInfo.access_token,
+        refresh_token: tokenInfo.refresh_token || null,
+        token_type: 'bearer',
+        user_id: MY_UID,
+        username: MY_SLUG,
+        expires_at: tokenInfo.expires_at || null,
+        updated_at: new Date().toISOString(),
+      }]),
+    });
+    log('INFO', '[SUPABASE] Token upserted for uid=' + tokenInfo.uid);
+  } catch (e) {
+    log('WARN', '[SUPABASE] Token upsert failed: ' + e.message);
+  }
+}
+
+/**
+ * Get latest token from Supabase
+ */
+async function getTokenFromSupabase() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/tevi_auth_tokens?username=eq.${MY_SLUG}&order=updated_at.desc&limit=1`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Accept': 'application/json',
+        },
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        const row = data[0];
+        // Check expiry
+        if (row.expires_at) {
+          const exp = new Date(row.expires_at).getTime();
+          if (exp > Date.now() + 60000) {
+            log('INFO', '[SUPABASE] Token from DB, expires=' + row.expires_at);
+            return { access_token: row.token, refresh_token: row.refresh_token, expires_at: row.expires_at, uid: row.uid };
+          } else {
+            log('INFO', '[SUPABASE] Token from DB EXPIRED, expires=' + row.expires_at);
+          }
+        }
+      }
+    }
+  } catch (e) {
+    log('WARN', '[SUPABASE] Token fetch failed: ' + e.message);
+  }
+  return null;
+}
+
+/**
+ * Try to refresh Tevi token using stored refresh_token
+ */
+async function refreshTeviToken(refreshToken) {
+  if (!refreshToken) return null;
+  try {
+    log('INFO', '[AUTH] Trying Tevi refresh_token...');
+    const res = await fetch(WAPI + '/auth/v1/token/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_token: '',
+        refresh_token: refreshToken,
+        device_id: DEVICE_ID,
+        device_type: 'browser',
+        os: 'Windows',
+        device_name: 'Chrome',
+      }),
+    });
+    const data = await res.json();
+    if (data?.data?.access_token) {
+      const newToken = data.data.access_token;
+      const payload = JSON.parse(atob(newToken.split('.')[1]));
+      const tokenInfo = {
+        uid: String(payload.uid),
+        access_token: newToken,
+        refresh_token: data.data.refresh_token || refreshToken,
+        expires_at: new Date(payload.exp * 1000).toISOString(),
+        display_name: payload.display_name || null,
+      };
+      log('INFO', '[AUTH] Tevi token refreshed OK, uid=' + payload.uid);
+      await syncTokenToSupabase(tokenInfo);
+      await ss({ tevi_token: tokenInfo });
+      return tokenInfo;
+    }
+    log('WARN', '[AUTH] Tevi refresh failed: ' + JSON.stringify(data).substring(0, 100));
+  } catch (e) {
+    log('WARN', '[AUTH] Tevi refresh error: ' + e.message);
+  }
+  return null;
 }
 
 // ── Auth State ────────────────────────────────────────────────────────
 
 let _wapiToken = null;
 let _wapiTokenExpiry = 0;
-let _refreshToken = null;
-let _firebaseIdToken = null;
+
+async function getWapiToken() {
+  // Priority 1: Check storage for valid Tevi token
+  const stored = await sg(['tevi_token', 'tevi_cs_secrets']);
+  const storedToken = stored.tevi_token;
+
+  if (storedToken?.access_token) {
+    // Check expiry
+    if (storedToken.expires_at) {
+      const exp = new Date(storedToken.expires_at).getTime();
+      if (exp > Date.now() + 60000) {
+        _wapiToken = storedToken.access_token;
+        _wapiTokenExpiry = exp;
+        log('INFO', '[AUTH] Using stored Tevi token (expires in ' + Math.round((exp - Date.now())/60000) + 'm)');
+        return _wapiToken;
+      }
+    }
+
+    // Priority 2: Try refresh with stored refresh_token
+    if (storedToken.refresh_token) {
+      const refreshed = await refreshTeviToken(storedToken.refresh_token);
+      if (refreshed) {
+        _wapiToken = refreshed.access_token;
+        _wapiTokenExpiry = new Date(refreshed.expires_at).getTime();
+        return _wapiToken;
+      }
+    }
+  }
+
+  // Priority 3: Try Supabase for any stored token
+  const dbToken = await getTokenFromSupabase();
+  if (dbToken) {
+    _wapiToken = dbToken.access_token;
+    _wapiTokenExpiry = dbToken.expires_at ? new Date(dbToken.expires_at).getTime() : Date.now() + 86400000;
+    log('INFO', '[AUTH] Loaded token from Supabase');
+    return _wapiToken;
+  }
+
+  log('ERROR', '[AUTH] No valid token — need Tevi tab login capture');
+  return null;
+}
+
+// Called by CS when it captures Tevi token
+async function handleTeviToken(tokenInfo) {
+  log('INFO', '[AUTH] Tevi token received from CS: uid=' + tokenInfo.uid + ' display=' + tokenInfo.display_name);
+
+  // Save to storage
+  await ss({ tevi_token: tokenInfo });
+
+  // Sync to Supabase
+  await syncTokenToSupabase(tokenInfo);
+
+  // Update in-memory state
+  _wapiToken = tokenInfo.access_token;
+  if (tokenInfo.expires_at) {
+    _wapiTokenExpiry = new Date(tokenInfo.expires_at).getTime();
+  }
+
+  // If bot is enabled and no token, trigger scan
+  const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
+  if (st.botEnabled && !_wapiToken) {
+    await runScan();
+  }
+}
 
 async function getWapiToken() {
   if (_wapiToken && Date.now() < _wapiTokenExpiry - 60000) return _wapiToken;
 
-  // Try restore from storage
-  const stored = await sg(['tevi_cs_auth']);
-  const auth = stored.tevi_cs_auth || {};
-  if (auth.wapiToken && auth.expiry > Date.now() + 60000) {
-    _wapiToken = auth.wapiToken;
-    _wapiTokenExpiry = auth.expiry;
-    _refreshToken = auth.refreshToken;
-    _firebaseIdToken = auth.firebaseIdToken;
-    log('INFO', '[AUTH] Restored token from storage (expires in ' + Math.round((_wapiTokenExpiry - Date.now())/60000) + 'm)');
-    return _wapiToken;
-  }
-
-  // Try refresh first
-  if (_refreshToken && _firebaseIdToken) {
-    try {
-      log('INFO', '[AUTH] Refreshing tokens...');
-      const refreshRes = await firebaseFetch('POST',
-        `/token?key=${FIREBASE_KEY}`,
-        { grant_type: 'refresh_token', refresh_token: _refreshToken }
-      );
-      if (refreshRes.status === 200 && refreshRes.data.id_token) {
-        _firebaseIdToken = refreshRes.data.id_token;
-        const wapiRes = await wapiFetch('POST', '/auth/v1/token/', {
-          access_token: _firebaseIdToken,
-          id_token: _firebaseIdToken,
-          refresh_token: _refreshToken,
-          device_id: DEVICE_ID,
-          device_type: 'browser',
-          os: 'Windows',
-          device_name: 'Chrome',
-        });
-        if (wapiRes.data?.data?.access_token) {
-          _wapiToken = wapiRes.data.data.access_token;
-          const exp = wapiRes.data.data.expires_in || 86400;
-          _wapiTokenExpiry = Date.now() + exp * 1000;
-          _refreshToken = wapiRes.data.data.refresh_token || _refreshToken;
-          await ss({ tevi_cs_auth: { wapiToken: _wapiToken, expiry: _wapiTokenExpiry, refreshToken: _refreshToken, firebaseIdToken: _firebaseIdToken } });
-          log('INFO', '[AUTH] Token refreshed OK');
-          return _wapiToken;
-        }
-      }
-    } catch (e) { log('WARN', '[AUTH] Refresh failed: ' + e.message); }
-  }
-
-  // Fresh anonymous login
-  log('INFO', '[AUTH] Starting fresh anonymous login...');
-  try {
-    const anonRes = await firebaseFetch('POST',
-      `/signupNewUser?key=${FIREBASE_KEY}`,
-      { returnSecureToken: true }
-    );
-    if (anonRes.status !== 200) throw new Error('Firebase signup failed: ' + JSON.stringify(anonRes.data));
-
-    _firebaseIdToken = anonRes.data.idToken;
-    const localId = anonRes.data.localId;
-    log('INFO', '[AUTH] Firebase anonymous OK, uid=' + localId);
-
-    const wapiRes = await wapiFetch('POST', '/auth/v1/token/', {
-      access_token: _firebaseIdToken,
-      device_id: DEVICE_ID,
-      device_type: 'browser',
-      os: 'Windows',
-      device_name: 'Chrome',
-    });
-
-    log('INFO', '[AUTH] wapiRes status=' + wapiRes.status + ' data=' + JSON.stringify(wapiRes.data).substring(0, 200));
-    if (!wapiRes.data?.data?.access_token) throw new Error('wapi token exchange failed');
-    _wapiToken = wapiRes.data.data.access_token;
-    const exp = wapiRes.data.data.expires_in || 86400;
-    _wapiTokenExpiry = Date.now() + exp * 1000;
-    _refreshToken = wapiRes.data.data.refresh_token;
-    await ss({ tevi_cs_auth: { wapiToken: _wapiToken, expiry: _wapiTokenExpiry, refreshToken: _refreshToken, firebaseIdToken: _firebaseIdToken } });
-    log('INFO', '[AUTH] Got wapi token OK (expires in ' + Math.round(exp/60) + 'm)');
-    return _wapiToken;
-  } catch (e) {
-    log('ERROR', '[AUTH] Fresh login failed: ' + e.message);
-    return null;
-  }
-}
+// Old Firebase auth removed — using Tevi token capture instead
 
 // ── Messenger API ─────────────────────────────────────────────────────
 
@@ -615,6 +739,10 @@ async function init() {
   });
 
   chrome.runtime.onMessage.addListener((msg, _, sendResp) => {
+    if (msg.type === 'TEVI_TOKEN') {
+      handleTeviToken(msg.token).then(() => sendResp({ ok: true }));
+      return true;
+    }
     if (msg.type === 'API_SEND_PATTERN') {
       // Legacy — no longer needed in direct API mode
       sendResp({ ok: true, note: 'direct API mode — pattern not needed' });

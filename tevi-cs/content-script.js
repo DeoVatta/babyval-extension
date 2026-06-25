@@ -653,6 +653,46 @@
   l('v0.9.12 active — ' + location.href);
 
   // ═══════════════════════════════════════════════════════════════
+  // AUTH TOKEN CAPTURE — Read Tevi token from localStorage
+  // ═══════════════════════════════════════════════════════════════
+
+  function captureTeviToken() {
+    try {
+      const raw = localStorage.getItem('user_logged_list');
+      if (!raw) return null;
+      const entries = JSON.parse(raw);
+      for (const [uid, entry] of Object.entries(entries)) {
+        if (!entry || !entry.access_token) continue;
+        // Decode JWT payload to check expiry
+        try {
+          const payload = JSON.parse(atob(entry.access_token.split('.')[1]));
+          const isExpired = payload.exp * 1000 < Date.now();
+          if (!isExpired && !payload.anonymous) {
+            return {
+              uid,
+              access_token: entry.access_token,
+              refresh_token: entry.refresh_token || null,
+              expires_at: new Date(payload.exp * 1000).toISOString(),
+              isAnonymous: payload.anonymous,
+              display_name: entry.user?.display_name || null,
+            };
+          }
+        } catch {}
+      }
+    } catch {}
+    return null;
+  }
+
+  // Report token to background on startup
+  const tokenInfo = captureTeviToken();
+  if (tokenInfo) {
+    chrome.runtime.sendMessage({
+      type: 'TEVI_TOKEN',
+      token: tokenInfo,
+    }).catch(() => {});
+  }
+
+  // ═══════════════════════════════════════════════════════════════
   // SNIFFER — Universal API Discovery (all domains)
   // Auto-runs at startup, captures every API call Tevi makes
   // ═══════════════════════════════════════════════════════════════
