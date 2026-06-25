@@ -25,260 +25,290 @@ Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Suki
 ```
 tevi-cs/
 ├── manifest.json        # v0.9.12 — version + permissions
-├── background.js        # Service Worker — scan, slot, edge function call
-├── content-script.js    # Unified: DOM scanner, message reader, intercept capture, SNIFER
-├── overlay.js           # Cat toggle panel
-├── api-discovery.js     # Legacy discovery (superseded by CS sniffer)
-├── interceptor.js       # (legacy) API interceptor
-├── log-server.js        # Local HTTP log receiver (port 3131)
+├── background.js        # Service Worker — DIRECT API mode, no DOM/tabs
+├── content-script.js   # Token capture from Tevi localStorage + sniffer
+├── overlay.js          # Cat toggle panel
+├── api-discovery.js    # Legacy (deprecated)
+├── interceptor.js      # Legacy (deprecated)
+├── log-server.js      # Local HTTP log receiver (port 3131)
 ├── popup/
-│   └── popup.html       # Extension popup UI (Rules/Behavior/Persona/Keys/API tabs)
-├── icons/
+│   └── popup.html    # Extension popup UI
 └── supabase/
-    ├── config.toml
-    ├── functions/
-    │   ├── cs-bot-logger/    # AI + logging + API discovery handler
-    │   └── api-auto-probe/    # Auto-probe Tevi API endpoints
-    └── migrations/
-        ├── 20260606000101_cs_bot_schema.sql
-        └── 20260625205315_tevi_api_discovery.sql
+    └── functions/
+        ├── cs-bot-logger/    # AI + logging edge function
+        └── api-auto-probe/    # Auto-probe endpoints
 ```
-
-### How It Works
-
-1. **Service Worker** (background.js) polling via `chrome.alarms` setiap 20 detik
-2. **Content Script** injects ke Tevi page — scan DOM untuk conv list + messages
-3. **INTERCEPT_SEND** — monkey-patch fetch/XHR untuk capture Tevi API send pattern
-4. **Supabase Edge Function** — handle AI call ke Olagon + log everything
-5. **apiSend()** — replay captured API request (tabless send)
-
-### Tech Stack
-
-| Component | Tech |
-|---|---|
-| Extension | Chrome MV3 (Service Worker) |
-| AI Gateway | Olagon (`gateway.olagon.site`) |
-| Database | Supabase (PostgreSQL) |
-| Edge Functions | Deno (Supabase) |
-| Auth | Cookie-based (Tevi login session) |
 
 ---
 
-## CONV DETECTION — METODE YANG BEKERJA
+## Auth System
 
-### Metode 1: DOM Anchor Link (PROVEN WORK v0.8)
+### METHOD 1: Tevi localStorage Token Capture (v0.9.12 — WORKING)
 
-Tevi render conv list sebagai anchor links ke `/@username/messages`. Selector yang work:
+**Discovery**: Tevi menyimpan auth token di `localStorage['user_logged_list']`.
 
+**Flow**:
+1. CS (content script) injects ke Tevi tab yang sudah login
+2. Baca `localStorage.getItem('user_logged_list')`
+3. Decode JWT payload untuk check expiry
+4. Kirim token ke BG via `chrome.runtime.sendMessage({ type: 'TEVI_TOKEN' })`
+5. BG simpan ke `chrome.storage.local` + sync ke Supabase
+
+**Token format**:
 ```javascript
-// Semua anchor href yang mengandung /@
-const allLinks = document.querySelectorAll('a[href*="/@"]');
-const convLinks = allLinks.filter(a => {
-  return a.href && a.href.match(/tevi\.com\/@[^/]+\/messages/);
-});
-// Support juga relative URL: /@username/messages
-const m = link.href.match(/(?:tevi\.com)?\/@([^/?#]+)/);
-```
-
-**Key insight:** Tevi pakai MUI (`MuiStack-root css-xxxx`) untuk conv items. Anchor ada di dalam MuiStack DIV.
-
-**Priority selector (v0.8 yang work):**
-1. `a[href*="/@"]` dengan href match `tevi.com/@username/messages` — **PRIORITY 1**
-2. `[data-conv-id]` — Tevi's internal ID
-3. `[class*="conversation-item"]`
-4. `ul[class*="list"] > li` (list item filter by @username in text)
-5. Fallback: `a[href*="/@"]` anywhere
-
-**Slug extraction dari anchor href:**
-```javascript
-// Support full URL dan relative URL
-const m = link.href.match(/(?:tevi\.com)?\/@([^/?#]+)/);
-if (m && m[1]) return m[1];
-```
-
-### Metode 2: API-Based (Tabless — PROVEN WORK v0.9)
-
-Tevi kirim pesan via HTTP API. Extension capture request pattern lalu replay.
-
-**Capture flow:**
-1. User kirim DM manual di Tevi
-2. `INTERCEPT_SEND` aktif (via content script message)
-3. Monkey-patch `window.fetch` + `XMLHttpRequest`
-4. Tangkap POST request ke API send endpoint
-5. Simpan pattern: `{ url, method, headers, bodyFields }`
-6. Service Worker replay dengan message baru
-
-**Kode capture (content-script.js):**
-```javascript
-function tryCapture(url, method, headers, body) {
-  // Universal — capture semua domain Tevi
-  let hostname = '';
-  try { hostname = new URL(url).hostname; } catch {}
-  const isTeviApi = hostname.includes('tevi.com') ||
-                    hostname.includes('flowstreamx') ||
-                    hostname.includes('wapi');
-  if (!isTeviApi) return;
-  if (!url.match(/send|message|chat|conversation/i)) return;
-
-  captured = true;
-  // Parse body
-  let parsedBody = {};
-  try { parsedBody = JSON.parse(body); } catch {}
-
-  // Simpan pattern
-  chrome.runtime.sendMessage({
-    type: 'API_SEND_PATTERN',
-    url, method,
-    headers: { Authorization: headers.Authorization || '' },
-    bodyFields: parsedBody,
-    capturedAt: Date.now(),
-  });
-}
-```
-
-**Kode replay (background.js):**
-```javascript
-async function apiSend(recipientSlug, text) {
-  const { apiSendPattern } = await sg(['apiSendPattern']);
-  if (!apiSendPattern) return false;
-
-  const bf = apiSendPattern.bodyFields || {};
-  const body = { message: text, recipient: recipientSlug };
-
-  const res = await fetch(apiSendPattern.url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ... },
-    body: JSON.stringify(body),
-    credentials: 'include', // PENTING: include cookies untuk auth
-  });
-
-  return res.ok;
-}
-```
-
-**KNOWN ISSUE:** Domain API Tevi tidak diketahui. v0.9 capture `wapi.flowstreamx.com`. v0.9.10 universal capture semua domain.
-
-### Metode 3: DOM Typing + Send (Fallback)
-
-Kalau API send tidak tersedia, fallback ke DOM manipulation:
-
-```javascript
-// 1. Find input
-const input = document.querySelector('textarea#_r_17_') ||
-              document.querySelector('div[contenteditable="true"]');
-
-// 2. Type with realistic delay
-for (const ch of text) {
-  input.textContent += ch;
-  input.dispatchEvent(new InputEvent('input', { bubbles: true }));
-  await sleep(30 + Math.random() * 40);
-}
-
-// 3. Click send button
-const btn = findSendBtn();
-btn.click();
-
-// 4. Verify sent
-await sleep(2000);
-return messages.some(m => m.includes('Halo aku Sukii'));
-```
-
-### Metode 4: API Auto-Discovery (Sniffer)
-
-`sniffer.js` — universal fetch/XHR interceptor yang capture SEMUA API calls:
-
-- Monkey-patch `window.fetch` + `XMLHttpRequest`
-- Skip calls ke Supabase sendiri (avoid loop)
-- Report ke Supabase tables: `tevi_api_endpoints`, `tevi_auth_tokens`
-- Auto-detect domain Tevi yang sebenarnya
-
----
-
-## MESSAGE READING — METODE
-
-### Dari DM Page (tevi.com/@username/messages)
-
-```javascript
-// 1. Find all message elements
-const msgEls = document.querySelectorAll('[class*="message"], [role="listitem"], div[class*="bubble"]');
-
-// 2. Filter USER messages only (not Sukii)
-function isFromUser(msgEl) {
-  const cls = msgEl.className.toLowerCase();
-  // Right-aligned = Sukii, Left-aligned = user
-  if (cls.includes('right') || cls.includes('outgoing')) return false;
-  if (cls.includes('left') || cls.includes('incoming')) return true;
-  // Check avatar
-  const avatar = msgEl.querySelector('[class*="avatar"]');
-  if (avatar && !avatar.textContent.includes('cutieval')) return true;
-  return false;
-}
-
-// 3. Get last N messages
-const userMsgs = msgEls
-  .filter(isFromUser)
-  .map(el => ({ text: el.textContent.trim(), hasImage: !!el.querySelector('img') }))
-  .slice(-4);
-```
-
-### Dari Conv List (tevi.com/messages)
-
-```javascript
-// Check last message icon: ✓ = Sukii replied, no icon = user last
-function hasRepliedIcon(convEl) {
-  const svgs = convEl.querySelectorAll('svg');
-  for (const svg of svgs) {
-    if (svg.outerHTML.includes('check-double')) return true;
-    if (svg.outerHTML.includes('icon-check')) return true;
+// localStorage['user_logged_list']
+{
+  "392388705": {
+    "access_token": "eyJ...",
+    "refresh_token": "eyJ...",
+    "user": { "id": 392388705, "display_name": "Cutieval", ... }
   }
-  return false;
 }
+```
 
-// Unread = no check icon AND has unread badge
-const unread = !hasRepliedIcon(convEl) && hasUnreadBadge(convEl);
+**JWT payload decode**:
+```javascript
+const payload = JSON.parse(atob(token.split('.')[1]));
+// payload.uid, payload.exp, payload.anonymous
+```
+
+**CS capture code** (content-script.js):
+```javascript
+function captureTeviToken() {
+  try {
+    const raw = localStorage.getItem('user_logged_list');
+    if (!raw) return null;
+    const entries = JSON.parse(raw);
+    for (const [uid, entry] of Object.entries(entries)) {
+      if (!entry?.access_token) continue;
+      const payload = JSON.parse(atob(entry.access_token.split('.')[1]));
+      const isExpired = payload.exp * 1000 < Date.now();
+      if (!isExpired && !payload.anonymous) {
+        return { uid, access_token: entry.access_token,
+                 refresh_token: entry.refresh_token,
+                 expires_at: new Date(payload.exp * 1000).toISOString() };
+      }
+    }
+  } catch {}
+  return null;
+}
+```
+
+### METHOD 2: Supabase Token Store (v0.9.12 — FALLBACK)
+
+**Table**: `tevi_auth_tokens`
+
+**Columns**: `id`, `token`, `token_type`, `user_id`, `username`, `expires_at`, `acquired_at`, `last_used_at`, `is_active`, `notes`
+
+**BG syncs token ke Supabase setiap dapat fresh token**:
+```javascript
+// On fresh token capture
+await fetch(SUPABASE_URL + '/rest/v1/tevi_auth_tokens', {
+  method: 'POST',
+  headers: { 'apikey': ANON_KEY, 'Content-Type': 'application/json' },
+  body: JSON.stringify([{
+    token: access_token,
+    token_type: 'Bearer',
+    user_id: uid,
+    username: 'cutieval',
+    expires_at: expires_at,
+    acquired_at: new Date().toISOString(),
+    is_active: true,
+  }])
+});
+```
+
+### METHOD 3: Token Refresh (v0.9.12 — FALLBACK)
+
+**Endpoint**: `POST https://wapi.flowstreamx.com/auth/v1/token/`
+
+**NO `?verify=` HMAC needed** untuk endpoint ini.
+
+**Request**:
+```json
+{
+  "access_token": "",
+  "refresh_token": "<stored_refresh_token>",
+  "device_id": "tevi-cs-bot-...",
+  "device_type": "browser",
+  "os": "Windows",
+  "device_name": "Chrome"
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "access_token": "eyJ...",
+    "refresh_token": "eyJ...",
+    "expires_in": 86400
+  }
+}
 ```
 
 ---
 
-## AI SYSTEM
+## Messenger API v2 (v0.9.12 — WORKING)
+
+**Discovered from**: babyval-autopilot/tevi-api/tevi-dm-sniff.json
+
+**Base**: `https://wapi.flowstreamx.com`
+
+**Auth**: `Authorization: Bearer <wapi_token>` + `?verify=<hmac>`
+
+**HMAC Verify**: `HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+timestamp)`
+
+### Get Unread Conversations
+
+```
+GET /messenger/v2/rpc/get_recent_conversations?limit=20&filter=UNREAD&verify=<hmac>
+Authorization: Bearer <wapi_token>
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "data": {
+    "count": 548,
+    "results": [{
+      "id": "uuid-conv-id",
+      "type": "DIRECT",
+      "channel_slug": "bidinisreal",
+      "recipient": {
+        "id": "uuid",
+        "tevi_user_alias": 3290169952,
+        "channel_slug": "bidinisreal",
+        "name": "Bidinisreal",
+        "is_my_subscriber": false
+      },
+      "latest_message": {
+        "id": "uuid",
+        "type": "TEXT",
+        "text": "kapan live",
+        "created_at": 1782308067930
+      },
+      "stats": { "unread_messages": 2 }
+    }]
+  }
+}
+```
+
+### Get Conversation + Messages
+
+```
+GET /messenger/v2/conversation/{uuid}/?verify=<hmac>
+Authorization: Bearer <wapi_token>
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "id": "uuid",
+    "messages": [{
+      "id": "uuid",
+      "sender": { "alias": "3290169952", "name": "Bidinisreal" },
+      "type": "TEXT",
+      "text": "kapan live",
+      "images": [],
+      "created_at": 1782308067930
+    }]
+  }
+}
+```
+
+### Send Message
+
+```
+POST /messenger/v2/message/?verify=<hmac>
+Authorization: Bearer <wapi_token>
+Content-Type: application/json
+
+{
+  "conversation_id": "uuid",
+  "type": "TEXT",
+  "parser": "PLAIN",
+  "text": "Halo aku Sukii..."
+}
+```
+
+**Response**: `200 OK` atau `{"success": true}`
+
+### Mark Read
+
+```
+POST /messenger/v2/conversation/{uuid}/read/?verify=<hmac>
+Authorization: Bearer <wapi_token>
+Content-Type: application/json
+{}
+```
+
+---
+
+## HMAC Verify Signature
+
+**Key**: `PRDKqnSNCKrMDF9hAt0PSJ6` (from tevi.com JS bundle)
+
+**Formula**: `HMAC-SHA256(key, pathname + timestamp)` → base64 → `timestamp-signature`
+
+**JS Implementation** (Web Crypto API — works in Service Worker):
+```javascript
+async function computeVerifyAsync(url) {
+  const pathname = new URL(url).pathname;
+  const timestamp = Math.floor(Date.now() / 1000);
+  const data = pathname + timestamp;
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', encoder.encode('PRDKqnSNCKrMDF9hAt0PSJ6'),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
+  const b64 = btoa(String.fromCharCode(...new Uint8Array(sig)));
+  return timestamp + '-' + b64;
+}
+```
+
+**Important**: `/auth/v1/token/` endpoint does NOT need `?verify=`. Only Messenger API calls need it.
+
+---
+
+## AI System
 
 ### Olagon Gateway
 
-- **URL:** `https://gateway.olagon.site/anthropic`
-- **Edge Function:** `https://qjemyvydivekolywleji.supabase.co/functions/v1/cs-bot-logger`
-- **Model:** `claude-sonnet-4-6`
-- **Rate Limit:** 20 calls/min per IP
+- **URL**: `https://gateway.olagon.site/anthropic`
+- **Edge Function**: `https://qjemyvydivekolywleji.supabase.co/functions/v1/cs-bot-logger`
+- **Model**: `claude-sonnet-4-6`
+- **Rate Limit**: 20 calls/min per IP
 
 ### AI Rules (Sukii v0.9.7)
 
-#### ✅ BOLEH DIJAWAB
+#### BOLEH DIJAWAB
 | Topik | Jawaban |
 |---|---|
 | Cara membership | Buka profile Baby Val → Join Membership |
 | Cara VCS | babyval.com → Video Call → Durasi → Bayar |
-| Cara bayar | babyval.com → VCS → Durasi → Bayar (Dana/OVO/transfer) |
-| Payment Dana/OVO | babyval.com → VCS → Bayar. Dana/OVO/transfer tersedia. |
+| Cara bayar | babyval.com → VCS → Bayar (Dana/OVO/transfer) |
 | Open masker | Boleh open masker. Tambah 350k. |
 | Full open | Buka semua kecuali masker. Buka masker tambah 350k. |
-| VCS via apa? | Private Room Tevi. Ber-2 aja. |
 | Benefit membership | Masuk live gratis, konten terbuka, chat kapanpun |
-| Mau kasih tip | ganknow.com/babyval/tip |
 
-#### ❌ TIDAK BOLEH DIJAWAB
+#### TIDAK BOLEH DIJAWAB
 | Topik | Jawaban |
 |---|---|
 | Alamat/no HP/WA | "Informasi pribadi tidak diberikan." |
 | Ketemu offline | "Cuma bisa VCS. Offline tidak tersedia." |
 | Kirim konten langsung | "Konten untuk member." |
-| Chat tidak pantas | "Kalau mau chat sama Baby Val, membership dulu ya." |
 
-#### 🧠 Psikologi — User Belum Pernah Bayar
-Kalau user tanya offline/BO/ketemu tapi belum pernah payment:
-→ **"Coba deh VCS dulu.. VCS aja belum emang bakal beneran bayar?"**
+#### Psikologi — User Belum Pernah Bayar
+```
+Kalau user tanya offline/BO/ketemu tapi belum pernah VCS
+→ "Coba deh VCS dulu.. VCS aja belum emang bakal beneran bayar?"
+```
 
----
-
-## Greeting Template (Static — Tidak AI-generated)
+### Greeting Template
 
 ```
 Halo aku Sukii, AI Assistant-nya Baby Val 💕
@@ -294,81 +324,9 @@ Kalau mau VCS bisa bayar di babyval.com
 | Slot | Type | Keterangan |
 |---|---|---|
 | 1 | Greeting | Perkenalan Sukii |
-| 2 | Reply | Balasan konteks #1 |
-| 3 | Reply | Balasan konteks #2 |
-| 4 | Reply | Balasan konteks #3 |
+| 2-3 | Reply | Balasan konteks |
+| 4 | Reply | Balasan akhir |
 | 5+ | Greeting | Reset ke slot 1 |
-
----
-
-## Status v0.9.12 (2026-06-26)
-
-### BREAKTHROUGH: DIRECT API MODE (from babyval-autopilot discovery)
-
-Extension now uses **direct wapi.flowstreamx.com API** — no DOM scraping, no tab navigation.
-
-**Architecture (v0.9.12):**
-- Auth: Firebase anonymous signUp → wapi token exchange (no login needed)
-- Conv detection: `GET /messenger/v2/rpc/get_recent_conversations?filter=UNREAD` → returns `channel_slug` + `is_my_subscriber`
-- Send DM: `POST /messenger/v2/message/` with `{ conversation_id, type, parser, text }`
-- HMAC verify: `HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+ts)`
-- No tabs, no DOM, no content script needed for core function
-
-### v0.9.12 Fixes
-- **Full rewrite**: background.js now uses direct API (Web Crypto HMAC + fetch)
-- Messenger v2 API integrated (discovered via babyval-autopilot tevi-dm-sniff.json)
-- Anonymous auth: Firebase → wapi token exchange
-- Service Worker native: `crypto.subtle` for HMAC, `fetch` for HTTP (no Node.js)
-
-### Changelog
-
-#### v0.9.12 — 2026-06-26
-- Full rewrite: DIRECT API mode (no DOM, no tabs)
-- `GET /messenger/v2/rpc/get_recent_conversations` → unread convs with slug + subscriber status
-- `POST /messenger/v2/message/` → send DM
-- `POST /messenger/v2/conversation/{id}/read/` → mark read
-- HMAC verify via Web Crypto API (Service Worker compatible)
-- Anonymous Firebase auth → wapi token exchange
-- Token stored in chrome.storage.local, auto-refresh
-
-#### v0.9.11 — 2026-06-26
-- Unify sniffer into content-script.js (single system)
-- Remove standalone `sniffer.js` from manifest
-- Sync all file versions to v0.9.11
-
----
-
-## Setup
-
-### 1. Start Log Server
-```bash
-cd C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
-node log-server.js
-```
-
-### 2. Load Extension
-```
-edge://extensions/
-→ Developer mode → Load unpacked
-→ Pilih: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
-```
-
-### 3. Capture API Pattern (Wajib!)
-1. Buka Tevi.com/message
-2. Kirim 1 DM manual ke siapapun
-3. Lihat log `[INTERCEPT] Captured: POST domain.com/path`
-4. Pattern tersimpan di `chrome.storage.local.apiSendPattern`
-
-### 4. Set AI Key
-Buka popup → tab **Keys** → masukkan Olagon key → Save
-
-### 5. Toggle ON
-Popup → toggle → ON
-
-### 6. Watch Log
-```bash
-pwsh -Command "Get-Content 'tevi-cs-logs.txt' -Tail 30 -Wait"
-```
 
 ---
 
@@ -406,6 +364,19 @@ pwsh -Command "Get-Content 'tevi-cs-logs.txt' -Tail 30 -Wait"
 | amount | int | Nominal |
 | verified | bool | Sudah diverifikasi |
 
+### tevi_auth_tokens
+| Column | Type | Description |
+|---|---|---|
+| id | serial PK | Auto |
+| token | text | wapi access_token |
+| token_type | text | bearer/cookie/session |
+| user_id | text | Associated user ID |
+| username | text | cutieval |
+| expires_at | timestamptz | Token expiry |
+| acquired_at | timestamptz | When captured |
+| last_used_at | timestamptz | Last used |
+| is_active | bool | Active flag |
+
 ### tevi_api_endpoints
 | Column | Type | Description |
 |---|---|---|
@@ -414,52 +385,7 @@ pwsh -Command "Get-Content 'tevi-cs-logs.txt' -Tail 30 -Wait"
 | path | text | API path |
 | full_url | text | Full URL |
 | host | text | Domain |
-| sample_request | jsonb | Request body |
-| sample_response | jsonb | Response body |
-| status_code | int | HTTP status |
 | discovered_at | timestamptz | When discovered |
-
-### tevi_auth_tokens
-| Column | Type | Description |
-|---|---|---|
-| id | serial PK | Auto |
-| token | text | Auth token |
-| token_type | text | bearer/cookie/session |
-| user_id | text | Associated user ID |
-| username | text | Username |
-| expires_at | timestamptz | Expiry |
-
----
-
-## Debugging
-
-### Check Conv Detection
-Buka DevTools di Tevi.com/message → Console:
-```javascript
-document.querySelectorAll('a[href*="/messages"]').length
-document.querySelectorAll('[data-conv-id]').length
-document.querySelectorAll('[class*="conversation"]').length
-```
-
-### Check API Pattern
-```javascript
-chrome.storage.local.get('apiSendPattern', r => console.log(r));
-```
-
-### Check Sniffer Catalog
-```javascript
-chrome.storage.local.get('tevi_api_catalog', r => console.log(r));
-```
-
-### Common Issues
-
-| Issue | Cause | Fix |
-|---|---|---|
-| `findConvItems returned 0` | Wrong selector priority | Prioritas anchor href dulu |
-| `SCAN 0 unreplied` | Slug extraction fails | Check relative URL regex |
-| `No send pattern` | Belum kirim DM manual | Kirim 1 DM manual |
-| `[API] Failed` status=0 | CORS from SW | Use content script for API calls |
-| Edge crash | Extension memory | Kill edge: `Get-Process msedge | Stop-Process` |
 
 ---
 
@@ -467,8 +393,86 @@ chrome.storage.local.get('tevi_api_catalog', r => console.log(r));
 
 | Version | Date | Status | Notes |
 |---|---|---|---|
-| v0.9.12 | 2026-06-26 | **BREAKTHROUGH** | Direct API mode: wapi Messenger v2 + HMAC + Firebase auth |
-| v0.9.9 | 2026-06-26 | Dev | Universal sniffer |
-| v0.9.8 | 2026-06-26 | Dev | Scan debounce, debug logs |
-| v0.9 | 2026-06-26 | **PROVEN** | API send tabless, INTERCEPT_SEND |
-| v0.8 | 2026-06-26 | **PROVEN** | DOM conv detection anchor href |
+| v0.9.12 | 2026-06-26 | **WORKING** | DIRECT API mode: token capture + Messenger v2 API |
+| v0.9.11 | 2026-06-26 | Deprecated | Unify sniffer into CS |
+| v0.9 | 2026-06-26 | Deprecated | API send tabless |
+| v0.8 | 2026-06-26 | Deprecated | DOM conv detection |
+
+---
+
+## Setup
+
+### 1. Start Log Server
+```bash
+cd C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
+node log-server.js
+```
+
+### 2. Load Extension
+```
+edge://extensions/
+→ Developer mode → Load unpacked
+→ Pilih: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
+```
+
+### 3. Token Capture
+1. Buka Tevi tab dan login sebagai cutieval
+2. Reload extension (di edge://extensions/)
+3. Buka tab Tevi.com/messages
+4. CS otomatis capture token dari localStorage
+5. Check log: `[AUTH] Tevi token received from CS: uid=392388705`
+
+### 4. Set AI Key
+Buka popup → tab **Keys** → masukkan Olagon key → Save
+
+### 5. Toggle ON
+Popup → toggle → ON
+
+### 6. Watch Log
+```bash
+pwsh -Command "Get-Content 'tevi-cs-logs.txt' -Tail 30 -Wait"
+```
+
+---
+
+## Known Issues
+
+| Issue | Cause | Status |
+|---|---|---|
+| Firebase anonymous → wapi token fails | HMAC verify mismatch | WORKAROUND: skip HMAC for /auth/v1/token/ |
+| Token captured from localStorage | CS runs in Tevi tab context | **SOLUTION**: CS captures, sends to BG |
+| Supabase tevi_auth_tokens wrong columns | Old migration | FIXED: use correct columns (no uid/refresh_token/updated_at) |
+
+---
+
+## Reference
+
+### Auth Flow Diagram
+```
+Tevi Tab (already logged in)
+    │
+    │ CS reads localStorage['user_logged_list']
+    │ Extracts access_token + refresh_token
+    │
+    ▼
+BG receives TEVI_TOKEN message
+    │
+    ├─► Save to chrome.storage.local
+    ├─► Sync to Supabase tevi_auth_tokens
+    ├─► Use token for Messenger API calls
+    │
+    ▼
+Messenger API v2
+    │
+    ├─► GET /messenger/v2/rpc/get_recent_conversations?filter=UNREAD
+    ├─► GET /messenger/v2/conversation/{id}/
+    ├─► POST /messenger/v2/message/ (send DM)
+    └─► POST /messenger/v2/conversation/{id}/read/
+```
+
+### Cross-Reference
+- **babyval-autopilot/tevi-api/tevi-dm-sniff.json**: Full network capture with Messenger v2 endpoints
+- **babyval-autopilot/tevi-api/tevi-api-client.js**: Node.js client with auth flow
+- **wapi.flowstreamx.com**: API base domain
+- **PRDKqnSNCKrMDF9hAt0PSJ6**: HMAC sign key (from tevi.com JS bundle)
+- **WAPI_SIGN_KEY**: `PRDKqnSNCKrMDF9hAt0PSJ6`
