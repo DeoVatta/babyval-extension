@@ -13,6 +13,7 @@
 
   const LOG       = 'http://localhost:3131';
   const IDLE_URL  = 'https://tevi.com/messages';
+  const DM_URL    = (slug) => `https://tevi.com/${slug}/messages`;
   const RETRY_AFTER_SEND_MS = 60000; // 1 minute
 
   let _busy    = false;
@@ -160,7 +161,7 @@
         try {
           if (currentSlug !== slug) {
             l(`[DOM_SEND] Navigate to @${slug}/messages...`);
-            window.location.href = `https://tevi.com/@${slug}/messages`;
+            window.location.href = DM_URL(slug);
             await waitForEl(() => findInput(), 15000);
             await sleep(800);
           }
