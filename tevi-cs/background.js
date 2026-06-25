@@ -508,6 +508,11 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
     });
     return true;
   }
+
+  if (msg.type === 'OPEN_POPUP') {
+    chrome.action.openPopup().catch(() => {});
+    return true;
+  }
 });
 
 // ── STARTUP ───────────────────────────────────────────────────────────────

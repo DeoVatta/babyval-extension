@@ -1,7 +1,7 @@
 /**
- * UNIFIED OVERLAY + SNIFFER — Tevi CS Bot v0.3.0.0
- * Single FAB: green TEVI = bot, purple ring = sniffer active
- * Fully automated — no buttons needed
+ * UNIFIED OVERLAY + SNIFFER — Tevi CS Bot v0.5.1.0
+ * Single FAB: shows bot status + sniffer ring
+ * Popup has full rules editor — overlay is minimal companion
  */
 
 (function() {
@@ -10,16 +10,13 @@
   if (window.__TEVI_CS__) return;
   window.__TEVI_CS__ = true;
 
-  const VER = '0.4.0.0';
+  const VER = '0.5.2.0';
   const LOG = 'http://localhost:3131';
   const SN_KEY = 'tevi_sniff';
   const EP_KEY = 'tevi_endpoints';
 
-  // ── STAGE COLORS ──────────────────────────────────────────────────────
-  // member = purple, intro_sent = yellow, cs_mode = green
-
   // ═══════════════════════════════════════════════════════════════════
-  // PART 1: SNIFFER (runs silent, no UI)
+  // PART 1: SNIFFER (silent)
   // ═══════════════════════════════════════════════════════════════════
 
   function isTeviApi(url) {
@@ -29,17 +26,17 @@
            url.includes('googleapis');
   }
 
-  function snLog(msg, level = 'INFO') {
+  function snLog(msg) {
     try {
       fetch(`${LOG}/log`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: 'SNIFFER', level, message: msg }),
+        body: JSON.stringify({ source: 'SNIFFER', level: 'INFO', message: msg }),
       }).catch(() => {});
     } catch {}
   }
 
-  function saveSniffEntry(entry) {
+  function saveEntry(entry) {
     chrome.storage.local.get(SN_KEY, d => {
       const list = d[SN_KEY] || [];
       list.push(entry);
@@ -51,18 +48,11 @@
   function saveEndpoint(method, url, status, isSend) {
     try {
       const u = new URL(url, location.href);
-      const pathname = u.pathname;
       chrome.storage.local.get(EP_KEY, d => {
         const eps = d[EP_KEY] || {};
-        const key = `${method}:${pathname}`;
-        if (!eps[key] || (status && !eps[key].status)) {
-          eps[key] = {
-            method, pathname, status, isSend,
-            capturedAt: new Date().toISOString(),
-            count: (eps[key]?.count || 0) + 1,
-          };
-          chrome.storage.local.set({ [EP_KEY]: eps });
-        }
+        const key = `${method}:${u.pathname}`;
+        eps[key] = { method, pathname: u.pathname, status, isSend, capturedAt: new Date().toISOString(), count: (eps[key]?.count || 0) + 1 };
+        chrome.storage.local.set({ [EP_KEY]: eps });
       });
     } catch {}
   }
@@ -72,35 +62,24 @@
   window.fetch = async function(input, init = {}) {
     const url = typeof input === 'string' ? input : input?.url || '';
     const method = (init?.method || 'GET').toUpperCase();
-    if (isTeviApi(url)) {
-      const start = Date.now();
-      let status = 0, bodyJson = null;
+    if (!isTeviApi(url)) return _fetch(input, init);
+
+    let status = 0, bodyJson = null;
+    try {
+      const res = await _fetch(input, init);
+      status = res.status;
       try {
-        const res = await _fetch(input, init);
-        status = res.status;
-        try {
-          const ct = res.headers.get('content-type') || '';
-          if (ct.includes('json')) {
-            const clone = res.clone();
-            bodyJson = await clone.json().catch(() => null);
-          }
-        } catch {}
-        const entry = { type: 'fetch', method, url, status, ts: Date.now(), ms: Date.now() - start };
-        saveSniffEntry(entry);
-        saveEndpoint(method, url, status, method !== 'GET');
-        if (status === 200 && bodyJson?.data?.results) {
-          snLog(`🎯 CONVS ${bodyJson.data.results.length} unread: ${url.substring(url.indexOf('/messenger'))}`);
+        if (res.headers.get('content-type')?.includes('json')) {
+          bodyJson = await res.clone().json().catch(() => null);
         }
-        if (method !== 'GET' && status >= 200 && status < 300) {
-          snLog(`✅ SEND OK: ${method} ${new URL(url, location.href).pathname}`);
-        }
-        return res;
-      } catch {
-        saveSniffEntry({ type: 'fetch', method, url, status: 0, ts: Date.now() });
-        return _fetch(input, init);
-      }
+      } catch {}
+      saveEntry({ type: 'fetch', method, url, status, ts: Date.now() });
+      saveEndpoint(method, url, status, method !== 'GET');
+      return res;
+    } catch {
+      saveEntry({ type: 'fetch', method, url, status: 0, ts: Date.now() });
+      return _fetch(input, init);
     }
-    return _fetch(input, init);
   };
 
   // Intercept XHR
@@ -109,7 +88,7 @@
   const _xSend = XMLHttpRequest.prototype.send;
   XMLHttpRequest.prototype.send = function() {
     if (this.__u && isTeviApi(this.__u)) {
-      saveSniffEntry({ type: 'xhr', method: this.__m, url: this.__u, ts: Date.now() });
+      saveEntry({ type: 'xhr', method: this.__m, url: this.__u, ts: Date.now() });
       saveEndpoint(this.__m, this.__u, 0, true);
     }
     return _xSend.call(this);
@@ -117,44 +96,24 @@
 
   // Intercept WebSocket
   if (typeof WebSocket !== 'undefined') {
-    const _WS = WebSocket;
-    window.WebSocket = function(url, ...rest) {
-      if (isTeviApi(url)) {
-        saveSniffEntry({ type: 'ws', url, ts: Date.now() });
-        snLog(`🔌 WS: ${url}`);
-      }
-      const ws = new _WS(url, ...rest);
+    const _WS = window.WebSocket;
+    window.WebSocket = function(url, ...r) {
+      if (isTeviApi(url)) saveEntry({ type: 'ws', url, ts: Date.now() });
+      const ws = new _WS(url, ...r);
       const _send = ws.send.bind(ws);
       ws.send = function(data) {
-        if (isTeviApi(url)) {
-          saveSniffEntry({ type: 'ws_send', url, data: String(data).substring(0, 150), ts: Date.now() });
-          saveEndpoint('WS_SEND', url, 0, true);
-          snLog(`📤 WS SEND: ${String(data).substring(0, 80)}`);
-        }
+        if (isTeviApi(url)) { saveEntry({ type: 'ws_send', url, data: String(data).substring(0, 150), ts: Date.now() }); saveEndpoint('WS', url, 0, true); }
         return _send(data);
       };
       return ws;
     };
-    Object.keys(_WS).forEach(k => { if (k !== 'prototype') window.WebSocket[k] = _WS[k]; });
+    ['CONNECTING','OPEN','CLOSING','CLOSED'].forEach(k => { window.WebSocket[k] = _WS[k]; });
   }
 
-  // PerformanceObserver
-  if (window.PerformanceObserver) {
-    try {
-      new PerformanceObserver(list => {
-        for (const e of list.getEntries()) {
-          if (e.name && isTeviApi(e.name)) {
-            saveSniffEntry({ type: 'perf', url: e.name, ms: e.duration, ts: Date.now() });
-          }
-        }
-      }).observe({ entryTypes: ['resource'] });
-    } catch {}
-  }
-
-  snLog(`[SNIFFER] ✅ Active — ${location.href}`);
+  snLog(`[SNIFFER] ✅ ${location.href}`);
 
   // ═══════════════════════════════════════════════════════════════════
-  // PART 2: OVERLAY UI (single unified FAB)
+  // PART 2: OVERLAY UI
   // ═══════════════════════════════════════════════════════════════════
 
   function inject(css) {
@@ -167,12 +126,11 @@
     .tc * { box-sizing: border-box; margin: 0; padding: 0; }
     .tc { position: fixed; bottom: 24px; right: 24px; z-index: 2147483647; font-family: 'Segoe UI', sans-serif; }
 
-    /* Single unified FAB */
+    /* FAB */
     .tc-fab {
       width: 56px; height: 56px; border-radius: 16px; border: none; cursor: pointer;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); padding: 0;
-      position: relative;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); padding: 0; position: relative;
     }
     .tc-fab.on  { background: linear-gradient(135deg,#00cc6a,#009955); box-shadow: 0 4px 20px rgba(0,204,106,.35),0 2px 8px rgba(0,0,0,.3); }
     .tc-fab.off { background: linear-gradient(135deg,#2a2a3a,#1a1a28); box-shadow: 0 4px 16px rgba(0,0,0,.3); border: 1px solid #333; }
@@ -181,33 +139,19 @@
     .tc-fab .ic { font-size: 22px; line-height: 1; }
     .tc-fab .lb { font-size: 7px; font-weight: 700; color: rgba(255,255,255,.8); letter-spacing: .3px; }
 
-    /* Status dot */
-    .tc-fab .dot {
-      position: absolute; top: 8px; right: 8px;
-      width: 9px; height: 9px; border-radius: 50%; border: 2px solid #0f0f1a;
-    }
+    .tc-fab .dot { position: absolute; top: 8px; right: 8px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid #0f0f1a; }
     .dot.G { background: #00ff88; box-shadow: 0 0 6px #00ff88; }
     .dot.R { background: #ff4757; box-shadow: 0 0 6px #ff4757; }
     .dot.O { background: #ffa502; box-shadow: 0 0 6px #ffa502; }
     .dot.N { background: #555; }
 
-    /* Sniffer ring — purple glow when sniffer has captures */
-    .tc-fab.sniffing::after {
-      content: ''; position: absolute; inset: -4px; border-radius: 20px;
-      border: 2px solid #a29bfe; box-shadow: 0 0 8px rgba(108,92,231,.5);
-      pointer-events: none; animation: sn-ring 2s ease-in-out infinite alternate;
-    }
-    @keyframes sn-ring { from { opacity: .4; } to { opacity: 1; } }
+    /* Sniffer ring */
+    .tc-fab.sniffing::after { content: ''; position: absolute; inset: -4px; border-radius: 20px; border: 2px solid #a29bfe; box-shadow: 0 0 8px rgba(108,92,231,.5); pointer-events: none; animation: snr 2s ease-in-out infinite alternate; }
+    @keyframes snr { from { opacity: .4; } to { opacity: 1; } }
 
     /* Panel */
-    .tc-pn {
-      position: absolute; bottom: 68px; right: 0; width: 264px;
-      background: #0f0f1a; border: 1px solid #1e1e30; border-radius: 16px;
-      box-shadow: 0 8px 40px rgba(0,0,0,.5); overflow: hidden;
-      transform-origin: bottom right;
-      animation: tcp-in .22s cubic-bezier(.34,1.56,.64,1); display: none;
-    }
-    .tc-pn.o { display: block; }
+    .tc-pn { position: absolute; bottom: 68px; right: 0; width: 260px; background: #0f0f1a; border: 1px solid #1e1e30; border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,.5); overflow: hidden; display: none; }
+    .tc-pn.o { display: block; animation: tcp-in .22s cubic-bezier(.34,1.56,.64,1); }
     @keyframes tcp-in { from { opacity:0; transform:scale(.88) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
 
     .tc-hd { background: linear-gradient(135deg,#00cc6a,#008844); padding: 10px 14px; display: flex; align-items: center; gap: 8px; border-radius: 16px 16px 0 0; }
@@ -224,40 +168,22 @@
     .tc-sr .do.G { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
     .tc-sr .do.R { background: #ff4757; box-shadow: 0 0 8px #ff4757; }
     .tc-sr .do.N { background: #555; }
-    .tc-sr .do.O { background: #ffa502; box-shadow: 0 0 8px #ffa502; }
     .tc-sr .lb { font-weight: 600; font-size: 13px; color: #fff; }
     .tc-sr .sb { font-size: 10px; color: #888; margin-top: 1px; }
-
-    .tc-er { background: #2a1a1a; border: 1px solid #ff475744; border-radius: 8px; padding: 6px 10px; font-size: 10px; color: #ff6b6b; display: none; }
-    .tc-er.sh { display: block; }
-
-    .tc-tr { display: flex; align-items: center; justify-content: space-between; background: #1a1a2e; border-radius: 10px; padding: 8px 12px; }
-    .tc-tr .tl { font-size: 12px; color: #ccc; }
-    .tc-tg { position: relative; width: 38px; height: 22px; }
-    .tc-tg input { opacity: 0; width: 0; height: 0; }
-    .tc-sl { position: absolute; cursor: pointer; inset: 0; background: #333; border-radius: 22px; transition: .3s; }
-    .tc-sl::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .3s; }
-    .tc-tg input:checked + .tc-sl { background: #00cc6a; }
-    .tc-tg input:checked + .tc-sl::before { transform: translateX(16px); }
 
     .tc-st { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
     .tc-st .sk { background: #1a1a2e; border-radius: 8px; padding: 6px 4px; text-align: center; }
     .tc-st .sn { font-size: 18px; font-weight: 700; color: #fff; }
     .tc-st .sl { font-size: 8px; color: #555; margin-top: 1px; text-transform: uppercase; }
 
-    /* Analysis section */
-    .tc-an { background: #1a1a2e; border-radius: 10px; padding: 7px 12px; display: none; }
-    .tc-an.sh { display: block; }
-    .tc-an .ah { font-size: 9px; color: #a29bfe; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
-    .tc-an .ar { display: flex; flex-wrap: wrap; gap: 4px; }
-    .tc-an .at { background: #2a2a4a; border-radius: 12px; padding: 2px 7px; font-size: 9px; color: #ccc; }
-    .tc-an .at .cnt { color: #00cc6a; font-weight: 700; }
-
     .tc-if { background: #1a1a2e; border-radius: 10px; padding: 7px 12px; }
     .tc-if .ir { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; }
     .tc-if .ir:last-child { margin-bottom: 0; }
     .tc-if .ir span:first-child { color: #555; }
     .tc-if .ir span:last-child { color: #aaa; font-family: monospace; }
+
+    .tc-link { display: block; text-align: center; font-size: 9px; color: #333; margin-top: 6px; text-decoration: none; }
+    .tc-link:hover { color: #00cc6a; }
   `);
 
   const ui = document.createElement('div');
@@ -274,32 +200,20 @@
           <div class="do N" id="tcDot"></div>
           <div><div class="lb" id="tcLb">Memuat...</div><div class="sb" id="tcSb">—</div></div>
         </div>
-        <div class="tc-er" id="tcEr"></div>
-        <div class="tc-tr">
-          <span class="tl">Aktifkan Bot</span>
-          <label class="tc-tg">
-            <input type="checkbox" id="tcTg">
-            <span class="tc-sl"></span>
-          </label>
-        </div>
         <div class="tc-st">
-          <div class="sk"><div class="sn" id="tcCS">—</div><div class="sl">CS</div></div>
+          <div class="sk"><div class="sn" id="tcCS">—</div><div class="sl">Active</div></div>
+          <div class="sk"><div class="sn" id="tcDone">—</div><div class="sl">Done</div></div>
           <div class="sk"><div class="sn" id="tcIntro">—</div><div class="sl">Intro</div></div>
-          <div class="sk"><div class="sn" id="tcMember">—</div><div class="sl" style="color:#a29bfe">Mbr</div></div>
         </div>
         <div class="tc-if">
           <div class="ir"><span>Last Poll</span><span id="tcLP">—</span></div>
-          <div class="ir"><span>Token UID</span><span id="tcUID">—</span></div>
           <div class="ir"><span>Hours</span><span id="tcHr">—</span></div>
           <div class="ir"><span>Sniffer</span><span id="tcSn" style="color:#a29bfe">—</span></div>
         </div>
-        <div class="tc-an" id="tcAn">
-          <div class="ah">Top Q&amp;A Patterns</div>
-          <div class="ar" id="tcQA"></div>
-        </div>
+        <a class="tc-link" href="#" id="tcPopup">Open Rules Editor →</a>
       </div>
     </div>
-    <button class="tc-fab off" id="tcFab" title="Tevi CS Bot v${VER}">
+    <button class="tc-fab off" id="tcFab">
       <div class="dot N" id="tcFabDot"></div>
       <div class="ic">🤖</div>
       <div class="lb">TEVI</div>
@@ -314,20 +228,12 @@
   const dot    = document.getElementById('tcDot');
   const lb     = document.getElementById('tcLb');
   const sb     = document.getElementById('tcSb');
-  const er     = document.getElementById('tcEr');
-  const tg     = document.getElementById('tcTg');
-  const tP     = document.getElementById('tcP');
-  const tR     = document.getElementById('tcR');
-  const tI     = document.getElementById('tcI');
-  const tCS    = document.getElementById('tcCS');
-  const tIntro = document.getElementById('tcIntro');
-  const tMem   = document.getElementById('tcMember');
-  const tLP    = document.getElementById('tcLP');
-  const tUID   = document.getElementById('tcUID');
-  const tHr    = document.getElementById('tcHr');
-  const tSn    = document.getElementById('tcSn');
-  const tAn    = document.getElementById('tcAn');
-  const tQA    = document.getElementById('tcQA');
+  const tcCS   = document.getElementById('tcCS');
+  const tcDone = document.getElementById('tcDone');
+  const tcIntro= document.getElementById('tcIntro');
+  const tcLP   = document.getElementById('tcLP');
+  const tcHr   = document.getElementById('tcHr');
+  const tcSn   = document.getElementById('tcSn');
 
   function fmt(iso) {
     if (!iso) return '—';
@@ -335,77 +241,43 @@
     catch { return '—'; }
   }
 
-  let sniffCount = 0;
   function updateSniffUI() {
     chrome.storage.local.get([SN_KEY, EP_KEY], d => {
       const n = (d[SN_KEY] || []).length;
-      const eps = Object.keys(d[EP_KEY] || {}).length;
-      sniffCount = n;
-      tSn.textContent = n > 0 ? `${n} calls` : '—';
-      if (n > 10) {
-        fab.classList.add('sniffing');
-      } else {
-        fab.classList.remove('sniffing');
-      }
+      tcSn.textContent = n > 0 ? `${n} calls` : '—';
+      if (n > 10) fab.classList.add('sniffing'); else fab.classList.remove('sniffing');
     });
   }
 
   function render(state) {
-    const { enabled, hasToken, result, analysis, meta } = state;
+    const { enabled, hasToken, result } = state;
     const ah = new Date().getHours() >= 17 || new Date().getHours() < 5;
 
     if (!enabled) {
       fab.className = 'tc-fab off'; fabDot.className = 'dot N';
       bd.textContent = 'OFF'; dot.className = 'do N';
-      lb.textContent = 'Nonaktif'; sb.textContent = 'Toggle untuk aktifkan';
-      er.classList.remove('sh');
+      lb.textContent = 'Nonaktif'; sb.textContent = 'Toggle di popup';
     } else if (!hasToken) {
       fab.className = 'tc-fab off'; fabDot.className = 'dot R';
       bd.textContent = 'ERR'; dot.className = 'do R';
-      lb.textContent = 'No Token'; sb.textContent = 'Buka Tevi & login';
-      er.classList.add('sh'); er.textContent = '⚠️ Login ke tevi.com, refresh';
-    } else if (result?.error) {
-      fab.className = 'tc-fab on'; fabDot.className = 'dot O';
-      bd.textContent = 'ERR'; dot.className = 'do O';
-      lb.textContent = 'Error'; sb.textContent = result.error;
-      er.classList.add('sh'); er.textContent = '⚠️ ' + result.error;
+      lb.textContent = 'No Token'; sb.textContent = 'Login ke Tevi';
     } else {
       fab.className = 'tc-fab on'; fabDot.className = 'dot G';
       bd.textContent = 'ON'; dot.className = 'do G';
-      lb.textContent = 'Aktif'; sb.textContent = ah ? '🟢 Memantau' : '🟡 Closed (dry)';
-      er.classList.remove('sh');
+      lb.textContent = 'Aktif'; sb.textContent = ah ? '🟢 Memantau' : '🟡 Closed';
     }
 
-    // Stage counters
-    tCS.textContent   = meta?.cs    ?? '—';
-    tIntro.textContent = meta?.intro ?? '—';
-    tMem.textContent  = meta?.member ?? '—';
-
-    tLP.textContent = fmt(result?.time);
-    tHr.innerHTML  = ah
-      ? '<span style="color:#00cc6a;font-weight:600">BUKA</span>'
-      : '<span style="color:#ff4757;font-weight:600">TUTUP</span>';
-
-    // Analysis Q&A patterns
-    if (analysis?.topQuestions?.length > 0) {
-      tQA.innerHTML = analysis.topQuestions
-        .map(q => `<span class="at"><span class="cnt">${q.count}x</span> ${q.kw}</span>`)
-        .join('');
-      tAn.classList.add('sh');
-    } else {
-      tAn.classList.remove('sh');
-    }
+    tcCS.textContent   = result?.stats?.activeConvs ?? '—';
+    tcDone.textContent = result?.stats?.doneConvs   ?? '—';
+    tcIntro.textContent= result?.stats?.introSent   ?? '—';
+    tcLP.textContent   = fmt(result?.time);
+    tcHr.innerHTML     = ah ? '<span style="color:#00cc6a;font-weight:600">BUKA</span>' : '<span style="color:#ff4757;font-weight:600">TUTUP</span>';
     updateSniffUI();
   }
 
   async function refresh() {
-    let state = { enabled: false, hasToken: false, result: {}, uid: null };
-    try {
-      const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' });
-      if (s) state = { ...state, ...s };
-    } catch {}
-    tUID.textContent = state.uid || '—';
-    tg.checked = state.enabled;
+    let state = { enabled: false, hasToken: false, result: {} };
+    try { const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' }); if (s) state = { ...state, ...s }; } catch {}
     render(state);
   }
 
@@ -414,10 +286,9 @@
     if (pn.classList.contains('o')) refresh();
   });
 
-  tg.addEventListener('change', async () => {
-    const enabled = tg.checked;
-    render({ enabled, hasToken: true, result: {} });
-    try { await chrome.runtime.sendMessage({ type: 'TOGGLE', enabled }); } catch {}
+  document.getElementById('tcPopup').addEventListener('click', e => {
+    e.preventDefault();
+    chrome.runtime.sendMessage({ type: 'OPEN_POPUP' }).catch(() => {});
   });
 
   setInterval(() => {
