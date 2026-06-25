@@ -10,10 +10,13 @@
   if (window.__TEVI_CS__) return;
   window.__TEVI_CS__ = true;
 
-  const VER = '0.3.0.0';
+  const VER = '0.4.0.0';
   const LOG = 'http://localhost:3131';
   const SN_KEY = 'tevi_sniff';
   const EP_KEY = 'tevi_endpoints';
+
+  // ── STAGE COLORS ──────────────────────────────────────────────────────
+  // member = purple, intro_sent = yellow, cs_mode = green
 
   // ═══════════════════════════════════════════════════════════════════
   // PART 1: SNIFFER (runs silent, no UI)
@@ -242,6 +245,14 @@
     .tc-st .sn { font-size: 18px; font-weight: 700; color: #fff; }
     .tc-st .sl { font-size: 8px; color: #555; margin-top: 1px; text-transform: uppercase; }
 
+    /* Analysis section */
+    .tc-an { background: #1a1a2e; border-radius: 10px; padding: 7px 12px; display: none; }
+    .tc-an.sh { display: block; }
+    .tc-an .ah { font-size: 9px; color: #a29bfe; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
+    .tc-an .ar { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tc-an .at { background: #2a2a4a; border-radius: 12px; padding: 2px 7px; font-size: 9px; color: #ccc; }
+    .tc-an .at .cnt { color: #00cc6a; font-weight: 700; }
+
     .tc-if { background: #1a1a2e; border-radius: 10px; padding: 7px 12px; }
     .tc-if .ir { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; }
     .tc-if .ir:last-child { margin-bottom: 0; }
@@ -272,15 +283,19 @@
           </label>
         </div>
         <div class="tc-st">
-          <div class="sk"><div class="sn" id="tcP">—</div><div class="sl">Proc</div></div>
-          <div class="sk"><div class="sn" id="tcR">—</div><div class="sl">Replied</div></div>
-          <div class="sk"><div class="sn" id="tcI">—</div><div class="sl">Ignored</div></div>
+          <div class="sk"><div class="sn" id="tcCS">—</div><div class="sl">CS</div></div>
+          <div class="sk"><div class="sn" id="tcIntro">—</div><div class="sl">Intro</div></div>
+          <div class="sk"><div class="sn" id="tcMember">—</div><div class="sl" style="color:#a29bfe">Mbr</div></div>
         </div>
         <div class="tc-if">
           <div class="ir"><span>Last Poll</span><span id="tcLP">—</span></div>
           <div class="ir"><span>Token UID</span><span id="tcUID">—</span></div>
           <div class="ir"><span>Hours</span><span id="tcHr">—</span></div>
           <div class="ir"><span>Sniffer</span><span id="tcSn" style="color:#a29bfe">—</span></div>
+        </div>
+        <div class="tc-an" id="tcAn">
+          <div class="ah">Top Q&amp;A Patterns</div>
+          <div class="ar" id="tcQA"></div>
         </div>
       </div>
     </div>
@@ -304,10 +319,15 @@
   const tP     = document.getElementById('tcP');
   const tR     = document.getElementById('tcR');
   const tI     = document.getElementById('tcI');
+  const tCS    = document.getElementById('tcCS');
+  const tIntro = document.getElementById('tcIntro');
+  const tMem   = document.getElementById('tcMember');
   const tLP    = document.getElementById('tcLP');
   const tUID   = document.getElementById('tcUID');
   const tHr    = document.getElementById('tcHr');
   const tSn    = document.getElementById('tcSn');
+  const tAn    = document.getElementById('tcAn');
+  const tQA    = document.getElementById('tcQA');
 
   function fmt(iso) {
     if (!iso) return '—';
@@ -331,7 +351,7 @@
   }
 
   function render(state) {
-    const { enabled, hasToken, result } = state;
+    const { enabled, hasToken, result, analysis, meta } = state;
     const ah = new Date().getHours() >= 17 || new Date().getHours() < 5;
 
     if (!enabled) {
@@ -356,11 +376,25 @@
       er.classList.remove('sh');
     }
 
-    tP.textContent = result?.processed ?? '—';
-    tR.textContent = result?.replied ?? '—';
-    tI.textContent = result?.ignored ?? '—';
+    // Stage counters
+    tCS.textContent   = meta?.cs    ?? '—';
+    tIntro.textContent = meta?.intro ?? '—';
+    tMem.textContent  = meta?.member ?? '—';
+
     tLP.textContent = fmt(result?.time);
-    tHr.innerHTML = ah ? '<span style="color:#00cc6a;font-weight:600">BUKA</span>' : '<span style="color:#ff4757;font-weight:600">TUTUP</span>';
+    tHr.innerHTML  = ah
+      ? '<span style="color:#00cc6a;font-weight:600">BUKA</span>'
+      : '<span style="color:#ff4757;font-weight:600">TUTUP</span>';
+
+    // Analysis Q&A patterns
+    if (analysis?.topQuestions?.length > 0) {
+      tQA.innerHTML = analysis.topQuestions
+        .map(q => `<span class="at"><span class="cnt">${q.count}x</span> ${q.kw}</span>`)
+        .join('');
+      tAn.classList.add('sh');
+    } else {
+      tAn.classList.remove('sh');
+    }
     updateSniffUI();
   }
 

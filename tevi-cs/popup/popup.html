@@ -6,49 +6,15 @@
   <title>Tevi CS Bot</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      width: 280px;
-      background: #0f0f1a;
-      color: #e0e0e0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      font-size: 13px;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    /* Header */
-    .hd {
-      background: linear-gradient(135deg, #00cc6a 0%, #00a855 100%);
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-radius: 16px 16px 0 0;
-    }
-    .hd .ic {
-      width: 32px; height: 32px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
+    body { width: 300px; background: #0f0f1a; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; font-size: 13px; border-radius: 16px; overflow: hidden; }
+    .hd { background: linear-gradient(135deg,#00cc6a,#00a855); padding: 12px 14px; display: flex; align-items: center; gap: 10px; border-radius: 16px 16px 0 0; }
+    .hd .ic { width: 32px; height: 32px; background: rgba(255,255,255,.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .hd .ti { flex: 1; }
     .hd .ti h1 { font-size: 14px; font-weight: 700; color: #fff; }
-    .hd .ti .v { font-size: 10px; color: rgba(255,255,255,0.6); }
-    .hd .bd {
-      font-size: 10px; font-weight: 700; padding: 3px 8px;
-      border-radius: 20px; background: rgba(255,255,255,0.2); color: #fff;
-    }
-
-    /* Body */
+    .hd .ti .v { font-size: 10px; color: rgba(255,255,255,.6); }
+    .hd .bd { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: rgba(255,255,255,.2); color: #fff; }
     .bd { padding: 12px 14px; }
-
-    /* Status */
-    .sr {
-      display: flex; align-items: center; gap: 10px;
-      background: #1a1a2e; border: 1px solid #2a2a4a;
-      border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
-    }
+    .sr { display: flex; align-items: center; gap: 10px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
     .do { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .do.G { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
     .do.R { background: #ff4757; box-shadow: 0 0 8px #ff4757; }
@@ -56,57 +22,43 @@
     .do.O { background: #ffa502; box-shadow: 0 0 8px #ffa502; }
     .lb { font-weight: 600; font-size: 13px; color: #fff; }
     .sb { font-size: 10px; color: #888; margin-top: 1px; }
-
-    /* Error */
-    .er {
-      background: #2a1a1a; border: 1px solid #ff475744;
-      border-radius: 8px; padding: 7px 10px; margin-bottom: 8px;
-      font-size: 11px; color: #ff6b6b; display: none;
-    }
+    .er { background: #2a1a1a; border: 1px solid #ff475744; border-radius: 8px; padding: 7px 10px; margin-bottom: 8px; font-size: 11px; color: #ff6b6b; display: none; }
     .er.sh { display: block; }
-
-    /* Toggle */
-    .tr {
-      display: flex; align-items: center; justify-content: space-between;
-      background: #1a1a2e; border: 1px solid #2a2a4a;
-      border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
-    }
+    .tr { display: flex; align-items: center; justify-content: space-between; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
     .tl { font-size: 13px; color: #ccc; }
     .tg { position: relative; width: 42px; height: 24px; }
     .tg input { opacity: 0; width: 0; height: 0; }
-    .ts {
-      position: absolute; cursor: pointer; inset: 0;
-      background: #333; border-radius: 24px; transition: 0.3s;
-    }
-    .ts::before {
-      content: ''; position: absolute; width: 18px; height: 18px;
-      left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.3s;
-    }
+    .ts { position: absolute; cursor: pointer; inset: 0; background: #333; border-radius: 24px; transition: .3s; }
+    .ts::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .3s; }
     .tg input:checked + .ts { background: #00cc6a; }
     .tg input:checked + .ts::before { transform: translateX(18px); }
-
-    /* Stats */
-    .st {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px;
-    }
-    .sk {
-      background: #1a1a2e; border: 1px solid #2a2a4a;
-      border-radius: 10px; padding: 8px 6px; text-align: center;
-    }
+    .st { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .sk { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 6px; text-align: center; }
     .sn { font-size: 18px; font-weight: 700; color: #fff; }
     .sl { font-size: 9px; color: #555; margin-top: 2px; text-transform: uppercase; }
-
-    /* Info */
-    .if {
-      background: #1a1a2e; border: 1px solid #2a2a4a;
-      border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;
-    }
+    .if { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; }
     .ir { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
     .ir:last-child { margin-bottom: 0; }
     .ir span:first-child { color: #555; }
     .ir span:last-child { color: #aaa; font-family: 'Consolas', monospace; }
-
-    /* Footer */
+    .qa { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; display: none; }
+    .qa.sh { display: block; }
+    .qa .qh { font-size: 9px; color: #a29bfe; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+    .qa .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .qa .tag { background: #2a2a4a; border-radius: 12px; padding: 2px 8px; font-size: 9px; color: #ccc; }
+    .qa .tag .c { color: #00cc6a; font-weight: 700; }
+    .sec { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; display: none; }
+    .sec.sh { display: block; }
+    .sec .shd { font-size: 11px; color: #aaa; margin-bottom: 8px; }
+    .sec .f { margin-bottom: 7px; }
+    .sec .fl { font-size: 10px; color: #555; margin-bottom: 2px; }
+    .sec .fi { width: 100%; background: #0f0f1a; border: 1px solid #333; border-radius: 6px; padding: 5px 8px; color: #ccc; font-size: 11px; font-family: monospace; outline: none; }
+    .sec .fi:focus { border-color: #00cc6a; }
+    .sec .bt { width: 100%; background: #00cc6a; border: none; border-radius: 8px; padding: 7px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .sec .bt:hover { background: #00a855; }
+    .sec .sbt { font-size: 9px; color: #00cc6a; margin-top: 4px; text-align: center; }
+    .sec .opn { font-size: 10px; color: #555; margin-bottom: 6px; cursor: pointer; text-align: center; text-decoration: underline; }
+    .sec .opn:hover { color: #888; }
     .ft { padding: 6px 14px 10px; font-size: 10px; color: #333; text-align: center; }
   </style>
 </head>
@@ -114,144 +66,172 @@
 
 <div class="hd">
   <div class="ic">🤖</div>
-  <div class="ti">
-    <h1>Tevi CS Bot</h1>
-    <div class="v">v0.3.0.0 — tevi-cs</div>
-  </div>
+  <div class="ti"><h1>Tevi CS Bot</h1><div class="v">v0.5.0.0</div></div>
   <div class="bd" id="topBd">OFF</div>
 </div>
 
 <div class="bd">
-  <!-- Status -->
   <div class="sr">
     <div class="do N" id="dot"></div>
-    <div>
-      <div class="lb" id="label">Memuat...</div>
-      <div class="sb" id="sub">—</div>
-    </div>
+    <div><div class="lb" id="label">Memuat...</div><div class="sb" id="sub">—</div></div>
   </div>
-
-  <!-- Error -->
   <div class="er" id="errBanner"></div>
 
-  <!-- Toggle -->
   <div class="tr">
     <span class="tl">Aktifkan Bot</span>
-    <label class="tg">
-      <input type="checkbox" id="toggle">
-      <span class="ts"></span>
-    </label>
+    <label class="tg"><input type="checkbox" id="toggle"><span class="ts"></span></label>
   </div>
 
-  <!-- Stats -->
   <div class="st">
-    <div class="sk"><div class="sn" id="proc">—</div><div class="sl">Processed</div></div>
-    <div class="sk"><div class="sn" id="repl">—</div><div class="sl">Replied</div></div>
-    <div class="sk"><div class="sn" id="ign">—</div><div class="sl">Ignored</div></div>
+    <div class="sk"><div class="sn" id="csCnt">—</div><div class="sl">CS</div></div>
+    <div class="sk"><div class="sn" id="introCnt">—</div><div class="sl">Intro</div></div>
+    <div class="sk"><div class="sn" id="memCnt">—</div><div class="sl" style="color:#a29bfe">Mbr</div></div>
   </div>
 
-  <!-- Info -->
   <div class="if">
     <div class="ir"><span>Last Poll</span><span id="lp">—</span></div>
     <div class="ir"><span>Token UID</span><span id="uid">—</span></div>
     <div class="ir"><span>Hours</span><span id="hrs">—</span></div>
-    <div class="ir"><span>API Sniff</span><span id="sniff" style="color:#a29bfe">—</span></div>
+    <div class="ir"><span>AI Key</span><span id="aiKey" style="color:#00cc6a">—</span></div>
+  </div>
+
+  <div class="qa" id="qaBlock">
+    <div class="qh">Top Q&amp;A Patterns</div>
+    <div class="tags" id="qaTags"></div>
+  </div>
+
+  <div class="sec" id="secBlock">
+    <div class="opn" id="closeSec">tutup</div>
+    <div class="shd">Set API Keys — tersimpan di chrome.storage.local</div>
+    <div class="f">
+      <div class="fl">Olagon AI Key</div>
+      <input class="fi" type="password" id="aiKeyIn" placeholder="rk_live_...">
+    </div>
+    <div class="f">
+      <div class="fl">HMAC Secret</div>
+      <input class="fi" type="password" id="hmacIn" placeholder="PRDKqnSNCKrMDF9hAt0PSJ6">
+    </div>
+    <button class="bt" id="saveBtn">Save Secrets</button>
+    <div class="sbt" id="saveMsg"></div>
   </div>
 </div>
 
-<div class="ft">Active 17:00–05:00 • 3 min interval</div>
-<div class="ft" style="color:#6c5ce7;font-size:9px;padding-top:0">🔍 Purple badge = Sniffer • Click to dump logs</div>
+<div class="ft">Active 17:00–05:00 • 3 min interval • AI + DOM</div>
 
 <script>
 (function() {
   const $ = id => document.getElementById(id);
   const el = {
-    topBd: $('topBd'), dot: $('dot'), label: $('label'),
-    sub: $('sub'), errBanner: $('errBanner'),
-    toggle: $('toggle'), proc: $('proc'), repl: $('repl'),
-    ign: $('ign'), lp: $('lp'), uid: $('uid'), hrs: $('hrs'),
-    sniff: $('sniff'),
+    topBd: $('topBd'), dot: $('dot'), label: $('label'), sub: $('sub'),
+    errBanner: $('errBanner'), toggle: $('toggle'),
+    csCnt: $('csCnt'), introCnt: $('introCnt'), memCnt: $('memCnt'),
+    lp: $('lp'), uid: $('uid'), hrs: $('hrs'),
+    aiKey: $('aiKey'),
+    qaBlock: $('qaBlock'), qaTags: $('qaTags'),
+    secBlock: $('secBlock'),
+    aiKeyIn: $('aiKeyIn'), hmacIn: $('hmacIn'),
+    saveBtn: $('saveBtn'), saveMsg: $('saveMsg'),
   };
 
   function fmt(iso) {
     if (!iso) return '—';
-    try {
-      return new Date(iso).toLocaleString('id-ID', {
-        day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
-      });
-    } catch { return '—'; }
+    try { return new Date(iso).toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }); }
+    catch { return '—'; }
   }
 
-  function render(state) {
-    const { enabled, hasToken, result, activeHours } = state;
-
+  let hasAiKey = false;
+  function render(s) {
+    const { enabled, hasToken, result, activeHours, analysis, meta } = s;
     if (!enabled) {
       el.dot.className = 'do N'; el.label.textContent = 'Nonaktif';
       el.sub.textContent = 'Toggle untuk aktifkan';
-      el.topBd.textContent = 'OFF'; el.topBd.style.background = 'rgba(255,255,255,0.2)';
-      el.errBanner.classList.remove('sh');
-      el.errBanner.textContent = '';
+      el.topBd.textContent = 'OFF'; el.errBanner.classList.remove('sh');
     } else if (!hasToken) {
       el.dot.className = 'do R'; el.label.textContent = 'No Token';
-      el.sub.textContent = 'Buka Tevi & login';
-      el.topBd.textContent = 'ERR'; el.topBd.style.background = 'rgba(255,71,87,0.4)';
-      el.errBanner.classList.add('sh');
-      el.errBanner.textContent = '⚠️ Login ke tevi.com, lalu refresh popup ini';
+      el.sub.textContent = 'Buka Tevi & login'; el.topBd.textContent = 'ERR';
+      el.errBanner.classList.add('sh'); el.errBanner.textContent = '⚠️ Login ke tevi.com';
     } else if (result?.error) {
       el.dot.className = 'do O'; el.label.textContent = 'Error';
-      el.sub.textContent = result.error;
-      el.topBd.textContent = 'ERR'; el.topBd.style.background = 'rgba(255,71,87,0.4)';
-      el.errBanner.classList.add('sh');
-      el.errBanner.textContent = '⚠️ ' + result.error;
+      el.sub.textContent = result.error; el.topBd.textContent = 'ERR';
+      el.errBanner.classList.add('sh'); el.errBanner.textContent = '⚠️ ' + result.error;
     } else {
       el.dot.className = 'do G'; el.label.textContent = 'Aktif';
       el.sub.textContent = activeHours ? '🟢 Memantau' : '🟡 Closed (dry)';
-      el.topBd.textContent = 'ON'; el.topBd.style.background = 'rgba(0,0,0,0.2)';
-      el.errBanner.classList.remove('sh');
+      el.topBd.textContent = 'ON'; el.errBanner.classList.remove('sh');
     }
-
-    el.proc.textContent = result?.processed ?? '—';
-    el.repl.textContent = result?.replied ?? '—';
-    el.ign.textContent = result?.ignored ?? '—';
+    el.csCnt.textContent = meta?.cs ?? '—';
+    el.introCnt.textContent = meta?.intro ?? '—';
+    el.memCnt.textContent = meta?.member ?? '—';
     el.lp.textContent = fmt(result?.time);
-    el.uid.textContent = state.uid || '—';
+    el.uid.textContent = s.uid || '—';
     el.hrs.innerHTML = activeHours
       ? '<span style="color:#00cc6a;font-weight:700">BUKA</span>'
       : '<span style="color:#ff4757;font-weight:700">TUTUP</span>';
+
+    if (analysis?.topQuestions?.length > 0) {
+      el.qaTags.innerHTML = analysis.topQuestions
+        .map(q => `<span class="tag"><span class="c">${q.count}x</span> ${q.kw}</span>`)
+        .join('');
+      el.qaBlock.classList.add('sh');
+    } else {
+      el.qaBlock.classList.remove('sh');
+    }
   }
 
   async function load() {
-    // Sync: show last known state fast
+    // Load secrets status
     try {
-      const ls = JSON.parse(localStorage.getItem('tevi_cs_popup') || '{}');
-      el.toggle.checked = ls.botEnabled ?? false;
-      render({ enabled: ls.botEnabled ?? false, hasToken: false, result: {}, activeHours: true });
-    } catch {}
-
-    // Async: get full state from SW
-    try {
-      const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' });
-      if (s) {
-        el.toggle.checked = s.enabled;
-        localStorage.setItem('tevi_cs_popup', JSON.stringify({ botEnabled: s.enabled }));
-        render(s);
+      const d = await chrome.storage.local.get('tevi_cs_secrets');
+      const sec = d.tevi_cs_secrets || {};
+      hasAiKey = !!(sec.aiKey);
+      el.aiKey.textContent = hasAiKey ? (sec.aiKey.substring(0, 12) + '...') : '❌ Missing';
+      el.aiKey.style.color = hasAiKey ? '#00cc6a' : '#ff4757';
+      if (hasAiKey) {
+        el.aiKeyIn.value = sec.aiKey;
+        el.hmacIn.value = sec.hmacSecret || '';
       }
     } catch {}
 
-    // Sniff counter
     try {
-      chrome.storage.local.get('tevi_sniff', d => {
-        const n = (d['tevi_sniff'] || []).length;
-        el.sniff.textContent = n > 0 ? `${n} calls` : '—';
-      });
+      const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' });
+      if (s) { el.toggle.checked = s.enabled; render(s); }
     } catch {}
   }
 
   el.toggle.addEventListener('change', async () => {
     const enabled = el.toggle.checked;
-    localStorage.setItem('tevi_cs_popup', JSON.stringify({ botEnabled: enabled }));
-    render({ enabled, hasToken: true, result: {}, activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5 });
+    render({ enabled, hasToken: true, result: {}, activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5, meta: {} });
     try { await chrome.runtime.sendMessage({ type: 'TOGGLE', enabled }); } catch {}
+  });
+
+  // Show secrets panel
+  $('secBlock').querySelector('.opn') || null;
+  document.getElementById('closeSec').addEventListener('click', () => {
+    el.secBlock.classList.remove('sh');
+  });
+
+  // Allow opening secrets from aiKey display
+  el.aiKey.style.cursor = 'pointer';
+  el.aiKey.addEventListener('click', () => {
+    el.secBlock.classList.toggle('sh');
+  });
+
+  el.saveBtn.addEventListener('click', async () => {
+    const aiKey = el.aiKeyIn.value.trim();
+    const hmac = el.hmacIn.value.trim();
+    if (!aiKey) { el.saveMsg.textContent = '⚠️ AI key required'; el.saveMsg.style.color = '#ff4757'; return; }
+    el.saveMsg.textContent = 'Saving...'; el.saveMsg.style.color = '#888';
+    const secrets = { aiKey, hmacSecret: hmac || 'PRDKqnSNCKrMDF9hAt0PSJ6' };
+    try {
+      await chrome.runtime.sendMessage({ type: 'SET_SECRETS', secrets });
+      hasAiKey = true;
+      el.aiKey.textContent = aiKey.substring(0, 12) + '...';
+      el.aiKey.style.color = '#00cc6a';
+      el.saveMsg.textContent = '✅ Saved!'; el.saveMsg.style.color = '#00cc6a';
+      setTimeout(() => { el.secBlock.classList.remove('sh'); el.saveMsg.textContent = ''; }, 1500);
+    } catch (e) {
+      el.saveMsg.textContent = '❌ Error: ' + e.message; el.saveMsg.style.color = '#ff4757';
+    }
   });
 
   load();
