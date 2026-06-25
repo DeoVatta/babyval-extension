@@ -420,16 +420,35 @@ async function getTeviTab() {
 
 // ── NAVIGATE TO CONV ─────────────────────────────────────────────────────
 async function navigateToConv(tabId, slug) {
-  const url = `https://tevi.com/@${slug}/messages`;
-  await chrome.tabs.update(tabId, { url, active: true });
-  // Wait for navigation + page ready
+  const targetUrl = `https://tevi.com/@${slug}/messages`;
+
+  // Re-inject CS if tab is already on the right URL (CS not yet loaded)
+  const current = await chrome.tabs.sendMessage(tabId, { type: 'PING' }).catch(() => null);
+  if (current?.ok) return true; // already ready
+
+  // Check if already navigated — if so, re-inject CS
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    if (tab.url && (tab.url.includes(`/@${slug}/messages`) || tab.url.endsWith(`/@${slug}`))) {
+      await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
+      await sleep(2000);
+    }
+  } catch {}
+
+  await chrome.tabs.update(tabId, { url: targetUrl, active: true });
   await sleep(2000);
-  const ready = await waitForPageReady(tabId, slug, 12000);
+
+  // Try PING — if no response, try re-inject
+  let ready = await waitForPageReady(tabId, slug, 8000);
   if (!ready) {
-    // Give extra time for slow connections
-    await sleep(5000);
+    try {
+      await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
+      await sleep(2000);
+      ready = await waitForPageReady(tabId, slug, 8000);
+    } catch {}
   }
-  return waitForPageReady(tabId, slug, 8000);
+
+  return ready;
 }
 
 // ── PROCESS ONE CONVERSATION ─────────────────────────────────────────────
@@ -438,7 +457,7 @@ async function processOneConv(conv, state, cfg, tab) {
   const rcv     = conv.recipient || {};
   const msg     = conv.latest_message || {};
   const text    = msg.text || '';
-  const slug    = rcv.channel_slug || '?';
+  const slug    = rcv.channel_slug || convId || '?';
   const isSub   = rcv.is_my_subscriber === true;
   const meta    = state.convMeta[convId] || {};
   const stage   = meta.stage || 'new';
@@ -484,7 +503,7 @@ async function processOneConv(conv, state, cfg, tab) {
 
   // ── STAGE: new ─────────────────────────────────────────────────────
   if (stage === 'new') {
-    const greeting = `Sukii. Informan Baby Val.\nChat langsung: membership Tevi.\nVCS: babyval.com`;
+    const greeting = `Halo aku Sukii, AI Assistant-nya Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\nKalau mau VCS bisa bayar di babyval.com`;
     signalNewMessage(`Hai @${slug}!`, slug);
     const sent = await domSendWithConfirm(tabId, greeting, slug);
     if (sent) {
@@ -577,7 +596,7 @@ async function processOneConv(conv, state, cfg, tab) {
 
     let replyText;
     if (newTurns > maxTurns) {
-      const greeting = `Sukii. Informan Baby Val.\nChat langsung: membership Tevi.\nVCS: babyval.com`;
+      const greeting = `Halo aku Sukii, AI Assistant-nya Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\nKalau mau VCS bisa bayar di babyval.com`;
       replyText = greeting;
       signalNewMessage(`Loop @${slug}`, slug);
     } else {
@@ -868,7 +887,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
 // ── STARTUP ─────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.7.0 — queue mode, page-ready guard, send-confirm');
+  log('[SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback');
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });

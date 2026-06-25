@@ -84,9 +84,9 @@ Process ONE at a time:
 ## Greeting
 
 ```
-Sukii. Informan Baby Val.
-Chat langsung: membership Tevi.
-VCS: babyval.com
+Halo aku Sukii, AI Assistant-nya Baby Val 💕
+Kalau mau Chat sama Baby Val, membership dulu ya di Tevi
+Kalau mau VCS bisa bayar di babyval.com
 ```
 
 ## Page-Ready Guard (v0.7.0)
@@ -142,6 +142,12 @@ Pilih: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
 Aktif: **17:00 - 05:00 WIB**
 
 ## Changelog
+
+### v0.7.1 — 2026-06-26
+- **Fixed send button blocklist**: added get-star/buy/donate/payment CTA blocklist — wrong button was triggering get-star redirect
+- **Fixed greeting template**: now exactly `Halo aku Sukii, AI Assistant-nya Baby Val 💕...`
+- **Slug fallback**: use convId when channel_slug missing (prevents undefined URL)
+- **Improved navigateToConv**: re-injects CS if PING fails after navigation
 
 ### v0.7.0 — 2026-06-26
 - **Queue mode**: process ONE conv at a time — no more tab collision with 100 convs

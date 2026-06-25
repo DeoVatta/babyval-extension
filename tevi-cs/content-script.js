@@ -43,13 +43,29 @@
   }
 
   function findSendBtn() {
-    const sels = ['button[type="submit"]','button[aria-label*="Kirim" i]','button[aria-label*="Send" i]',
-      'button:has(svg[data-icon="paper-plane"])', 'button:has(svg[data-icon="send"])', 'button'];
+    const BLOCKLIST = ['get-star','buy','purchase','donate','tip','payment','bayar','langganan','subscribe','premium','upgrade'];
+    const sels = [
+      'button[aria-label*="Kirim" i]',
+      'button[aria-label*="Send" i]',
+      'button:has(svg[data-icon="paper-plane"])',
+      'button:has(svg[data-icon="send"])',
+    ];
     for (const s of sels) {
       const els = document.querySelectorAll(s);
       for (const el of els) {
-        if (isVisible(el) && el.textContent.trim().length < 30) return el;
+        if (isVisible(el)) return el;
       }
+    }
+    // Generic button as last resort — check it's not a CTA/payment button
+    const btns = document.querySelectorAll('button');
+    for (const el of btns) {
+      if (!isVisible(el)) continue;
+      const txt = (el.textContent || '').toLowerCase();
+      const title = (el.title || '').toLowerCase();
+      if (BLOCKLIST.some(k => txt.includes(k) || title.includes(k))) continue;
+      if (el.textContent.trim().length > 25) continue;
+      if (el.querySelector('svg') && !txt.includes('send') && !txt.includes('kirim')) continue;
+      return el;
     }
     return null;
   }

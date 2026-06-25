@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.7.0",
-  "description": "Tevi CS Bot v0.7.0 — queue mode, page-ready guard, send-confirm, Sukii-last-reply",
+  "version": "0.7.1",
+  "description": "Tevi CS Bot v0.7.1 — fixed send button blocklist, correct greeting template, slug fallback",
   "author": "Devata",
   "permissions": [
     "alarms",
