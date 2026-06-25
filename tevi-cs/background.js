@@ -133,7 +133,7 @@ function getDefaultConfig() {
   return {
     version: 1,
     persona: { name: 'Sukii', owner: 'Baby Val', tone: 'friendly' },
-    behavior: { introWaitMinutes: 180, csMaxTurns: 3, idleMinutes: 30, readAfterReply: true },
+    behavior: { csMaxTurns: 3, idleMinutes: 30, readAfterReply: true },
     rules: getDefaultRules(),
   };
 }
@@ -404,7 +404,7 @@ async function poll() {
   let processed = 0, replied = 0, ignored = 0;
   const maxTurns   = cfg.behavior?.csMaxTurns || 3;
   const idleMs    = (cfg.behavior?.idleMinutes || 30) * 60 * 1000;
-  const introWait = (cfg.behavior?.introWaitMinutes || 180) * 60 * 1000;
+  const introWait = 0; // disabled — no 3h wait, loop greeting on max turns
   const rules     = cfg.rules || [];
   const greeting = `Sukii. Informan Baby Val.\nChat langsung: membership Tevi.\nVCS: babyval.com`;
 
@@ -459,17 +459,15 @@ async function poll() {
   }
 
   // ── CHECK TRACKED CONVS (after greeting sent, conv drops from unread list) ──
-  // Also check intro_sent/cs convs that are no longer in unread list
   const tracked = Object.entries(state.convMeta)
     .filter(([id, m]) => !m.done && (m.stage === 'intro_sent' || m.stage === 'cs'))
     .map(([id, m]) => ({ convId: id, ...m }));
 
   for (const tc of tracked) {
-    const { convId, stage, lastText, lastReply } = tc;
+    const { convId, stage, lastText } = tc;
     // Skip if already in this poll's unread convs
     if (convs.find(c => c.id === convId)) continue;
 
-    // Fetch actual messages
     const messages = await getMessages(convId);
     if (!messages || messages.length === 0) continue;
 
@@ -478,12 +476,9 @@ async function poll() {
     const latestSenderUid = latest?.sender?.uid || '';
     const latestTime = latest?.created_at ? Number(latest.created_at) * 1000 : Date.now();
 
-    // Skip if no new message
     if (latestText === lastText || !latestText) continue;
 
-    // Check who sent it
     if (latestSenderUid === MY_UID) {
-      // Sukii's own message — update timestamp
       state.convMeta[convId] = { ...state.convMeta[convId], sukiiLastReplyAt: latestTime };
       continue;
     }
@@ -491,72 +486,21 @@ async function poll() {
     // New user message in tracked conv
     log(`  [tracked @${convId}] user replied: "${latestText.substring(0,30)}"`);
     const slug = latest?.sender?.username || latest?.sender?.slug || convId;
-    const msg = latest;
-
-    // Same processing as cs stage for this message
     const newMeta = { ...state.convMeta[convId], userLastMsgAt: latestTime, lastText: latestText };
     state.convMeta[convId] = newMeta;
 
-    if (shouldSkipReply(newMeta, latestTime)) {
-      log(`  @${slug} [skip] Sukii was last replier`);
-      continue;
-    }
+    if (shouldSkipReply(newMeta, latestTime)) { log(`  @${slug} [skip] Sukii was last replier`); continue; }
 
-    if (stage === 'intro_sent') {
-      // 3h wait check
-      const introElapsed = Date.now() - (newMeta.introAt || 0);
-      if (introElapsed < introWait) continue; // Still waiting, ignore
-
-      // Time expired, user replied → go to CS
-      const rule = findReply(latestText, rules);
-      let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || '', slug);
-      replyText = await aiEnrich(replyText, latestText);
-      signalTyping(replyText, slug);
-      const sent = await domSend(replyText, slug);
-      clearOverlay();
-      if (sent) {
-        state.convMeta[convId] = {
-          ...newMeta,
-          stage: 'cs',
-          turns: 1,
-          lastReply: replyText,
-          sukiiLastReplyAt: Date.now(),
-        };
-        replied++;
-      }
-    } else if (stage === 'cs') {
-      // Normal CS processing
-      if (isPaymentProof(msg)) {
-        state.convMeta[convId] = { ...newMeta, done: true, paymentConfirmedAt: Date.now() };
-        continue;
-      }
-      const newTurns = (newMeta.turns || 0) + 1;
-      if (newTurns > maxTurns) {
-        const sent = await domSend(greeting, slug);
-        if (sent) {
-          state.convMeta[convId] = {
-            ...newMeta, stage: 'intro_sent', introAt: Date.now(),
-            turns: 0, lastReply: greeting, sukiiLastReplyAt: Date.now(),
-          };
-          replied++;
-        }
-        continue;
-      }
-      const rule = findReply(latestText, rules);
-      let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || '', slug);
-      replyText = await aiEnrich(replyText, latestText);
-      signalTyping(replyText, slug);
-      const sent = await domSend(replyText, slug);
-      clearOverlay();
-      if (sent) {
-        state.convMeta[convId] = {
-          ...newMeta,
-          turns: newTurns,
-          lastReply: replyText,
-          sukiiLastReplyAt: Date.now(),
-        };
-        replied++;
-      }
+    // User replied → go to CS mode immediately
+    const rule = findReply(latestText, rules);
+    let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || '', slug);
+    replyText = await aiEnrich(replyText, latestText);
+    signalTyping(replyText, slug);
+    const sent = await domSend(replyText, slug);
+    clearOverlay();
+    if (sent) {
+      state.convMeta[convId] = { ...newMeta, stage: 'cs', turns: 1, lastReply: replyText, sukiiLastReplyAt: Date.now() };
+      replied++;
     }
   }
 
@@ -611,10 +555,7 @@ async function poll() {
 
     // ── STAGE: intro_sent ─────────────────────────────────────────────
     if (stage === 'intro_sent') {
-      const elapsed = Date.now() - (meta.introAt || 0);
-      const waitExpired = elapsed >= introWait;
-
-      // Payment proof in intro_sent → silent end, mark payment time
+      // Payment proof in intro_sent → silent end
       if (text && isPaymentProof(msg)) {
         log(`  @${slug} [intro→done] payment proof — silent end`);
         state.convMeta[convId] = { ...meta, done: true, lastText: text, paymentConfirmedAt: Date.now() };
@@ -623,7 +564,7 @@ async function poll() {
       }
 
       if (text && text !== meta.lastText) {
-        // User replied! → CS mode, Sukii replied (greeting) so Sukii is last
+        // User replied → go to CS mode immediately
         log(`  @${slug} [intro→CS] replied: "${text.substring(0,30)}"`);
         const rule = findReply(text, rules);
         let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
@@ -638,18 +579,13 @@ async function poll() {
             turns: 1,
             lastText: text,
             lastReply: replyText,
-            introAt: meta.introAt,
             sukiiLastReplyAt: Date.now(),
             userLastMsgAt: msgTime,
           };
           replied++;
         } else { ignored++; }
-      } else if (waitExpired) {
-        log(`  @${slug} [intro→done] timeout (${Math.round(elapsed/60000)}m)`);
-        state.convMeta[convId] = { ...meta, stage: 'cs', done: true };
-        ignored++;
       } else {
-        logD(`  @${slug} [intro_sent] waiting (${Math.round(elapsed/60000)}m/${introWait/60000}m)`);
+        logD(`  @${slug} [intro_sent] waiting for reply...`);
         ignored++;
       }
       continue;
@@ -862,7 +798,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
 // ── STARTUP ───────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule');
+  log('[SW] Tevi CS Bot v0.6.2 — no 3h wait, loop greeting on max turns, Sukii-last-reply');
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
