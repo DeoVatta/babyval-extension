@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.9.11",
-  "description": "Tevi CS Bot v0.9.11 — Unified: sniffer merged into CS, findConvItems anchor-first, universal API capture",
+  "version": "0.9.12",
+  "description": "Tevi CS Bot v0.9.12 — DIRECT API mode: no DOM, no tabs. Uses wapi.flowstreamx.com Messenger v2 API + HMAC verify signature + Olagon AI",
   "author": "Devata",
   "permissions": [
     "alarms",

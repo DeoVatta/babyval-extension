@@ -24,7 +24,7 @@ Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Suki
 
 ```
 tevi-cs/
-├── manifest.json        # v0.9.11 — version + permissions
+├── manifest.json        # v0.9.12 — version + permissions
 ├── background.js        # Service Worker — scan, slot, edge function call
 ├── content-script.js    # Unified: DOM scanner, message reader, intercept capture, SNIFER
 ├── overlay.js           # Cat toggle panel
@@ -301,41 +301,40 @@ Kalau mau VCS bisa bayar di babyval.com
 
 ---
 
-## Status v0.9.11 (2026-06-26)
+## Status v0.9.12 (2026-06-26)
 
-### Current State
+### BREAKTHROUGH: DIRECT API MODE (from babyval-autopilot discovery)
 
-**Conv Detection:** ✅ DOM scan menemukan 20 items. **Slug extraction** masih dalam testing.
+Extension now uses **direct wapi.flowstreamx.com API** — no DOM scraping, no tab navigation.
 
-**Sniffer:** ✅ Unified ke content-script.js — auto-runs di startup, capture semua API call.
+**Architecture (v0.9.12):**
+- Auth: Firebase anonymous signUp → wapi token exchange (no login needed)
+- Conv detection: `GET /messenger/v2/rpc/get_recent_conversations?filter=UNREAD` → returns `channel_slug` + `is_my_subscriber`
+- Send DM: `POST /messenger/v2/message/` with `{ conversation_id, type, parser, text }`
+- HMAC verify: `HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+ts)`
+- No tabs, no DOM, no content script needed for core function
 
-**API Send:** ✅ Fungsi ada. Butuh manual DM send untuk capture pattern.
-
-### v0.9.11 Fixes
-- **Sniffer merged into content-script.js** — unified system, tidak ada file terpisah
-- All versions synced: manifest, BG, CS
-- Sniffer reports to log-server (`[SNIFFER]`) + Supabase
+### v0.9.12 Fixes
+- **Full rewrite**: background.js now uses direct API (Web Crypto HMAC + fetch)
+- Messenger v2 API integrated (discovered via babyval-autopilot tevi-dm-sniff.json)
+- Anonymous auth: Firebase → wapi token exchange
+- Service Worker native: `crypto.subtle` for HMAC, `fetch` for HTTP (no Node.js)
 
 ### Changelog
+
+#### v0.9.12 — 2026-06-26
+- Full rewrite: DIRECT API mode (no DOM, no tabs)
+- `GET /messenger/v2/rpc/get_recent_conversations` → unread convs with slug + subscriber status
+- `POST /messenger/v2/message/` → send DM
+- `POST /messenger/v2/conversation/{id}/read/` → mark read
+- HMAC verify via Web Crypto API (Service Worker compatible)
+- Anonymous Firebase auth → wapi token exchange
+- Token stored in chrome.storage.local, auto-refresh
 
 #### v0.9.11 — 2026-06-26
 - Unify sniffer into content-script.js (single system)
 - Remove standalone `sniffer.js` from manifest
 - Sync all file versions to v0.9.11
-
-#### v0.9.10 — 2026-06-26
-- Fix `findConvItems()` priority (anchor href first)
-- Universal API domain capture
-- Relative URL regex for slug extraction
-
-#### v0.9 — 2026-06-26 (PROVEN WORK)
-- API-based send (tabless) via intercepted pattern
-- `INTERCEPT_SEND` capture flow
-- `apiSend()` replay function
-
-#### v0.8 — 2026-06-26 (PROVEN WORK)
-- DOM conv detection via anchor href
-- `scanConvs()` dengan check icon + unread badge
 
 ---
 
@@ -468,7 +467,7 @@ chrome.storage.local.get('tevi_api_catalog', r => console.log(r));
 
 | Version | Date | Status | Notes |
 |---|---|---|---|
-| v0.9.10 | 2026-06-26 | Dev | Universal capture, relative URL fix |
+| v0.9.12 | 2026-06-26 | **BREAKTHROUGH** | Direct API mode: wapi Messenger v2 + HMAC + Firebase auth |
 | v0.9.9 | 2026-06-26 | Dev | Universal sniffer |
 | v0.9.8 | 2026-06-26 | Dev | Scan debounce, debug logs |
 | v0.9 | 2026-06-26 | **PROVEN** | API send tabless, INTERCEPT_SEND |

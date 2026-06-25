@@ -1,5 +1,5 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.9.11
+ * CONTENT SCRIPT — Tevi CS Bot v0.9.12
  *
  * Unified system handles:
  * - SCAN_CONVS: find all convs needing reply (no ✓/✓✓ icon = user last)
@@ -650,7 +650,7 @@
     }
   });
 
-  l('v0.9.11 active — ' + location.href);
+  l('v0.9.12 active — ' + location.href);
 
   // ═══════════════════════════════════════════════════════════════
   // SNIFFER — Universal API Discovery (all domains)
