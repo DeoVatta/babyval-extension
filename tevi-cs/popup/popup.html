@@ -133,7 +133,7 @@ body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; fon
 
 <div class="hd">
   <div class="ic">🤖</div>
-  <div class="ti"><h1>Tevi CS Bot</h1><div class="v">v0.9.1</div></div>
+  <div class="ti"><h1>Tevi CS Bot</h1><div class="v">v0.9.7</div></div>
   <div class="bd" id="topBd">OFF</div>
 </div>
 
@@ -171,6 +171,7 @@ body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; fon
     <div class="tab" data-tab="beh">Behavior</div>
     <div class="tab" data-tab="persona">Persona</div>
     <div class="tab" data-tab="secrets">Keys</div>
+    <div class="tab" data-tab="api">API</div>
   </div>
 
   <!-- RULES TAB -->
@@ -239,9 +240,29 @@ body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; fon
       <div class="sec-msg" id="saveMsg"></div>
     </div>
   </div>
+
+  <!-- API TAB -->
+  <div class="tab-content" id="tab-api">
+    <div class="shd">Discovered Endpoints</div>
+    <div id="apiCatalog" style="font-size:9px;color:#555;margin-bottom:6px">Loading...</div>
+    <div id="apiList" style="margin-bottom:10px"></div>
+    <div class="shd">Send Pattern</div>
+    <div id="sendPatternStatus" style="font-size:9px;color:#555;margin-bottom:6px">Not captured yet — kirim DM manual</div>
+    <div id="patternDetail" style="display:none;background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;padding:8px;font-size:9px;margin-bottom:8px">
+      <div style="margin-bottom:4px"><span style="color:#555">URL:</span> <span id="patUrl" style="color:#aaa;word-break:break-all"></span></div>
+      <div style="margin-bottom:4px"><span style="color:#555">Method:</span> <span id="patMethod" style="color:#00cc6a"></span></div>
+      <div><span style="color:#555">Body:</span> <span id="patBody" style="color:#ffa502;word-break:break-all"></span></div>
+    </div>
+    <div style="font-size:9px;color:#555;background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;padding:8px;line-height:1.6">
+      <span style="color:#00cc6a">①</span> Buka Tevi.com/messages<br>
+      <span style="color:#00cc6a">②</span> Kirim DM manual ke seseorang<br>
+      <span style="color:#00cc6a">③</span> Endpoint ter-capture otomatis<br>
+      <span style="color:#00cc6a">④</span> Check tab API di popup ini
+    </div>
+  </div>
 </div>
 
-<div class="ft">24/7 Active • API + DOM scan • v0.9.1</div>
+<div class="ft">24/7 Active • API + DOM scan • v0.9.7</div>
 
 <script>
 (function() {
@@ -459,6 +480,59 @@ body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; fon
       if (ack?.newValue) {
         $('toggle').checked = ack.newValue.enabled;
         renderStatus({ enabled: ack.newValue.enabled, hasToken: hasSecrets, result: {}, activeHours: true, config: {} });
+      }
+      // Reload API catalog when storage changes
+      if (changes.tevi_api_catalog) { loadApiCatalog(); }
+      if (changes.apiSendPattern) { loadSendPattern(); }
+    });
+
+    // Load API catalog
+    loadApiCatalog();
+    loadSendPattern();
+  }
+
+  // ── API CATALOG ──────────────────────────────────────────────────
+  function loadApiCatalog() {
+    chrome.storage.local.get(['tevi_api_catalog', 'apiSendPattern'], d => {
+      const cat = d.tevi_api_catalog;
+      const eps = cat?.endpoints || {};
+      const count = Object.keys(eps).length;
+      $('apiCatalog').textContent = count + ' endpoint(s) discovered';
+      $('apiCatalog').style.color = count > 0 ? '#00cc6a' : '#555';
+
+      if (count === 0) {
+        $('apiList').innerHTML = '<div style="font-size:9px;color:#444;text-align:center;padding:8px">Belum ada. Buka Tevi dan gunakan app.</div>';
+        return;
+      }
+
+      const rows = Object.entries(eps)
+        .sort((a, b) => b[1].lastSeen - a[1].lastSeen)
+        .map(([key, ep]) => {
+          const path = ep.path || key;
+          const short = path.length > 40 ? path.substring(0, 37) + '...' : path;
+          return '<div style="background:#0f0f1a;border:1px solid #2a2a4a;border-radius:6px;padding:6px 8px;margin-bottom:4px">' +
+            '<div style="display:flex;gap:6px;align-items:center">' +
+            '<span style="font-size:8px;font-weight:700;color:#00cc6a;min-width:30px">' + ep.method + '</span>' +
+            '<span style="font-size:9px;color:#aaa;flex:1;word-break:break-all">' + short + '</span>' +
+            '<span style="font-size:8px;color:#555">' + ep.seenCount + 'x</span>' +
+            '</div>' +
+            '<div style="font-size:8px;color:#444;margin-top:2px">' + ep.lastStatus || '—' + ' · seen ' + new Date(ep.lastSeen).toLocaleTimeString() + '</div>' +
+            '</div>';
+        });
+      $('apiList').innerHTML = rows.join('');
+    });
+  }
+
+  function loadSendPattern() {
+    chrome.storage.local.get(['apiSendPattern', 'tevi_api_catalog'], d => {
+      const p = d.apiSendPattern;
+      if (p) {
+        $('sendPatternStatus').textContent = '✅ Captured';
+        $('sendPatternStatus').style.color = '#00cc6a';
+        $('patternDetail').style.display = 'block';
+        $('patUrl').textContent = (p.url || '').replace('https://wapi.flowstreamx.com', '');
+        $('patMethod').textContent = p.method || 'POST';
+        $('patBody').textContent = JSON.stringify(p.bodyFields || {}).substring(0, 200);
       }
     });
   }

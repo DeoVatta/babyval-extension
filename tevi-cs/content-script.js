@@ -1,5 +1,5 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.9.1
+ * CONTENT SCRIPT — Tevi CS Bot v0.9.3
  *
  * Handles:
  * - SCAN_CONVS: find all convs needing reply (no ✓/✓✓ icon = user last)
@@ -149,20 +149,18 @@
 
   function extractConvSlug(containerEl) {
     const el = containerEl.el || containerEl;
-    // From anchor href
-    const link = el.closest('a') || el.querySelector('a[href*="/@"]');
+    // Priority 1: From anchor href (MOST RELIABLE)
+    const link = el.closest('a[href*="/@"]') || el.querySelector('a[href*="/@"]');
     if (link && link.href) {
-      const m = link.href.match(/tevi\.com\/@([^/]+)/);
+      const m = link.href.match(/tevi\.com\/@([^/?#]+)/);
       if (m && m[1]) return m[1];
     }
-    // From data attribute
-    const dataSlug = el.dataset.username || el.dataset.slug || el.dataset.name;
-    if (dataSlug) return dataSlug;
-    // From text content
-    const text = el.textContent || '';
-    const m = text.match(/@([a-zA-Z0-9_]{2,20})/);
-    if (m) return m[1];
-    return null;
+    // Priority 2: From data attribute
+    const dataSlug = el.dataset.username || el.dataset.slug || el.dataset.name || el.dataset.convId;
+    if (dataSlug && dataSlug.length < 50 && dataSlug.match(/^[a-zA-Z0-9_]+$/)) {
+      return dataSlug;
+    }
+    return null; // Don't guess from text content
   }
 
   function getLastMsgPreview(containerEl) {
@@ -632,5 +630,5 @@
     }
   });
 
-  l('v0.9.1 active — ' + location.href);
+  l('v0.9.3 active — ' + location.href);
 })();

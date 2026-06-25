@@ -1,16 +1,5 @@
 {
-  "name": "tevi-cs-log-server",
-  "version": "0.1.0",
-  "description": "Local log server for Tevi CS extension diagnostic",
-  "main": "log-server.js",
-  "scripts": {
-    "start": "node log-server.js",
-    "dev": "node log-server.js",
-    "watch": "node auto-reloader.js",
-    "reload": "node auto-reloader.js"
-  },
-  "dependencies": {
-    "chokidar": "^5.0.0",
-    "ws": "^8.21.0"
+  "devDependencies": {
+    "pg": "^8.22.0"
   }
 }
