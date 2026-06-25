@@ -144,6 +144,8 @@ Aktif: **17:00 - 05:00 WIB**
 ## Changelog
 
 ### v0.7.2 — 2026-06-26
+- **Fixed tab staleness**: `navigateToConv` and `domSendWithConfirm` now get fresh tab every time — no more `[ALARM] No tab with id` errors
+- **Slow laptop waits**: navigate wait=5s, inject wait=4s, refresh wait=5s, PING poll=1s (up from 500ms)
 - **Slow typing**: 30-70ms/char with punctuation pauses (space=50-90ms, period=80-140ms, comma=60-100ms)
 - **Pre-type delay**: 1.5s wait before typing starts
 - **Post-type delay**: 1.2s pause after finishing typing, before clicking send

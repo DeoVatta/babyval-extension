@@ -1,100 +1,3 @@
-[2026-06-25T17:39:24.973Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:39:35.198Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:39:37.185Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:39:37.200Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:39:43.456Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
-[2026-06-25T17:39:43.477Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
-[2026-06-25T17:39:43.493Z] [BG] [INFO] [SW] Was enabled — poll scheduled
-[2026-06-25T17:39:43.509Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:39:43.642Z] [BG] [INFO] [API] ✅ 3 unread
-[2026-06-25T17:39:43.653Z] [BG] [INFO] [POLL] 3 unread — active=true
-[2026-06-25T17:39:43.737Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (28m/180m)
-[2026-06-25T17:39:43.746Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (31m/180m)
-[2026-06-25T17:39:43.755Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (42m/180m)
-[2026-06-25T17:39:43.786Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (262ms)
-[2026-06-25T17:39:45.488Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:39:45.629Z] [BG] [INFO] [API] ✅ 3 unread
-[2026-06-25T17:39:45.637Z] [BG] [INFO] [POLL] 3 unread — active=true
-[2026-06-25T17:39:45.716Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (28m/180m)
-[2026-06-25T17:39:45.723Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (31m/180m)
-[2026-06-25T17:39:45.729Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (42m/180m)
-[2026-06-25T17:39:45.739Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (228ms)
-[2026-06-25T17:39:47.339Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:39:48.129Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:39:48.608Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:39:58.134Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:39:59.170Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:40:00.036Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:40:09.221Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:40:09.883Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:40:10.003Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:40:13.536Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:40:13.642Z] [BG] [INFO] [API] ✅ 3 unread
-[2026-06-25T17:40:13.691Z] [BG] [INFO] [POLL] 3 unread — active=true
-[2026-06-25T17:40:13.776Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (28m/180m)
-[2026-06-25T17:40:13.788Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (32m/180m)
-[2026-06-25T17:40:13.802Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (42m/180m)
-[2026-06-25T17:40:13.840Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (271ms)
-[2026-06-25T17:40:19.942Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:40:20.916Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:40:21.031Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:40:30.925Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:40:31.577Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:40:31.602Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:40:41.623Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:40:42.235Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:40:42.670Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:40:52.276Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:40:53.578Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:40:54.738Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:41:03.710Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:41:07.368Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:41:12.180Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:41:17.458Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:41:18.763Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:41:18.884Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:41:28.815Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:41:30.366Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:41:32.683Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:41:40.484Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:41:42.772Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:41:43.121Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:41:52.943Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:41:55.193Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:41:56.171Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:42:04.719Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:42:08.095Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:42:09.750Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:42:18.326Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:42:20.122Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:42:20.240Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:42:36.989Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:42:41.019Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:42:41.195Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:42:49.571Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:42:51.322Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:42:51.832Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:43:01.545Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:43:03.366Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:43:03.810Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:43:13.576Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:43:14.737Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:43:15.415Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:43:25.360Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:43:31.053Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:43:31.671Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:43:42.576Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:43:55.239Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:43:55.589Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:44:05.244Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:44:06.026Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:44:06.329Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:44:16.098Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:44:17.463Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:44:17.764Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:44:27.513Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:44:28.212Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:44:28.580Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
 [2026-06-25T17:44:38.262Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.2 — no 3h wait, loop greeting on max turns, Sukii-last-reply
 [2026-06-25T17:44:39.815Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
 [2026-06-25T17:44:40.155Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
@@ -1998,3 +1901,100 @@ Chat langsung:..."
 [2026-06-25T18:08:41.758Z] [BG] [INFO] [API] 100 total convs
 [2026-06-25T18:08:41.778Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
 [2026-06-25T18:08:41.789Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:11:27.248Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:11:30.384Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:11:33.099Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:11:33.117Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:11:33.138Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:11:43.909Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:11:54.091Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:11:54.105Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:11:54.117Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:12:00.972Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:12:01.000Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:12:01.018Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:12:09.104Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:12:13.983Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:12:21.531Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:12:24.155Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:12:24.175Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:12:24.190Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:12:31.769Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:12:31.784Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:12:31.798Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:12:39.174Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:12:46.782Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:12:51.394Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:12:59.121Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:13:02.162Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:13:02.174Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:13:02.191Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:13:09.271Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:13:09.285Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:13:09.297Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:13:17.177Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:13:24.295Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:13:29.663Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:13:37.085Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:13:41.149Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:13:41.161Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:13:41.172Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:13:47.196Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:13:47.206Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:13:47.219Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:13:56.155Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:14:02.211Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:14:16.232Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:14:26.394Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:14:27.529Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:14:27.549Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:14:27.565Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:14:36.755Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:14:36.768Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:14:36.783Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:14:42.554Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:14:51.771Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:14:55.144Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:01.307Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:15:01.364Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:15:01.398Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:15:05.034Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:10.699Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:11.061Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:15:11.105Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:15:19.699Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:19.712Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:15:19.726Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:19.743Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:15:26.120Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:15:29.762Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:29.791Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:15:29.818Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:15:34.707Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:15:40.301Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:44.785Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:15:52.117Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:52.133Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:15:52.148Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:15:52.164Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:15:59.787Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:02.144Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:02.166Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:16:02.186Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:16:07.140Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:16:10.223Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:10.295Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:16:10.321Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:16:17.155Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:16:19.276Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:25.328Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:16:29.371Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:30.292Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:30.314Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:16:30.368Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:16:41.190Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:41.723Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @kempong88
+[2026-06-25T18:16:41.760Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:16:41.820Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:16:45.978Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:16:48.102Z] [BG] [ERROR] [ALARM] Tabs cannot be edited right now (user may be dragging a tab).

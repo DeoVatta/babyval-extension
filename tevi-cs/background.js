@@ -1,7 +1,7 @@
 /**
- * BACKGROUND — Service Worker Tevi CS Bot v0.7.0
+ * BACKGROUND — Service Worker Tevi CS Bot v0.7.2
  * Conv queue: process ONE conversation at a time
- * Page-load guard: wait for page ready before typing
+ * Page-load guard: wait for page ready before typing (slow laptop aware)
  * Send guard: confirm message sent before next task
  * Sukii must always be last replier
  */
@@ -198,22 +198,26 @@ async function aiEnrich(baseReply, message) {
 
 // ── PAGE LOAD DETECTION ──────────────────────────────────────────────────
 // Waits until content-script is ready on tevi tab
-async function waitForPageReady(tabId, slug, maxWaitMs = 15000) {
+async function waitForPageReady(tabId, slug, maxWaitMs = 20000) {
   const deadline = Date.now() + maxWaitMs;
   while (Date.now() < deadline) {
     try {
       const r = await chrome.tabs.sendMessage(tabId, { type: 'PING' });
       if (r?.ok) return true;
     } catch {}
-    await sleep(500);
+    await sleep(1000);
   }
   logD(`[WAIT] Page not ready after ${maxWaitMs}ms for @${slug}`);
   return false;
 }
 
 // ── SEND CONFIRMATION ────────────────────────────────────────────────────
-// Sends text to CS, waits for PENDING → SENT/FAILED signal from CS
-async function domSendWithConfirm(tabId, text, slug, maxWaitMs = 20000) {
+async function domSendWithConfirm(text, slug, maxWaitMs = 20000) {
+  // ALWAYS get fresh tab — tabId goes stale after navigation
+  const tab = await getTeviTab();
+  if (!tab) { logE('[SEND] No tevi tab'); return false; }
+  const tabId = tab.id;
+
   log(`[SEND] → @${slug}: "${text.substring(0, 40)}..."`);
 
   // Attempt 1: direct
@@ -222,10 +226,10 @@ async function domSendWithConfirm(tabId, text, slug, maxWaitMs = 20000) {
     if (r1?.ok) { log(`[SEND] ✅ @${slug} sent`); return true; }
   } catch (e) { logD(`[SEND] direct fail: ${e.message}`); }
 
-  // Attempt 2: inject CS + retry
+  // Attempt 2: inject CS + retry (slow laptop needs more time)
   try {
     await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
-    await sleep(1500);
+    await sleep(4000);
     const r2 = await chrome.tabs.sendMessage(tabId, { type: 'DOM_SEND', text, slug });
     if (r2?.ok) { log(`[SEND] ✅ @${slug} sent (after inject)`); return true; }
   } catch (e) { logD(`[SEND] inject fail: ${e.message}`); }
@@ -233,9 +237,9 @@ async function domSendWithConfirm(tabId, text, slug, maxWaitMs = 20000) {
   // Attempt 3: hard refresh + wait + retry
   try {
     await chrome.tabs.reload(tabId, { bypassCache: true });
-    await sleep(3000);
+    await sleep(5000);
     await chrome.tabs.update(tabId, { url: `https://tevi.com/@${slug}/messages` });
-    await sleep(3000);
+    await sleep(5000);
     const r3 = await chrome.tabs.sendMessage(tabId, { type: 'DOM_SEND', text, slug });
     if (r3?.ok) { log(`[SEND] ✅ @${slug} sent (after refresh)`); return true; }
   } catch (e) { logD(`[SEND] refresh fail: ${e.message}`); }
@@ -419,32 +423,36 @@ async function getTeviTab() {
 }
 
 // ── NAVIGATE TO CONV ─────────────────────────────────────────────────────
-async function navigateToConv(tabId, slug) {
+async function navigateToConv(slug) {
+  // ALWAYS get fresh tab — tabId goes stale after navigation
+  const tab = await getTeviTab();
+  if (!tab) return false;
+  const tabId = tab.id;
+
   const targetUrl = `https://tevi.com/@${slug}/messages`;
 
-  // Re-inject CS if tab is already on the right URL (CS not yet loaded)
-  const current = await chrome.tabs.sendMessage(tabId, { type: 'PING' }).catch(() => null);
-  if (current?.ok) return true; // already ready
-
-  // Check if already navigated — if so, re-inject CS
+  // If already on correct URL and CS is ready, done
   try {
-    const tab = await chrome.tabs.get(tabId);
-    if (tab.url && (tab.url.includes(`/@${slug}/messages`) || tab.url.endsWith(`/@${slug}`))) {
-      await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
-      await sleep(2000);
-    }
+    const r = await chrome.tabs.sendMessage(tabId, { type: 'PING' });
+    if (r?.ok && r?.url?.includes(`/@${slug}`)) return true;
   } catch {}
 
-  await chrome.tabs.update(tabId, { url: targetUrl, active: true });
-  await sleep(2000);
+  // Navigate to target
+  try {
+    await chrome.tabs.update(tabId, { url: targetUrl, active: true });
+  } catch { return false; }
 
-  // Try PING — if no response, try re-inject
-  let ready = await waitForPageReady(tabId, slug, 8000);
+  // Wait for page to load — Tevi is heavy, slow laptop needs more time
+  // First: wait for tab URL to actually change
+  await sleep(5000);
+
+  // Second: try to get CS ready
+  let ready = await waitForPageReady(tabId, slug, 15000);
   if (!ready) {
     try {
       await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
-      await sleep(2000);
-      ready = await waitForPageReady(tabId, slug, 8000);
+      await sleep(3000);
+      ready = await waitForPageReady(tabId, slug, 15000);
     } catch {}
   }
 
@@ -452,7 +460,7 @@ async function navigateToConv(tabId, slug) {
 }
 
 // ── PROCESS ONE CONVERSATION ─────────────────────────────────────────────
-async function processOneConv(conv, state, cfg, tab) {
+async function processOneConv(conv, state, cfg) {
   const convId  = conv.id;
   const rcv     = conv.recipient || {};
   const msg     = conv.latest_message || {};
@@ -493,8 +501,7 @@ async function processOneConv(conv, state, cfg, tab) {
   }
 
   // ── Navigate to DM ─────────────────────────────────────────────────
-  const tabId = tab.id;
-  const ready = await navigateToConv(tabId, slug);
+  const ready = await navigateToConv(slug);
   if (!ready) {
     logE(`[QUEUE] Could not ready @${slug} — deferring`);
     releaseQueue(state);
@@ -505,7 +512,7 @@ async function processOneConv(conv, state, cfg, tab) {
   if (stage === 'new') {
     const greeting = `Halo aku Sukii, AI Assistant-nya Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\nKalau mau VCS bisa bayar di babyval.com`;
     signalNewMessage(`Hai @${slug}!`, slug);
-    const sent = await domSendWithConfirm(tabId, greeting, slug);
+    const sent = await domSendWithConfirm(greeting, slug);
     if (sent) {
       state.convMeta[convId] = {
         slug, stage: 'intro_sent', introAt: Date.now(),
@@ -542,7 +549,7 @@ async function processOneConv(conv, state, cfg, tab) {
     let replyText = fmtReply(rule?.reply || cfg.rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
     replyText = await aiEnrich(replyText, text);
     signalTyping(replyText, slug);
-    const sent = await domSendWithConfirm(tabId, replyText, slug);
+    const sent = await domSendWithConfirm(replyText, slug);
     clearOverlay();
     if (sent) {
       state.convMeta[convId] = {
@@ -606,7 +613,7 @@ async function processOneConv(conv, state, cfg, tab) {
       signalTyping(replyText, slug);
     }
 
-    const sent = await domSendWithConfirm(tabId, replyText, slug);
+    const sent = await domSendWithConfirm(replyText, slug);
     clearOverlay();
 
     if (sent) {
@@ -691,7 +698,7 @@ async function poll() {
     let replyText = fmtReply(rule?.reply || cfg.rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
     replyText = await aiEnrich(replyText, lText);
     signalTyping(replyText, slug);
-    const sent = await domSendWithConfirm(tab.id, replyText, slug);
+    const sent = await domSendWithConfirm(replyText, slug);
     clearOverlay();
     if (sent) {
       state.convMeta[tc.convId] = { ...newMeta, stage: 'cs', turns: 1, lastReply: replyText, sukiiLastReplyAt: Date.now() };
@@ -748,7 +755,7 @@ async function poll() {
     }
 
     log(`[QUEUE] Processing @${conv.recipient?.channel_slug || nextConvId} (${state.queue.length} remaining)`);
-    const result = await processOneConv(conv, state, cfg, tab);
+    const result = await processOneConv(conv, state, cfg);
     processed++;
 
     if (result.action === 'replied') replied++;
