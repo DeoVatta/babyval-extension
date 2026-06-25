@@ -169,7 +169,7 @@ edge://extensions/
 ### 3. Set AI Key
 Buka popup → tab **Keys** → masukkan AI key → **Save & Apply**
 
-AI key: `rk_live_a8622697bdd840cf450c792ad0ea102b2fd186a8bcbffab2`
+AI key: `<AI_KEY>` (simpan di popup Keys tab)
 
 ### 4. Capture API Send Pattern
 1. Buka tab Tevi.com/messages

@@ -1,0 +1,3 @@
+tevi-cs/supabase/functions/** linguist-generated=false
+tevi-cs/supabase/config.toml diff=false
+tevi-cs/.env* diff=eclint

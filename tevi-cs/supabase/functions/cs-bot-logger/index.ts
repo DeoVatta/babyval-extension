@@ -8,8 +8,7 @@ const OLAGON_KEY = Deno.env.get("OLAGON_KEY")!;
 
 // ── Authorization: validate AI key HMAC before processing ─────────────
 const VALID_KEY_HASHES = [
-  // Olagon key hash (SHA-256 of rk_live_a8622697bdd840cf450c792ad0ea102b2fd186a8bcbffab2)
-  "a7c8e3b1d4f6a9e2c5b7d3f8a1e6c4b9d2f5a8e3c1b7d4f6a9e2c5b8d1f4a7",
+  // Configured via OLAGON_KEY environment variable
 ];
 
 function hashKey(key: string): string {

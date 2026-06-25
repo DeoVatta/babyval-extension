@@ -61,7 +61,7 @@ Return to messages, idle 20s → repeat
 **Endpoint:** `https://gateway.olagon.site/anthropic`
 **Edge Function:** `https://qjemyvydivekolywleji.supabase.co/functions/v1/cs-bot-logger`
 **Model:** `claude-sonnet-4-6`
-**AI Key:** `rk_live_a8622697bdd840cf450c792ad0ea102b2fd186a8bcbffab2`
+**AI Key:** `<AI_KEY>` (simpan di popup Keys tab)
 
 ## Supabase Schema
 
