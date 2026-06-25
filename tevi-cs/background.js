@@ -297,7 +297,7 @@ async function getConvs() {
   if (!t) return { data: null, error: 'no_token' };
   const path = '/messenger/v2/rpc/get_recent_conversations';
   const verify = await hmac(path);
-  const url = `https://wapi.flowstreamx.com${path}?limit=50&filter=UNREAD&verify=${verify}`;
+  const url = `https://wapi.flowstreamx.com${path}?limit=100&verify=${verify}`;
   try {
     const resp = await fetch(url, {
       method: 'GET',
@@ -306,7 +306,11 @@ async function getConvs() {
     if (resp.ok) {
       const json = await resp.json().catch(() => null);
       if (json?.success) {
-        log(`[API] ✅ ${json.data?.results?.length || 0} unread`);
+        log(`[API] ✅ ${json.data?.results?.length || 0} total convs`);
+        if (json.data?.results?.length > 0) {
+          logD(`[API] first conv: ${JSON.stringify(Object.keys(json.data.results[0]))}`);
+          logD(`[API] first conv.last_msg.sender: ${JSON.stringify(json.data.results[0]?.latest_message?.sender)}`);
+        }
         return { data: json.data, error: null };
       }
     }
