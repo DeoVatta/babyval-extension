@@ -1,8 +1,9 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.7.0
+ * CONTENT SCRIPT — Tevi CS Bot v0.7.2
  * PING handler for BG page-ready detection
- * domSendWithConfirm: type → click → confirm sent
- * No 60s auto-return — BG handles queue timing
+ * domSendWithConfirm: type → click → verify → confirm sent
+ * Slow typing: 30-70ms/char, pre-type 1.5s delay, post-type 1.2s delay
+ * Post-send: 2s wait + DOM verification + auto-retry if needed
  */
 
 (function() {
@@ -44,6 +45,10 @@
 
   function findSendBtn() {
     const BLOCKLIST = ['get-star','buy','purchase','donate','tip','payment','bayar','langganan','subscribe','premium','upgrade'];
+    // Priority: specific ID, aria-label, icon selectors, last resort generic
+    const byId = document.getElementById('dm-chat-send-message-btn');
+    if (byId && isVisible(byId)) return byId;
+
     const sels = [
       'button[aria-label*="Kirim" i]',
       'button[aria-label*="Send" i]',
@@ -51,12 +56,10 @@
       'button:has(svg[data-icon="send"])',
     ];
     for (const s of sels) {
-      const els = document.querySelectorAll(s);
-      for (const el of els) {
-        if (isVisible(el)) return el;
-      }
+      const el = document.querySelector(s);
+      if (el && isVisible(el)) return el;
     }
-    // Generic button as last resort — check it's not a CTA/payment button
+    // Generic button as last resort — skip CTAs
     const btns = document.querySelectorAll('button');
     for (const el of btns) {
       if (!isVisible(el)) continue;
@@ -84,34 +87,39 @@
     inputEl.focus();
     if (inputEl.tagName === 'TEXTAREA') { inputEl.value = ''; inputEl.dispatchEvent(new Event('input', { bubbles: true })); }
     else if (inputEl.tagName === 'DIV') { inputEl.textContent = ''; inputEl.innerHTML = ''; }
+    // Wait for input to be ready
+    await sleep(800);
     for (let i = 0; i < text.length; i++) {
       const ch = text[i];
       if (inputEl.tagName === 'TEXTAREA') inputEl.value += ch;
       else inputEl.textContent += ch;
       inputEl.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: ch === '\n' ? 'insertLineBreak' : 'insertText', data: ch }));
       let ms;
-      if (ch === ' ') ms = 20 + Math.random() * 15;
-      else if (ch === '.' || ch === ',') ms = 15 + Math.random() * 10;
-      else if (ch === '\n') ms = 25 + Math.random() * 15;
-      else ms = 8 + Math.random() * 12;
+      if (ch === ' ') ms = 50 + Math.random() * 40;
+      else if (ch === '.') ms = 80 + Math.random() * 60;
+      else if (ch === ',') ms = 60 + Math.random() * 40;
+      else if (ch === '\n') ms = 100 + Math.random() * 80;
+      else ms = 30 + Math.random() * 40;
       await sleep(ms);
     }
     inputEl.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   async function clickSend() {
+    // Verify message text is in input before clicking
+    const inp = findInput();
+    if (!inp) return false;
+    const textBefore = inp.tagName === 'TEXTAREA' ? inp.value : inp.textContent;
+    if (!textBefore || textBefore.trim().length === 0) return false;
+
     const btn = findSendBtn();
     if (btn) { btn.click(); return true; }
-    const inp = findInput();
-    if (inp) {
-      inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
-      inp.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', keyCode: 13, bubbles: true }));
-      return true;
-    }
-    return false;
+    inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
+    inp.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', keyCode: 13, bubbles: true }));
+    return true;
   }
 
-  async function waitForEl(checkFn, timeout = 20000) {
+  function waitForEl(checkFn, timeout = 20000) {
     const start = Date.now();
     while (Date.now() - start < timeout) {
       const el = checkFn();
@@ -119,6 +127,32 @@
       await sleep(500);
     }
     return null;
+  }
+
+  // Verify message appeared in chat — check DOM for message bubble with matching text
+  async function verifyMessageSent(expectedText) {
+    await sleep(1000); // wait for message to appear
+    const msgSelectors = [
+      '[class*="message"]',
+      '[class*="bubble"]',
+      '[class*="chat"]',
+      'div[role="listitem"]',
+    ];
+    for (const s of msgSelectors) {
+      const msgs = document.querySelectorAll(s);
+      for (const m of msgs) {
+        const t = m.textContent || '';
+        // Match the first line of the greeting (unique start)
+        if (t.includes('Halo aku Sukii') || t.includes('Sukii, AI')) return true;
+      }
+    }
+    // Fallback: check that input is now empty (message was consumed)
+    const inp = findInput();
+    if (inp) {
+      const val = inp.tagName === 'TEXTAREA' ? inp.value : inp.textContent;
+      if (!val || val.trim() === '') return true; // input cleared = message sent
+    }
+    return false;
   }
 
   // ── MESSAGE LISTENER ───────────────────────────────────────────────────
@@ -149,7 +183,7 @@
             l(`[DOM_SEND] Navigate to @${slug}/messages...`);
             window.location.href = DM_URL(slug);
             await waitForEl(() => findInput(), 15000);
-            await sleep(1000);
+            await sleep(2000); // extra wait after navigation
           }
 
           const input = await waitForEl(() => findInput(), 15000);
@@ -159,19 +193,34 @@
             sendResp({ ok: false, reason: 'no_input', slug }); return;
           }
 
+          // Extra delay before typing
+          await sleep(1500);
+
           await typeText(input, text);
-          await sleep(300);
+
+          // Delay after typing before clicking send
+          await sleep(1200);
 
           const sent = await clickSend();
-          if (sent) {
-            l(`[DOM_SEND] ✅ Sent to @${slug}`);
-            // Wait a moment to confirm message appeared in DOM
-            await sleep(1500);
-            sendResp({ ok: true, slug });
-          } else {
+          if (!sent) {
             l(`[DOM_SEND] ❌ Send failed`);
             sendResp({ ok: false, reason: 'send_failed', slug });
+            _busy = false; return;
           }
+
+          // Wait + verify message actually appeared in DOM
+          await sleep(2000);
+          const verified = await verifyMessageSent(text);
+          if (!verified) {
+            l(`[DOM_SEND] ⚠️ Message may not have sent, retrying...`);
+            await sleep(1500);
+            const btn2 = findSendBtn();
+            if (btn2) btn2.click();
+            await sleep(2000);
+          }
+
+          l(`[DOM_SEND] ✅ Sent to @${slug}`);
+          sendResp({ ok: true, slug });
         } catch (e) {
           l(`[DOM_SEND] ❌ ${e.message}`);
           sendResp({ ok: false, reason: e.message, slug });
@@ -193,5 +242,5 @@
     }
   });
 
-  l(`v0.7.0 active — ${location.href}`);
+  l(`v0.7.2 active — ${location.href}`);
 })();

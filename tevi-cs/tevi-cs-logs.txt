@@ -1,128 +1,3 @@
-[2026-06-25T17:33:56.461Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:34:06.392Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:34:07.491Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:34:08.085Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:34:17.556Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:34:18.557Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:34:18.613Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:34:28.631Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:34:29.364Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:34:30.122Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:34:39.412Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:34:40.082Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:34:40.180Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:34:50.122Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:34:50.906Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:34:50.943Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:35:00.983Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:35:01.678Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:35:01.699Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:35:11.727Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:35:12.322Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:35:12.421Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:35:22.373Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:35:23.145Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:35:23.448Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:35:33.067Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:35:33.906Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:35:33.924Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:35:43.964Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:35:44.759Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:35:46.133Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:35:54.936Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:35:56.061Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:35:56.454Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:36:06.092Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:36:07.224Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:36:07.932Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:36:13.136Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
-[2026-06-25T17:36:13.229Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
-[2026-06-25T17:36:13.260Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:36:13.290Z] [BG] [INFO] [SW] Was enabled — poll scheduled
-[2026-06-25T17:36:13.785Z] [BG] [INFO] [API] ✅ 4 unread
-[2026-06-25T17:36:13.799Z] [BG] [INFO] [POLL] 4 unread — active=true
-[2026-06-25T17:36:13.870Z] [BG] [INFO]   @civic_putih [new→intro] "vcs berapa"
-[2026-06-25T17:36:13.892Z] [BG] [INFO] [DOM] → @civic_putih: "Sukii. Informan Baby Val.
-Chat langsung:..."
-[2026-06-25T17:36:14.109Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
-[2026-06-25T17:36:14.159Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @civic_putih/messages...
-[2026-06-25T17:36:15.157Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:36:15.752Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
-[2026-06-25T17:36:18.335Z] [BG] [DEBUG] [DOM] Port error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
-[2026-06-25T17:36:18.368Z] [BG] [DEBUG] [DOM] Retrying after 3s...
-[2026-06-25T17:36:18.549Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:36:19.439Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
-[2026-06-25T17:36:21.087Z] [BG] [INFO] [API] ✅ 4 unread
-[2026-06-25T17:36:21.126Z] [BG] [INFO] [POLL] 4 unread — active=true
-[2026-06-25T17:36:21.264Z] [BG] [INFO]   @civic_putih [new→intro] "vcs berapa"
-[2026-06-25T17:36:21.480Z] [BG] [INFO] [DOM] → @civic_putih: "Sukii. Informan Baby Val.
-Chat langsung:..."
-[2026-06-25T17:36:21.501Z] [CS] [INFO] [CS] [DOM_SEND] Duplicate ignored (busy with civic_putih)
-[2026-06-25T17:36:21.520Z] [BG] [DEBUG] [DOM] Send failed: duplicate
-[2026-06-25T17:36:21.579Z] [BG] [DEBUG] [DOM] Retrying after 3s...
-[2026-06-25T17:36:21.667Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @civic_putih
-[2026-06-25T17:36:21.749Z] [CS] [INFO] [CS] [IDLE] Return to messages in 60s
-[2026-06-25T17:36:21.817Z] [BG] [INFO] [DOM] ✅ Sent to @civic_putih (retry)
-[2026-06-25T17:36:21.854Z] [BG] [INFO]   @civic_putih [intro_sent] ✅ greeting sent
-[2026-06-25T17:36:22.782Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (24m/180m)
-[2026-06-25T17:36:23.051Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (28m/180m)
-[2026-06-25T17:36:23.113Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (39m/180m)
-[2026-06-25T17:36:23.167Z] [BG] [INFO] [POLL] Done p=4 r=1 i=3 (9379ms)
-[2026-06-25T17:36:24.613Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @civic_putih/messages...
-[2026-06-25T17:36:24.663Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
-[2026-06-25T17:36:25.275Z] [BG] [DEBUG] [DOM] Port error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
-[2026-06-25T17:36:25.319Z] [BG] [DEBUG] [DOM] Injecting CS + retry...
-[2026-06-25T17:36:25.780Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:36:25.872Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
-[2026-06-25T17:36:28.293Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
-[2026-06-25T17:36:31.146Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:36:31.258Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
-[2026-06-25T17:36:32.320Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-[2026-06-25T17:36:32.795Z] [BG] [DEBUG] [DOM] Hard refreshing + navigating...
-[2026-06-25T17:36:34.120Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:36:34.191Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
-[2026-06-25T17:36:38.711Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@civic_putih/messages [state=idle]
-[2026-06-25T17:36:42.309Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
-[2026-06-25T17:36:44.677Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @civic_putih
-[2026-06-25T17:36:44.877Z] [CS] [INFO] [CS] [IDLE] Return to messages in 60s
-[2026-06-25T17:36:45.683Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:36:45.945Z] [BG] [INFO] [DOM] ✅ Sent (after hard refresh)
-[2026-06-25T17:36:46.014Z] [BG] [INFO]   @civic_putih [intro_sent] ✅ greeting sent
-[2026-06-25T17:36:46.099Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (25m/180m)
-[2026-06-25T17:36:46.115Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (28m/180m)
-[2026-06-25T17:36:46.182Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (39m/180m)
-[2026-06-25T17:36:46.248Z] [BG] [INFO] [POLL] Done p=4 r=1 i=3 (29373ms)
-[2026-06-25T17:36:46.430Z] [BG] [INFO] [API] ✅ 4 unread
-[2026-06-25T17:36:46.443Z] [BG] [INFO] [POLL] 4 unread — active=true
-[2026-06-25T17:36:46.494Z] [BG] [DEBUG]   @civic_putih [intro_sent] waiting (0m/180m)
-[2026-06-25T17:36:46.502Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (25m/180m)
-[2026-06-25T17:36:46.512Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (28m/180m)
-[2026-06-25T17:36:46.523Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (39m/180m)
-[2026-06-25T17:36:46.532Z] [BG] [INFO] [POLL] Done p=4 r=0 i=4 (829ms)
-[2026-06-25T17:37:44.752Z] [CS] [INFO] [CS] [IDLE] → tevi.com/messages
-[2026-06-25T17:37:46.155Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:37:46.200Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:37:56.246Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:37:57.106Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:37:57.613Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:38:07.139Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:38:07.721Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:38:07.821Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:38:17.780Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:38:18.482Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:38:19.074Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:38:29.190Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:38:30.764Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:38:30.778Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:38:41.223Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:38:45.356Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:38:45.375Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:38:55.346Z] [CS] [INFO] [CS] [IDLE] Stopped page refresh
-[2026-06-25T17:39:07.740Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@civic_putih/messages [state=idle]
-[2026-06-25T17:39:12.922Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:39:13.456Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:39:22.946Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:39:24.774Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
 [2026-06-25T17:39:24.973Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
 [2026-06-25T17:39:35.198Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
 [2026-06-25T17:39:37.185Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
@@ -1998,3 +1873,128 @@ Chat langsung:..."
 [2026-06-25T17:57:51.423Z] [BG] [DEBUG] [QUEUE] Waiting 12000ms before next task...
 [2026-06-25T17:58:03.425Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (92 remaining)
 [2026-06-25T17:58:04.516Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@Qaz20/messages
+[2026-06-25T17:58:06.620Z] [BG] [INFO] [SEND] → @Qaz20: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:58:06.683Z] [CS] [INFO] [CS] [DOM_SEND] → @Qaz20 (74 chars)
+[2026-06-25T17:58:09.225Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @Qaz20
+[2026-06-25T17:58:10.902Z] [BG] [INFO] [SEND] ✅ @Qaz20 sent
+[2026-06-25T17:58:10.921Z] [BG] [INFO]   @Qaz20 [intro_sent] ✅ greeting sent
+[2026-06-25T17:58:10.939Z] [BG] [DEBUG] [QUEUE] Waiting 12000ms before next task...
+[2026-06-25T17:58:22.954Z] [BG] [INFO] [QUEUE] Processing @guines484 (91 remaining)
+[2026-06-25T17:58:23.977Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@guines484/messages
+[2026-06-25T17:58:24.953Z] [BG] [INFO] [SEND] → @guines484: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:58:25.049Z] [CS] [INFO] [CS] [DOM_SEND] → @guines484 (74 chars)
+[2026-06-25T17:58:28.176Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @guines484
+[2026-06-25T17:58:29.657Z] [BG] [INFO] [SEND] ✅ @guines484 sent
+[2026-06-25T17:58:29.671Z] [BG] [INFO]   @guines484 [intro_sent] ✅ greeting sent
+[2026-06-25T17:58:29.693Z] [BG] [DEBUG] [QUEUE] Waiting 12000ms before next task...
+[2026-06-25T17:58:41.693Z] [BG] [INFO] [QUEUE] Processing @teknik_bu (90 remaining)
+[2026-06-25T17:58:42.925Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@teknik_bu/messages
+[2026-06-25T17:58:43.687Z] [BG] [INFO] [SEND] → @teknik_bu: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:58:43.701Z] [CS] [INFO] [CS] [DOM_SEND] → @teknik_bu (74 chars)
+[2026-06-25T17:58:46.614Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @teknik_bu
+[2026-06-25T17:58:48.140Z] [BG] [INFO] [SEND] ✅ @teknik_bu sent
+[2026-06-25T17:58:48.161Z] [BG] [INFO]   @teknik_bu [intro_sent] ✅ greeting sent
+[2026-06-25T17:58:48.183Z] [BG] [DEBUG] [QUEUE] Waiting 12000ms before next task...
+[2026-06-25T17:59:00.184Z] [BG] [INFO] [QUEUE] Processing @user6032682438248 (89 remaining)
+[2026-06-25T17:59:00.922Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@user6032682438248/messages
+[2026-06-25T17:59:03.009Z] [BG] [INFO] [SEND] → @user6032682438248: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:59:03.067Z] [CS] [INFO] [CS] [DOM_SEND] → @user6032682438248 (74 chars)
+[2026-06-25T17:59:07.104Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @user6032682438248
+[2026-06-25T17:59:08.560Z] [BG] [INFO] [SEND] ✅ @user6032682438248 sent
+[2026-06-25T17:59:08.574Z] [BG] [INFO]   @user6032682438248 [intro_sent] ✅ greeting sent
+[2026-06-25T17:59:08.589Z] [BG] [DEBUG] [QUEUE] Waiting 12000ms before next task...
+[2026-06-25T17:59:20.608Z] [BG] [INFO] [QUEUE] Processing @4279725502 (88 remaining)
+[2026-06-25T17:59:22.277Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@4279725502/messages
+[2026-06-25T17:59:22.681Z] [BG] [INFO] [SEND] → @4279725502: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:59:22.767Z] [CS] [INFO] [CS] [DOM_SEND] → @4279725502 (74 chars)
+[2026-06-25T18:00:06.373Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @4279725502
+[2026-06-25T18:00:08.772Z] [BG] [INFO] [SEND] ✅ @4279725502 sent
+[2026-06-25T18:00:09.607Z] [BG] [INFO]   @4279725502 [intro_sent] ✅ greeting sent
+[2026-06-25T18:00:10.104Z] [BG] [DEBUG] [QUEUE] Waiting 12000ms before next task...
+[2026-06-25T18:00:20.999Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (87 remaining)
+[2026-06-25T18:00:25.418Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@miracleboyyzz/messages
+[2026-06-25T18:00:25.441Z] [BG] [INFO] [SEND] → @miracleboyyzz: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T18:00:25.589Z] [CS] [INFO] [CS] [DOM_SEND] → @miracleboyyzz (74 chars)
+[2026-06-25T18:00:43.977Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:00:43.997Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:00:44.043Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:00:44.914Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@kempong88/messages
+[2026-06-25T18:00:46.166Z] [BG] [DEBUG] [SEND] direct fail: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
+[2026-06-25T18:00:46.907Z] [BG] [INFO] [SEND] → @kempong88: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T18:00:47.057Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars)
+[2026-06-25T18:00:48.999Z] [CS] [INFO] [CS] [DOM_SEND] → @miracleboyyzz (74 chars)
+[2026-06-25T18:00:49.066Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @miracleboyyzz/messages...
+[2026-06-25T18:00:50.358Z] [BG] [DEBUG] [SEND] direct fail: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T18:00:50.427Z] [BG] [DEBUG] [SEND] inject fail: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T18:00:51.034Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@miracleboyyzz/messages
+[2026-06-25T18:00:52.482Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@miracleboyyzz/messages
+[2026-06-25T18:00:52.549Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars)
+[2026-06-25T18:00:52.570Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @kempong88/messages...
+[2026-06-25T18:00:53.201Z] [BG] [DEBUG] [SEND] inject fail: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T18:00:55.811Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@kempong88/messages
+[2026-06-25T18:00:58.088Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@kempong88/messages
+[2026-06-25T18:00:59.045Z] [BG] [DEBUG] [SEND] refresh fail: Could not establish connection. Receiving end does not exist.
+[2026-06-25T18:00:59.067Z] [BG] [ERROR] [SEND] ❌ All attempts failed for @miracleboyyzz
+[2026-06-25T18:00:59.091Z] [BG] [ERROR]   @miracleboyyzz [new] ❌ greeting failed
+[2026-06-25T18:00:59.117Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:01:01.711Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars)
+[2026-06-25T18:01:03.039Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (87 remaining)
+[2026-06-25T18:01:03.716Z] [BG] [DEBUG] [SEND] refresh fail: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T18:01:03.907Z] [BG] [ERROR] [SEND] ❌ All attempts failed for @kempong88
+[2026-06-25T18:01:05.248Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@miracleboyyzz/messages
+[2026-06-25T18:01:05.306Z] [BG] [ERROR]   @kempong88 [new] ❌ greeting failed
+[2026-06-25T18:01:05.415Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:01:09.089Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:01:09.120Z] [BG] [ERROR] [ALARM] No tab with id: 1455759469.
+[2026-06-25T18:01:15.667Z] [BG] [ERROR] [QUEUE] Could not ready @miracleboyyzz — deferring
+[2026-06-25T18:01:15.693Z] [BG] [DEBUG] [WAIT] Page not ready after 8000ms for @miracleboyyzz
+[2026-06-25T18:01:15.713Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:01:30.690Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (87 remaining)
+[2026-06-25T18:01:30.728Z] [BG] [ERROR] [ALARM] No tab with id: 1455759469.
+[2026-06-25T18:03:43.533Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.0 — queue mode, page-ready guard, send-confirm
+[2026-06-25T18:03:44.393Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:03:44.415Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:03:44.435Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:03:45.867Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:03:45.879Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:03:45.890Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:04:14.794Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:04:14.809Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:04:14.820Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:04:40.149Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:04:42.793Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:04:42.805Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:04:42.816Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:04:46.691Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/messages
+[2026-06-25T18:05:10.605Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:05:10.619Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:05:10.635Z] [BG] [INFO] [SEND] → @kempong88: "Halo aku Sukii, AI Assistant-nya Baby Va..."
+[2026-06-25T18:05:10.650Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:05:10.684Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (141 chars)
+[2026-06-25T18:05:10.701Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @kempong88/messages...
+[2026-06-25T18:05:10.859Z] [BG] [DEBUG] [SEND] direct fail: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
+[2026-06-25T18:05:11.295Z] [CS] [INFO] [CS] v0.7.0 active — https://tevi.com/@kempong88/messages
+[2026-06-25T18:05:12.886Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (141 chars)
+[2026-06-25T18:05:17.379Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @kempong88
+[2026-06-25T18:05:18.825Z] [BG] [INFO] [SEND] ✅ @kempong88 sent (after inject)
+[2026-06-25T18:05:18.836Z] [BG] [INFO]   @kempong88 [intro_sent] ✅ greeting sent
+[2026-06-25T18:05:18.847Z] [BG] [DEBUG] [QUEUE] Waiting 12000ms before next task...
+[2026-06-25T18:05:30.862Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (92 remaining)
+[2026-06-25T18:05:30.905Z] [BG] [ERROR] [ALARM] No tab with id: 1455759486.
+[2026-06-25T18:08:10.776Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:08:11.361Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:08:11.376Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:08:11.389Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:08:13.163Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:08:13.178Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:08:13.197Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:08:41.758Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:08:41.778Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:08:41.789Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue

@@ -143,6 +143,15 @@ Aktif: **17:00 - 05:00 WIB**
 
 ## Changelog
 
+### v0.7.2 — 2026-06-26
+- **Slow typing**: 30-70ms/char with punctuation pauses (space=50-90ms, period=80-140ms, comma=60-100ms)
+- **Pre-type delay**: 1.5s wait before typing starts
+- **Post-type delay**: 1.2s pause after finishing typing, before clicking send
+- **Post-send verification**: 2s wait + `verifyMessageSent()` checks DOM for message bubble or input cleared
+- **Auto-retry**: if verification fails, clicks send button again after 1.5s wait
+- **Send button priority**: `dm-chat-send-message-btn` ID first, then aria-label/icon selectors
+- **Input guard**: `clickSend()` verifies text is in input before clicking
+
 ### v0.7.1 — 2026-06-26
 - **Fixed send button blocklist**: added get-star/buy/donate/payment CTA blocklist — wrong button was triggering get-star redirect
 - **Fixed greeting template**: now exactly `Halo aku Sukii, AI Assistant-nya Baby Val 💕...`

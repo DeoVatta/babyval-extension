@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.7.1",
-  "description": "Tevi CS Bot v0.7.1 — fixed send button blocklist, correct greeting template, slug fallback",
+  "version": "0.7.2",
+  "description": "Tevi CS Bot v0.7.2 — slow typing, pre/post-type delays, post-send DOM verification",
   "author": "Devata",
   "permissions": [
     "alarms",
