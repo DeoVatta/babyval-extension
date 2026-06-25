@@ -1,5 +1,5 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.9.3
+ * CONTENT SCRIPT — Tevi CS Bot v0.9.10
  *
  * Handles:
  * - SCAN_CONVS: find all convs needing reply (no ✓/✓✓ icon = user last)
