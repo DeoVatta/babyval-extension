@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.9.0",
-  "description": "Tevi CS Bot v0.9.0 — API-based send (tabless), intercept capture, chrome.alarms keep-alive",
+  "version": "0.9.1",
+  "description": "Tevi CS Bot v0.9.1 — slot system (4-msg loop), membership skip, image cooldown, API send, intercept capture",
   "author": "Devata",
   "permissions": [
     "alarms",

@@ -15,48 +15,48 @@ tevi-cs/
 └── icons/
 ```
 
-## State Machine — v0.8
+## State Machine — v0.9.1
 
 ```
-TOGGLE ON → navigate to messages page
-  ↓ every 20s alarm
-SCAN → find all convs with no ✓/✓✓ icon on last msg
-  ↓ filter: membership (skip) + image-cooldown users (skip 6h)
-PROCESS ONE AT A TIME:
-  → navigate to @slug/messages
-  → GET_MSGS: read 4 latest USER messages
+TOGGLE ON
+  ↓
+SCAN (every 20s alarm OR tab switch)
+  → Navigate to messages page
+  → SCAN_CONVS: find convs with no ✓/✓✓ icon
+  → Filter: skip membership, skip image-cooldown (6h), skip self
+  ↓
+PROCESS ONE CONV
+  → Navigate to @slug/messages
+  → GET_MSGS: read 4 latest USER messages (not Sukii)
   → SLOT DECISION:
-      no prior chat → greeting (slot=1)
-      last msg >3h ago → greeting (slot=1)
-      has prior chat → reply (slot++)
-      slot >= 4 → greeting (slot=1)
-  → generate reply via AI or fallback
-  → DOM_SEND: type + send + verify
-  → update conv meta (slot, greetingCooldownTs)
-  → return to messages page
-  ↓ idle 20s → repeat
+      no prior meta → greeting (slot=1)
+      slot >= 4 → greeting (slot=1) ← reset after 4 replies
+      else → reply (slot++)
+  → Generate reply: greeting or AI/fallback
+  → Send via API (tabless) or DOM fallback
+  → Update convMeta: slot, status, timestamps
+  ↓
+Return to messages, idle 20s → repeat
 ```
 
-## DOM Detection (v0.8)
+## DOM Detection (v0.9.1)
 
 ```
-icon-check-double / ✓✓ on last msg in conv list → Sukii replied → SKIP
-icon-check / ✓ on last msg → Sukii replied → SKIP
-no icon / other icon → USER last message → NEEDS REPLY
+✓✓ (icon-check-double) on last conv msg → Sukii replied → SKIP
+✓ (icon-check) on last conv msg → Sukii replied → SKIP
+No icon / other icon → USER last message → NEEDS REPLY
+Membership badge (member/premium/VIP) → SKIP entirely
+Image sender → cooldown 6h → SKIP
 ```
 
-**Cooldown:**
-- Image sender: 6h cooldown tracked by username in `chrome.storage.local`
-- Greeting: 3h cooldown per conversation before new greeting
-
-## Slot System (v0.8)
+## Slot System (v0.9.1)
 
 | Slot | Type | Description |
 |------|------|-------------|
-| 1 | Greeting | `Halo aku Sukii, AI Assistant-nya Baby Val...` |
-| 2 | Reply | AI-generated reply with 4-msg context |
-| 3 | Reply | AI-generated reply with 4-msg context |
-| 4 | Reply | AI-generated reply with 4-msg context |
+| 1 | Greeting | `Halo aku Sukii...` (always greeting) |
+| 2 | Reply | AI/fallback with 4-msg context |
+| 3 | Reply | AI/fallback with 4-msg context |
+| 4 | Reply | AI/fallback with 4-msg context |
 | 5+ | Greeting | After slot 4, resets to slot 1 |
 
 ## Flow Bot
@@ -75,16 +75,17 @@ CS mode → reply sesuai keyword rules
 2. Payment confirmed — 6 jam delay
 3. User diam >24 jam — boleh balas
 
-## Queue Mode (v0.8 — ONE conv at a time)
+## Queue Mode (v0.9.1 — ONE conv at a time)
 
 ```
-Alarm fires every 20s
-  → Refresh messages page
+Alarm fires every 20s (or user switches to Tevi tab)
+  → Navigate to messages page
   → SCAN_CONVS: query DOM for all convs with no ✓/✓✓ icon
-  → Filter: skip processing convs, skip image-cooldown users
+  → Filter: skip self, skip processing convs, skip >3 nav fails, skip image-cooldown users
   → Pick first remaining conv
-  → navigateToConv → GET_MSGS → decideSlot → DOM_SEND
-  → navigate back to messages
+  → Navigate to DM → GET_MSGS (4 USER msgs) → decideSlot → apiSend (tabless) or domSend (fallback)
+  → Update convMeta (slot, status, timestamps)
+  → Return to messages
   → Alarm fires again in ~20s
 ```
 
@@ -172,14 +173,23 @@ Aktif: **24/7** — no active hours restriction, user controls ON/OFF via extens
 
 ## Changelog
 
-### v0.9.0 — 2026-06-26
-- **API-based send** — messages sent via Tevi's own API (no tab required)
-- **INTERCEPT_SEND** handler: captures exact send-message API call when user sends manually
-- **Tabless sending** — no need to keep Tevi tab open; tab only for DOM scanning
-- **chrome.alarms keep-alive** — 0.4min periodic alarm prevents SW suspend between polls
-- **v0.8 complete rewrite** of content-script.js + background.js
+### v0.9.1 — 2026-06-26
+- **FIX: hasRepliedIcon** — correct ✓/✓✓ detection (was always returning true)
+- **FIX: scanConvs** — AND logic: only unreplied if no check icon AND not membership
+- **FIX: lastMsgTs** — extracted from conv list item datetime attribute
+- **FIX: popup↔BG bridge** — BG now handles GET_CONFIG, SAVE_CONFIG, SET_SECRETS, GET_STATUS, RESET_STATE
+- **FIX: generateReply fallback** — no null return, always returns template
+- **FIX: isFromUser** — 7-strategy detection (alignment, avatar, sender name, check icon, prefix, image, CSS)
+- **FIX: findConvItems** — 5-priority selector (data attr → class → href → list → fallback)
+- **FIX: navigateFailCount** — properly incremented on navigate failure
+- **FIX: membership detection** — skip entirely during conv scanning
+- **FIX: API body handling** — JSON parse before storing, smart field reconstruction
+- **FEAT: chrome.tabs.onActivated** — scan immediately when user switches to Tevi tab
+- **FEAT: greeting from config** — reads from tevi_cs_config persona.greeting
+- **FEAT: convMeta cleanup** — clears 48h+ stale entries on every init
+- **CLEANUP: dead code removed** (popup.js orphaned, unused DOM_SEND stubs)
 
-### v0.8.0 — 2026-06-26
+### v0.9.0 — 2026-06-26
 - **Complete rewrite** of content-script.js + background.js
 - **DOM-based conv detection**: scan for ✓/✓✓ icons instead of message polling — no more wapi.flowstreamx.com dependency
 - **4-message context window**: reads 4 latest USER messages before each reply

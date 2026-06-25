@@ -1,19 +1,22 @@
 /**
- * BACKGROUND.JS — Tevi CS Bot v0.9
+ * BACKGROUND.JS — Tevi CS Bot v0.9.1
  *
- * API-based message sending — no tab required for sending
- * Flow:
- * - Intercept user's manual send → capture exact API call + auth
- * - Toggle ON → chrome.alarms every 20s → scan via CS (tab)
- * - Process convs → send via API (no tab needed)
+ * GOALS:
+ * - Balas pesan looping setiap 4 pesan
+ * - Awal wajib greeting, 3 pesan lainnya tergantung jawaban user
+ * - Jangan balas membership dan yang sudah kirim foto (cooldown 6h)
+ *
+ * Architecture:
+ * - Tab: scan conv list via content script (DOM)
+ * - API: send messages via intercepted Tevi API (no tab needed)
+ * - chrome.alarms: 20s idle polling
  */
 
-const EXT = 'Tevi CS v0.9';
+const EXT = 'Tevi CS v0.9.1';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
-const MY_UID = '392388705';
 
-// ── Utilities ───────────────────────────────────────────────────────────
+// ── Storage helpers ───────────────────────────────────────────────────
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -23,87 +26,64 @@ async function log(level, msg, data) {
   if (level === 'ERROR') console.error('[BG]', msg, data || '');
 }
 
-async function storageGet(keys) {
-  return new Promise(r => chrome.storage.local.get(keys, r));
-}
-async function storageSet(obj) {
-  return new Promise(r => chrome.storage.local.set(obj));
-}
+async function sg(keys) { return new Promise(r => chrome.storage.local.get(keys, r)); }
+async function ss(obj) { return new Promise(r => chrome.storage.local.set(obj, r)); }
 
-// ── API Send (tabless) ──────────────────────────────────────────────────
+// ── Conv Meta ─────────────────────────────────────────────────────────
 
-// Captured from interceptor when user manually sends a DM
-async function apiSendMessage(recipientSlug, text) {
-  const { apiSendPattern } = await storageGet(['apiSendPattern']) || {};
-  if (!apiSendPattern) {
-    log('ERROR', '[API] No send pattern captured yet — send a DM manually first');
-    return false;
-  }
-
-  log('INFO', '[API] Sending to @' + recipientSlug + ': ' + text.substring(0, 50) + '...');
-
-  try {
-    // Replay the captured request with new body
-    const headers = { ...apiSendPattern.headers };
-    // Override Content-Type if needed
-    headers['Content-Type'] = 'application/json';
-
-    // Build body — try to adapt from captured pattern
-    let body;
-    if (apiSendPattern.bodyFields) {
-      // Build from field map
-      const bf = apiSendPattern.bodyFields;
-      body = {
-        conversationId: bf.conversationId || recipientSlug,
-        recipientId: bf.recipientId || recipientSlug,
-        message: text,
-        content: text,
-        text: text,
-        body: text,
-      };
-      // Keep original fields that should persist
-      for (const [k, v] of Object.entries(bf)) {
-        if (!['message','content','text','body'].includes(k)) {
-          body[k] = v;
-        }
-      }
-    } else {
-      body = { message: text, recipient: recipientSlug };
-    }
-
-    const res = await fetch(apiSendPattern.url, {
-      method: apiSendPattern.method || 'POST',
-      headers,
-      body: JSON.stringify(body),
-      credentials: 'include', // include cookies
-    });
-
-    const status = res.status;
-    let respText = '';
-    try { respText = await res.text(); } catch {}
-
-    if (res.ok) {
-      log('INFO', '[API] Sent OK to @' + recipientSlug + ' (status=' + status + ')');
-      return true;
-    } else {
-      log('ERROR', '[API] Send failed @' + recipientSlug + ' (status=' + status + '): ' + respText.substring(0, 200));
-      return false;
-    }
-  } catch (e) {
-    log('ERROR', '[API] Send error @' + recipientSlug + ': ' + e.message);
-    return false;
-  }
+async function getMeta(slug) {
+  const { convMeta } = await sg(['convMeta']) || {};
+  return (convMeta || {})[slug.toLowerCase()] || null;
 }
 
-// ── Tab helpers ─────────────────────────────────────────────────────────
+async function setMeta(slug, meta) {
+  const { convMeta } = await sg(['convMeta']) || {};
+  const key = slug.toLowerCase();
+  convMeta[key] = { ...(convMeta[key] || {}), ...meta, updatedAt: Date.now() };
+  await ss({ convMeta });
+}
+
+// ── Slot Decision ──────────────────────────────────────────────────────
+// Slot: 1=greeting, 2/3/4=reply. After slot 4 → reset to greeting.
+// "Awal wajib greeting" = slot 1 on first contact or after 4 replies.
+
+async function decideSlot(slug) {
+  const meta = await getMeta(slug);
+  if (!meta) return { type: 'greeting', slot: 1 };
+  if (meta.slot >= 4) return { type: 'greeting', slot: 1 };
+  return { type: 'reply', slot: (meta.slot || 0) + 1 };
+}
+
+// ── Image Cooldown ─────────────────────────────────────────────────────
+
+const IMG_COOLDOWN = 6 * 60 * 60 * 1000; // 6 hours
+
+async function isImageCooldown(slug) {
+  const { imageCooldownUsers } = await sg(['imageCooldownUsers']) || {};
+  const ts = (imageCooldownUsers || {})[slug.toLowerCase()];
+  if (!ts) return false;
+  if (Date.now() - ts > IMG_COOLDOWN) return false;
+  return true;
+}
+
+async function addImageCooldown(slug) {
+  const { imageCooldownUsers } = await sg(['imageCooldownUsers']) || {};
+  imageCooldownUsers[slug.toLowerCase()] = Date.now();
+  await ss({ imageCooldownUsers });
+}
+
+// ── Tab helpers ────────────────────────────────────────────────────────
+
+let _currentTabId = null;
 
 async function getTeviTab() {
   const tabs = await new Promise(r => chrome.tabs.query({}, r));
-  let tab = tabs.find(t => t.url && t.url.match(/tevi\.com\//)) || null;
-  if (!tab && tabs.length > 0) {
+  let tab = tabs.find(t => t.url && t.url.match(/tevi\.com\//));
+  if (!tab) {
     tab = await new Promise(r => chrome.tabs.create({ url: 'https://tevi.com/messages', active: false }, r));
     await sleep(3000);
   }
+  _currentTabId = tab.id;
   return tab;
 }
 
@@ -117,151 +97,204 @@ async function ensureCS(tabId) {
   }
 }
 
-// ── AI Reply ────────────────────────────────────────────────────────────
+// ── AI Reply ──────────────────────────────────────────────────────────
 
-async function generateReply(userSlug, messages, slot) {
-  const { aiKey, hmacSecret } = await storageGet(['tevi_cs_secrets']) || {};
-  if (!aiKey) return buildFallbackReply(messages, slot);
+async function generateReply(slug, messages, slot) {
+  const { aiKey } = (await sg(['tevi_cs_secrets']) || {}).tevi_cs_secrets || {};
+  if (!aiKey) return buildFallback(messages, slot);
 
-  const { persona, rules } = await storageGet(['tevi_cs_config']) || {};
-  const ctx = messages.map((m, i) => `[${i+1}]${m.hasImage ? ' [IMG] ' : ' '}${m.text}`).join('\n');
-
-  let systemPrompt = persona || 'Kamu Sukii, AI Assistant-nya Baby Val. Jawaban pendek, dingin, informatif.';
+  const { persona } = (await sg(['tevi_cs_config']) || {}).tevi_cs_config || {};
+  const ctx = messages.map((m, i) => `[${i + 1}]${m.hasImage ? ' [IMG] ' : ' '}${m.text}`).join('\n');
 
   const body = JSON.stringify({
     model: 'claude-sonnet-4-6',
     max_tokens: 300,
     temperature: 0.8,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: `User @${userSlug}:\n${ctx}\n\nBalas sebagai Sukii (slot ${slot}):` }]
+    system: persona || 'Kamu Sukii, AI Assistant-nya Baby Val. Jawaban pendek, dingin, informatif. Jangan terlalu ramah.',
+    messages: [{ role: 'user', content: `User @${slug}:\n${ctx}\n\nBalas sebagai Sukii (slot ${slot}/4):` }]
   });
 
   try {
-    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${aiKey}` };
     const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', headers, body
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${aiKey}` },
+      body,
     });
-    if (!res.ok) return buildFallbackReply(messages, slot);
+    if (!res.ok) return buildFallback(messages, slot);
     const data = await res.json();
     let reply = (data.content?.[0]?.text || '').replace(/<thinking>[\s\S]*?<\/thinking>/gi, '').trim();
     if (reply.length > 500) reply = reply.substring(0, 497) + '...';
-    return reply || buildFallbackReply(messages, slot);
+    return reply || buildFallback(messages, slot);
   } catch (e) {
     log('ERROR', 'AI failed: ' + e.message);
-    return buildFallbackReply(messages, slot);
+    return buildFallback(messages, slot);
   }
 }
 
-function buildFallbackReply(messages, slot) {
-  if (slot === 1) return null;
+function buildFallback(messages, slot) {
   const last = (messages[messages.length - 1]?.text || '').toLowerCase();
-  if (last.match(/foto|video|konten|porn|sexy/)) return 'Konten untuk member.';
-  if (last.match(/vcs|videocall/)) return 'VCS tersedia. babyval.com → Video Call → Durasi → Bayar.';
-  if (last.match(/payment|transfer|bayar/)) return 'babyval.com → Video Call → Durasi → Bayar.';
-  if (last.match(/member/)) return 'tevi.com/@cutieval. Pilih membership.';
-  if (last.match(/terima kasih/)) return 'Sukii. Ada yang perlu ditanyakan?';
+  if (last.match(/foto|video|konten|porn|sexy|bugil|xxx/)) return 'Konten untuk member.';
+  if (last.match(/vcs|videocall|video call/i)) return 'VCS tersedia. babyval.com → Video Call → Durasi → Bayar.';
+  if (last.match(/payment|transfer|bayar|order/i)) return 'babyval.com → Video Call → Durasi → Bayar.';
+  if (last.match(/member|membership|join/i)) return 'tevi.com/@cutieval. Pilih membership.';
+  if (last.match(/alamat|nomor hp|no hp|wa|whatsapp/i)) return 'Informasi pribadi tidak diberikan.';
+  if (last.match(/ketemu|offline|bertemu/i)) return 'Cuma bisa VCS. Offline tidak tersedia.';
+  if (last.match(/terima kasih|thanks|makasih/i)) return 'Sukii. Ada yang perlu ditanyakan?';
+  if (last.match(/masker|topeng/i)) return 'Buka masker: tip 250rb ke ganknow.com/babyval/tip.';
+  if (last.match(/beda|bedanya|durasi/i)) return 'Beda durasi aja. Squirt minimal 20 menit.';
   return 'Chat langsung dengan Baby Val: membership Tevi.';
 }
 
-const GREETING = `Halo aku Sukii, AI Assistant-nya Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\nKalau mau VCS bisa bayar di babyval.com`;
-
-// ── Conv Meta ───────────────────────────────────────────────────────────
-
-async function getConvMeta(slug) {
-  const { convMeta } = await storageGet(['convMeta']) || {};
-  return convMeta[slug.toLowerCase()] || null;
+// Greeting — dibaca dari config atau fallback default
+async function getGreeting() {
+  const { tevi_cs_config } = await sg(['tevi_cs_config']) || {};
+  const tpl = tevi_cs_config?.persona?.greeting;
+  return tpl || GREETING;
 }
 
-async function setConvMeta(slug, meta) {
-  const { convMeta } = await storageGet(['convMeta']) || {};
-  convMeta[slug.toLowerCase()] = { ...(convMeta[slug.toLowerCase()] || {}), ...meta, updatedAt: Date.now() };
-  await storageSet({ convMeta });
-}
+const GREETING = `Halo aku Sukii, AI Assistant-nya Baby Val 💕
+Kalau mau Chat sama Baby Val, membership dulu ya di Tevi
+Kalau mau VCS bisa bayar di babyval.com`;
 
-const GREETING_COOLDOWN_MS = 3 * 60 * 60 * 1000;
+// ── API Send (tabless) ────────────────────────────────────────────────
 
-async function decideSlot(slug, lastMsgTs) {
-  const meta = await getConvMeta(slug);
-  const now = Date.now();
-  if (!meta) return { type: 'greeting', slot: 1, greetingCooldownTs: now + GREETING_COOLDOWN_MS };
-  if (meta.slot >= 4) return { type: 'greeting', slot: 1, greetingCooldownTs: now + GREETING_COOLDOWN_MS };
-  if (lastMsgTs && (now - lastMsgTs) > GREETING_COOLDOWN_MS) return { type: 'greeting', slot: 1, greetingCooldownTs: now + GREETING_COOLDOWN_MS };
-  return { type: 'reply', slot: (meta.slot || 0) + 1 };
-}
-
-// ── Image Cooldown ──────────────────────────────────────────────────────
-
-const IMAGE_COOLDOWN_MS = 6 * 60 * 60 * 1000;
-
-async function isImageCooldown(slug) {
-  const { imageCooldownUsers } = await storageGet(['imageCooldownUsers']) || {};
-  const ts = imageCooldownUsers?.[slug.toLowerCase()];
-  if (!ts) return false;
-  if (Date.now() - ts > IMAGE_COOLDOWN_MS) return false;
-  return true;
-}
-
-async function addImageCooldown(slug) {
-  const { imageCooldownUsers } = await storageGet(['imageCooldownUsers']) || {};
-  imageCooldownUsers[slug.toLowerCase()] = Date.now();
-  await storageSet({ imageCooldownUsers });
-}
-
-// ── Process One Conversation ─────────────────────────────────────────────
-
-async function processConv(tabId, slug) {
-  log('INFO', '[PROC] Processing @' + slug);
-  await setConvMeta(slug, { status: 'processing' });
-
-  // Navigate to DM page to get messages
-  try {
-    await chrome.tabs.update(tabId, { url: `https://tevi.com/@${slug}/messages`, active: true });
-    await sleep(4000);
-  } catch (e) {
-    log('ERROR', '[PROC] Navigate error @' + slug + ': ' + e.message);
+async function apiSend(recipientSlug, text) {
+  const { apiSendPattern } = await sg(['apiSendPattern']) || {};
+  if (!apiSendPattern) {
+    log('ERROR', '[API] No pattern — send DM manually first to capture');
     return false;
   }
 
-  await ensureCS(tabId);
+  log('INFO', '[API] Sending to @' + recipientSlug + ': ' + text.substring(0, 40) + '...');
 
-  // Get messages
-  const msgsResp = await chrome.tabs.sendMessage(tabId, { type: 'GET_MSGS', count: 4 }).catch(() => null);
-  const userMessages = msgsResp?.messages || [];
-  log('INFO', '[PROC] Got ' + userMessages.length + ' msgs for @' + slug);
+  try {
+    const bf = apiSendPattern.bodyFields || {};
 
-  const checkResp = await chrome.tabs.sendMessage(tabId, { type: 'CHECK_DM' }).catch(() => ({}));
-  const lastMsgTs = checkResp?.lastMsgTs || Date.now();
+    // Build body — preserve all original fields, replace message content
+    const body = {};
 
-  // Check for images
-  if (checkResp?.hasImage) {
-    await addImageCooldown(slug);
-    log('INFO', '[PROC] Image from @' + slug + ' → cooldown 6h');
+    // Priority: use the field names that exist in the captured request
+    const msgFieldNames = ['message', 'content', 'text', 'body', 'messageText', 'msg'];
+    for (const fn of msgFieldNames) {
+      if (bf[fn] !== undefined) { body[fn] = text; break; }
+    }
+    if (Object.keys(body).length === 0) body['message'] = text;
+
+    // Add identifier fields
+    const idFieldNames = ['recipient', 'recipientId', 'userId', 'conversationId', 'channelId', 'to', 'slug'];
+    for (const fn of idFieldNames) {
+      if (bf[fn] !== undefined) body[fn] = bf[fn];
+    }
+    // Ensure we have recipient
+    if (!body.recipient && !body.recipientId) body.recipient = recipientSlug;
+
+    // Add all other original fields
+    for (const [k, v] of Object.entries(bf)) {
+      if (!Object.keys(body).includes(k)) body[k] = v;
+    }
+
+    // Build headers
+    const headers = { ...(apiSendPattern.headers || {}) };
+    headers['Content-Type'] = 'application/json';
+    // Restore Authorization if it was in captured headers
+    if (apiSendPattern.headers?.Authorization) {
+      headers['Authorization'] = apiSendPattern.headers.Authorization;
+    }
+
+    const res = await fetch(apiSendPattern.url, {
+      method: apiSendPattern.method || 'POST',
+      headers,
+      body: JSON.stringify(body),
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      log('INFO', '[API] Sent OK to @' + recipientSlug);
+      return true;
+    } else {
+      const txt = await res.text().catch(() => '');
+      log('ERROR', '[API] Failed @' + recipientSlug + ' status=' + res.status + ' body=' + txt.substring(0, 100));
+      return false;
+    }
+  } catch (e) {
+    log('ERROR', '[API] Error @' + recipientSlug + ': ' + e.message);
+    return false;
+  }
+}
+
+// ── Navigate to DM page ───────────────────────────────────────────────
+
+async function navigateToDM(tabId, slug) {
+  const url = `https://tevi.com/@${slug}/messages`;
+  try {
+    await chrome.tabs.update(tabId, { url, active: true });
+    await sleep(4000);
+    await ensureCS(tabId);
+    return true;
+  } catch (e) {
+    log('ERROR', '[NAV] DM navigate failed @' + slug + ': ' + e.message);
+    return false;
+  }
+}
+
+// ── Process One Conversation ─────────────────────────────────────────
+
+async function processConv(tabId, slug) {
+  log('INFO', '[PROC] Processing @' + slug);
+  await setMeta(slug, { status: 'processing' });
+
+  // Navigate to DM to read messages + check for images
+  const navOk = await navigateToDM(tabId, slug);
+  if (!navOk) {
+    const prev = await getMeta(slug) || {};
+    await setMeta(slug, { status: 'failed', navigateFailCount: (prev.navigateFailCount || 0) + 1 });
+    return false;
   }
 
-  // Decide slot
-  const { type, slot, greetingCooldownTs } = await decideSlot(slug, lastMsgTs);
-  log('INFO', '[PROC] Slot=' + slot + ' type=' + type + ' for @' + slug);
+  // Read last 4 USER messages for context
+  await sleep(1500);
+  const msgsResp = await chrome.tabs.sendMessage(tabId, { type: 'GET_MSGS', count: 4 }).catch(() => null);
+  const userMessages = msgsResp?.messages || [];
+  log('INFO', '[PROC] Got ' + userMessages.length + ' user msgs for @' + slug);
 
-  const reply = type === 'greeting' ? GREETING : (await generateReply(slug, userMessages, slot) || GREETING);
+  // Check last message for image
+  const checkResp = await chrome.tabs.sendMessage(tabId, { type: 'CHECK_DM' }).catch(() => ({}));
+  if (checkResp?.hasImage) {
+    await addImageCooldown(slug);
+    log('INFO', '[PROC] Image from @' + slug + ' — cooldown 6h');
+  }
 
-  // Send via API (no tab needed)
-  const sent = await apiSendMessage(slug, reply);
-  log('INFO', '[PROC] Send result=' + sent + ' @' + slug);
+  // Decide slot: greeting (1) or reply (2/3/4)
+  const { type, slot } = await decideSlot(slug);
+  log('INFO', '[PROC] @' + slug + ' → slot=' + slot + ' type=' + type);
 
-  await setConvMeta(slug, {
+  // Build reply
+  let reply;
+  if (type === 'greeting') {
+    reply = await getGreeting();
+  } else {
+    reply = await generateReply(slug, userMessages, slot);
+  }
+
+  // Send via API (tabless)
+  const sent = await apiSend(slug, reply);
+  log('INFO', '[PROC] @' + slug + ' sent=' + sent + ' slot=' + slot);
+
+  // Update meta
+  await setMeta(slug, {
     status: sent ? 'done' : 'failed',
     slot: sent ? slot : null,
-    greetingCooldownTs: type === 'greeting' ? greetingCooldownTs : (await getConvMeta(slug))?.greetingCooldownTs,
     lastReplyAt: sent ? Date.now() : null,
+    failedAt: sent ? null : Date.now(),
   });
 
   return sent;
 }
 
-// ── Main Scan ───────────────────────────────────────────────────────────
+// ── Scan ─────────────────────────────────────────────────────────────
 
 async function runScan(tabId) {
-  const { botEnabled } = await storageGet(['tevi_cs_state']) || {};
+  const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   if (!botEnabled) return;
 
   // Navigate to messages page
@@ -270,6 +303,10 @@ async function runScan(tabId) {
   await ensureCS(tabId);
   await sleep(2000);
 
+  // Activate intercept (capture API calls if user sends manually)
+  try { await chrome.tabs.sendMessage(tabId, { type: 'INTERCEPT_SEND' }); } catch {}
+
+  // Scan convs
   const scanResp = await chrome.tabs.sendMessage(tabId, { type: 'SCAN_CONVS' }).catch(() => null);
   if (!scanResp?.ok) {
     log('ERROR', '[SCAN] Scan failed');
@@ -279,38 +316,48 @@ async function runScan(tabId) {
   const raw = scanResp.convs || [];
   log('INFO', '[SCAN] ' + raw.length + ' unreplied convs');
 
+  // Filter: skip self, skip processing, skip too many fails, skip image cooldown
   const filtered = [];
   for (const conv of raw) {
     const slug = conv.slug;
     if (!slug || slug.toLowerCase() === MY_SLUG) continue;
-    const meta = await getConvMeta(slug);
+    const meta = await getMeta(slug);
     if (meta?.status === 'processing') continue;
     if ((meta?.navigateFailCount || 0) >= 3) continue;
-    if (await isImageCooldown(slug)) continue;
+    if (await isImageCooldown(slug)) {
+      log('INFO', '[SCAN] Skip @' + slug + ' (image cooldown)');
+      continue;
+    }
     filtered.push(conv);
   }
 
   log('INFO', '[SCAN] ' + filtered.length + ' after filter');
-  if (!filtered.length) return;
 
+  if (!filtered.length) {
+    await syncOverlay({ botEnabled: true, pollTime: 20 });
+    return;
+  }
+
+  // Process first conv
   const sent = await processConv(tabId, filtered[0].slug);
 
-  const st = await storageGet(['tevi_cs_state']) || {};
+  // Save last result
+  const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.lastResult = { conv: filtered[0].slug, ok: sent, ts: Date.now() };
   st.lastScanAt = Date.now();
-  await storageSet({ tevi_cs_state: st });
+  await ss({ tevi_cs_state: st });
 
   await syncOverlay({ botEnabled: true, pollTime: 20 });
-  log('INFO', '[SCAN] Done: @' + filtered[0].slug + ' result=' + sent);
+  log('INFO', '[SCAN] Done: @' + filtered[0].slug + ' sent=' + sent);
 }
 
-// ── Overlay Sync ────────────────────────────────────────────────────────
+// ── Overlay Sync ──────────────────────────────────────────────────────
 
 async function syncOverlay(state) {
-  await storageSet({ tevi_cs_overlay_state: { ...state, updatedAt: Date.now() } });
+  await ss({ tevi_cs_overlay_state: { ...state, updatedAt: Date.now() } });
 }
 
-// ── Alarms ──────────────────────────────────────────────────────────────
+// ── Alarms ───────────────────────────────────────────────────────────
 
 const POLL = 20; // seconds
 
@@ -326,8 +373,10 @@ async function setupAlarms() {
 }
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name === 'tevi_cs_keepalive') return; // Just keep SW alive
   if (alarm.name !== 'tevi_cs_poll') return;
-  const { botEnabled } = await storageGet(['tevi_cs_state']) || {};
+
+  const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   if (!botEnabled) return;
 
   let tab = await getTeviTab();
@@ -335,7 +384,6 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
   const ok = await ensureCS(tab.id);
   if (!ok) {
-    log('WARN', '[ALARM] CS inject failed, retrying...');
     tab = await getTeviTab();
     if (tab) await ensureCS(tab.id);
   }
@@ -343,57 +391,140 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   await runScan(tab?.id);
 });
 
-// ── Init ────────────────────────────────────────────────────────────────
+// ── Tab Events — scan when user switches to Tevi tab ──────────────────
+
+let _lastTabId = null;
+
+chrome.tabs.onActivated.addListener(async activeInfo => {
+  const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
+  if (!botEnabled) return;
+
+  // Check if it's a tevi tab
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId);
+    if (!tab.url || !tab.url.match(/tevi\.com\//)) return;
+  } catch { return; }
+
+  // Only scan if tab changed
+  if (activeInfo.tabId === _lastTabId) return;
+  _lastTabId = activeInfo.tabId;
+  _currentTabId = activeInfo.tabId;
+
+  // Quick scan on tab switch (less aggressive than alarm)
+  await ensureCS(activeInfo.tabId);
+  await runScan(activeInfo.tabId);
+});
+
+// ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9 starting...');
+  log('INFO', 'SW v0.9.1 starting...');
 
-  const st = await storageGet(['tevi_cs_state']) || {};
+  // Reset stale state
+  const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
-  await storageSet({ tevi_cs_state: st });
+  await ss({ tevi_cs_state: st });
+
+  // Clear old conv meta (48h+)
+  const { convMeta } = await sg(['convMeta']) || {};
+  const cutoff = Date.now() - 48 * 60 * 60 * 1000;
+  const filtered = {};
+  let changed = false;
+  for (const [k, v] of Object.entries(convMeta || {})) {
+    if (v.updatedAt > cutoff) filtered[k] = v;
+    else changed = true;
+  }
+  if (changed) await ss({ convMeta: filtered });
 
   await setupAlarms();
   await syncOverlay({ botEnabled: false, pollTime: POLL });
 
-  // Listen for toggle
+  // ── Message listeners ──────────────────────────────────────────────
+
   chrome.storage.onChanged.addListener(async (changes) => {
-    if (!changes.tevi_cs_toggle_req) return;
-    const req = changes.tevi_cs_toggle_req.newValue;
-    if (!req) return;
+    // Toggle from popup/overlay
+    if (changes.tevi_cs_toggle_req) {
+      const req = changes.tevi_cs_toggle_req.newValue;
+      if (!req) return;
 
-    const st = await storageGet(['tevi_cs_state']) || {};
-    const newEnabled = req.enabled;
-    log('INFO', '[TOGGLE] ' + (st.botEnabled ? 'ON' : 'OFF') + ' → ' + (newEnabled ? 'ON' : 'OFF'));
+      const currentSt = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
+      const newEnabled = req.enabled;
 
-    await storageSet({
-      tevi_cs_toggle_req: null,
-      tevi_cs_toggle_ack: { enabled: newEnabled, ts: Date.now() },
-      tevi_cs_state: { ...st, botEnabled: newEnabled },
-    });
+      log('INFO', '[TOGGLE] ' + (currentSt.botEnabled ? 'ON→' : 'OFF→') + (newEnabled ? 'ON' : 'OFF'));
 
-    await syncOverlay({ botEnabled: newEnabled, pollTime: POLL });
+      await ss({
+        tevi_cs_toggle_req: null,
+        tevi_cs_toggle_ack: { enabled: newEnabled, ts: Date.now() },
+        tevi_cs_state: { ...currentSt, botEnabled: newEnabled },
+      });
 
-    if (newEnabled) {
-      await setupAlarms(); // restart keep-alive
-      const tab = await getTeviTab();
-      if (tab) {
-        await ensureCS(tab.id);
-        await runScan(tab.id);
+      await syncOverlay({ botEnabled: newEnabled, pollTime: POLL });
+
+      if (newEnabled) {
+        await setupAlarms();
+        const tab = await getTeviTab();
+        if (tab) {
+          await ensureCS(tab.id);
+          // Activate intercept so user can capture API pattern by sending manually
+          try { await chrome.tabs.sendMessage(tab.id, { type: 'INTERCEPT_SEND' }); } catch {}
+          await runScan(tab.id);
+        }
       }
     }
   });
 
-  // Listen for interceptor-captured API pattern
+  // Receive captured API pattern from content script
   chrome.runtime.onMessage.addListener((msg, _, sendResp) => {
     if (msg.type === 'API_SEND_PATTERN') {
       log('INFO', '[API] Pattern captured: ' + msg.method + ' ' + msg.url);
-      storageSet({ apiSendPattern: { url: msg.url, method: msg.method, headers: msg.headers, bodyFields: msg.bodyFields } });
+      ss({ apiSendPattern: { url: msg.url, method: msg.method, headers: msg.headers, bodyFields: msg.bodyFields, capturedAt: msg.capturedAt } });
+      sendResp({ ok: true });
+      return true;
+    }
+    // Popup bridge
+    if (msg.type === 'GET_CONFIG') {
+      sg(['tevi_cs_config', 'tevi_cs_secrets']).then(data => {
+        sendResp({ config: data.tevi_cs_config, hasAI: !!(data.tevi_cs_secrets?.aiKey) });
+      });
+      return true;
+    }
+    if (msg.type === 'SAVE_CONFIG') {
+      ss({ tevi_cs_config: msg.config });
+      sendResp({ ok: true });
+      return true;
+    }
+    if (msg.type === 'SET_SECRETS') {
+      ss({ tevi_cs_secrets: msg.secrets });
+      sendResp({ ok: true });
+      return true;
+    }
+    if (msg.type === 'GET_STATUS') {
+      const st = (sg(['tevi_cs_state', 'tevi_cs_overlay_state']).then(data => {
+        const s = (data.tevi_cs_state || {});
+        const o = (data.tevi_cs_overlay_state || {});
+        sendResp({
+          enabled: s.botEnabled || false,
+          lastResult: s.lastResult || null,
+          lastPoll: s.lastScanAt || null,
+        });
+      }));
+      return true;
+    }
+    if (msg.type === 'RESET_STATE') {
+      ss({ convMeta: {}, imageCooldownUsers: {}, tevi_cs_state: { queueBusy: false } });
       sendResp({ ok: true });
       return true;
     }
   });
 
-  log('INFO', 'SW v0.9 ready. apiSendPattern: ' + !!(st?.apiSendPattern));
+  // Resume if was enabled
+  const wasSt = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
+  if (wasSt.botEnabled) {
+    const tab = await getTeviTab();
+    if (tab) await runScan(tab.id);
+  }
+
+  log('INFO', 'SW v0.9.1 ready');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));

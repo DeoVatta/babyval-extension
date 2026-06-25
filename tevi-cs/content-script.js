@@ -1,10 +1,12 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.8
- * DOM-based detection: scan convs via ✓/✓✓ icons
- * getUnreadConvs: returns all convs that need a reply
- * getMessages: returns last N messages from the chat
- * getLastMsgStatus: checks if last msg has ✓/✓✓ icon
- * domSend: type + send + verify
+ * CONTENT SCRIPT — Tevi CS Bot v0.9.1
+ *
+ * Handles:
+ * - SCAN_CONVS: find all convs needing reply (no ✓/✓✓ icon = user last)
+ * - CHECK_DM: check if last msg has check icon + extract timestamp
+ * - GET_MSGS: read last N USER messages (not Sukii)
+ * - IS_MEMBERSHIP: detect membership badge
+ * - INTERCEPT_SEND: capture Tevi's send-message API call
  */
 
 (function() {
@@ -19,8 +21,10 @@
 
   function isVisible(el) {
     if (!el) return false;
-    const s = window.getComputedStyle(el);
-    return s.display !== 'none' && s.visibility !== 'hidden' && el.offsetWidth > 0 && el.offsetHeight > 0;
+    try {
+      const s = window.getComputedStyle(el);
+      return s.display !== 'none' && s.visibility !== 'hidden' && el.offsetWidth > 0 && el.offsetHeight > 0;
+    } catch { return false; }
   }
 
   function l(msg) {
@@ -40,209 +44,354 @@
     return m ? m[1] : null;
   }
 
-  // Find all conversation items in the sidebar
   function findConvItems() {
-    // Try multiple selectors — Tevi uses dynamic class names
-    const selectors = [
-      'a[href*="/messages"]',
-      '[data-conv-id]',
-      '[data-sender]',
-      '[class*="conversation"]',
-      '[class*="conv-item"]',
-      'li[class*="conversation"]',
-    ];
-    for (const s of selectors) {
-      const els = Array.from(document.querySelectorAll(s));
-      if (els.length > 0) return els;
+    // Priority 1: data attribute (most reliable — Tevi's internal ID)
+    const byData = Array.from(document.querySelectorAll('[data-conv-id]'));
+    if (byData.length > 0) return byData.map(el => ({ el, strategy: 'data-conv-id' }));
+
+    // Priority 2: specific conversation class names
+    const byClass = Array.from(document.querySelectorAll(
+      '[class*="conversation-item"]'
+    ));
+    if (byClass.length > 0) return byClass.map(el => ({ el, strategy: 'conversation-item' }));
+
+    // Priority 3: links matching /@username/messages
+    const allLinks = Array.from(document.querySelectorAll('a[href*="/@"]'));
+    const convLinks = allLinks.filter(a => {
+      return a.href && a.href.match(/tevi\.com\/@[^/]+\/messages/);
+    });
+    if (convLinks.length > 0) {
+      const seen = new Set();
+      const containers = [];
+      for (const a of convLinks) {
+        // Walk up to find the conv container
+        let el = a.closest('[class*="conversation"]');
+        if (!el) el = a.closest('li') || a.parentElement;
+        const key = el ? (el.dataset.convId || el.className || a.href) : a.href;
+        if (!seen.has(key)) {
+          seen.add(key);
+          containers.push({ el: el || a, strategy: 'dm-link' });
+        }
+      }
+      if (containers.length > 0) return containers;
     }
-    return [];
+
+    // Priority 4: list items in conversation list
+    const listItems = Array.from(document.querySelectorAll(
+      'ul[class*="list"] > li, ul[class*="conv"] > li, ul[class*="message"] > li'
+    ));
+    const filtered = listItems.filter(li => {
+      const text = li.textContent || '';
+      return text.includes('@') && text.length > 5 && text.length < 200;
+    });
+    if (filtered.length > 0) return filtered.map(el => ({ el, strategy: 'list-item' }));
+
+    // Priority 5: any element with username-like content
+    const candidates = Array.from(document.querySelectorAll('a[href*="/@"], [data-username]'));
+    const unique = [];
+    const keys = new Set();
+    for (const c of candidates) {
+      const el = c.closest('[class*="conv"]') || c.closest('li') || c;
+      const key = el.className + (el.dataset.convId || '');
+      if (!keys.has(key) && (el.textContent || '').length > 3) {
+        keys.add(key);
+        unique.push({ el, strategy: 'fallback' });
+      }
+    }
+    return unique;
   }
 
-  // Check if last message has ✓ or ✓✓ icon (Sukii already replied)
-  function hasRepliedIcon(msgEl) {
-    if (!msgEl) return false;
-    // Look for check icons: ✓✓ = icon-check-double, ✓ = icon-check
-    const html = msgEl.innerHTML;
-    if (html.includes('icon-check-double') || html.includes('check-double')) return true;
-    if (html.includes('icon-check"') || html.includes('check"') || html.includes('icon-check\'')) {
-      // Make sure it's not check-double
-      if (html.includes('check-double')) return true;
-      return true; // single check = Sukii replied
-    }
-    // Also check for SVG-based icons
-    const svgs = msgEl.querySelectorAll('svg');
+  // ── CHECK ICON (✓ = Sukii replied, no icon = USER last) ──────────────
+
+  function hasRepliedIcon(el) {
+    if (!el) return false;
+    // Look for SVG check icons
+    const svgs = el.querySelectorAll('svg');
     for (const svg of svgs) {
+      const outer = svg.outerHTML || '';
       const alt = svg.getAttribute('alt') || '';
-      const html2 = svg.outerHTML || '';
-      if (alt.includes('check-double') || html2.includes('check-double')) return true;
-      if (alt.includes('check') || html2.includes('icon-check') || html2.includes('check.svg')) return true;
+      const aria = svg.getAttribute('aria-label') || '';
+      const src = svg.getAttribute('src') || '';
+
+      // Double check = Sukii sent and delivered
+      if (outer.includes('check-double') || outer.includes('icon-check-double')) return true;
+      if (alt.includes('check-double') || aria.includes('check-double')) return true;
+      if (src.includes('check-double')) return true;
+
+      // Single check = Sukii read receipt
+      if (outer.includes('icon-check') && !outer.includes('double')) return true;
+      if (alt.includes('check') && !alt.includes('double')) return true;
+      if (src.includes('icon-check') && !src.includes('double')) return true;
     }
+
+    // Look for img with check icon
+    const imgs = el.querySelectorAll('img');
+    for (const img of imgs) {
+      const src = img.getAttribute('src') || '';
+      const alt = img.getAttribute('alt') || '';
+      if (src.includes('check-double')) return true;
+      if (src.includes('icon-check') && !src.includes('double')) return true;
+      if (alt.includes('check') && !alt.includes('double')) return true;
+    }
+
+    // Look for icon-font elements
+    const icons = el.querySelectorAll('[class*="icon-check"]');
+    for (const ic of icons) {
+      const cls = ic.className || '';
+      if (cls.includes('check-double')) return true;
+      if (cls.includes('check') && !cls.includes('double')) return true;
+    }
+
     return false;
   }
 
-  // Get the latest message element in a conv list item
-  function getLastMsgEl(convEl) {
-    // Try to find the message preview text element
-    const selectors = [
-      '[class*="last-message"]',
-      '[class*="lastMsg"]',
-      '[class*="preview"]',
-      '[class*="message-preview"]',
-      '[class*="conv-preview"]',
-      'p[class*="message"]',
-      'span[class*="message"]',
-    ];
-    for (const s of selectors) {
-      const el = convEl.querySelector(s);
-      if (el) return el;
-    }
-    // Fallback: just return the conv element itself if it has text
-    return convEl;
-  }
+  // ── EXTRACT INFO FROM CONV ITEM ───────────────────────────────────────
 
-  // Extract conv slug from a conversation element
-  function extractConvSlug(convEl) {
-    // Try href attribute
-    const link = convEl.closest('a') || convEl.querySelector('a');
-    if (link) {
+  function extractConvSlug(containerEl) {
+    const el = containerEl.el || containerEl;
+    // From anchor href
+    const link = el.closest('a') || el.querySelector('a[href*="/@"]');
+    if (link && link.href) {
       const m = link.href.match(/tevi\.com\/@([^/]+)/);
-      if (m) return m[1];
+      if (m && m[1]) return m[1];
     }
-    // Try data attributes
-    const slug = convEl.dataset.slug || convEl.dataset.username || convEl.dataset.name;
-    if (slug) return slug;
-    // Try text content to find @username
-    const text = convEl.textContent || '';
-    const m = text.match(/@([a-zA-Z0-9_]+)/);
+    // From data attribute
+    const dataSlug = el.dataset.username || el.dataset.slug || el.dataset.name;
+    if (dataSlug) return dataSlug;
+    // From text content
+    const text = el.textContent || '';
+    const m = text.match(/@([a-zA-Z0-9_]{2,20})/);
     if (m) return m[1];
     return null;
   }
 
-  // Check if conv has an unread indicator (dot, badge, etc)
-  function hasUnreadBadge(convEl) {
+  function getLastMsgPreview(containerEl) {
+    const el = containerEl.el || containerEl;
+    // Try specific selectors for message preview
+    const selectors = [
+      '[class*="last-message"]',
+      '[class*="preview"]',
+      '[class*="msg-preview"]',
+      '[class*="message-preview"]',
+      'p[class*="msg"]',
+      'span[class*="msg"]',
+      '[class*="conv-preview"]',
+    ];
+    for (const s of selectors) {
+      const found = el.querySelector(s);
+      if (found && isVisible(found)) return found;
+    }
+    // Fallback: return the conv item itself if it has text
+    if ((el.textContent || '').length > 0) return el;
+    return null;
+  }
+
+  function hasUnreadBadge(containerEl) {
+    const el = containerEl.el || containerEl;
     const selectors = [
       '[class*="unread"]',
       '[class*="badge"]',
-      '[class*="dot"]',
-      '[class*="notification"]',
-      '[data-unread]',
+      '[class*="notification-dot"]',
+      '[data-unread="true"]',
+      '[aria-label*="unread" i]',
     ];
     for (const s of selectors) {
-      const el = convEl.querySelector(s);
-      if (el && isVisible(el)) return true;
+      const found = el.querySelector(s);
+      if (found && isVisible(found)) return true;
     }
     return false;
   }
 
-  // Scan ALL conversations on messages page, return slugs that need reply
+  function isMembershipConv(containerEl) {
+    const el = containerEl.el || containerEl;
+    const selectors = [
+      '[class*="badge"][class*="member"]',
+      '[class*="badge"][class*="premium"]',
+      '[class*="badge"][class*="vip"]',
+      '[class*="member-badge"]',
+      '[class*="premium-badge"]',
+      '[data-membership="true"]',
+      '[data-plan*="member"]',
+      '[data-plan*="premium"]',
+    ];
+    for (const s of selectors) {
+      const found = el.querySelector(s);
+      if (found) {
+        const text = (found.textContent || '').toLowerCase();
+        if (text.match(/member|premium|vip| subscribed/i)) return true;
+      }
+    }
+    // Also check data attributes
+    const attrs = ['membership', 'member', 'premium', 'plan', 'subscription'];
+    for (const attr of attrs) {
+      const val = el.getAttribute('data-' + attr) || el.dataset[attr] || '';
+      if (String(val).toLowerCase().match(/member|premium|vip/)) return true;
+    }
+    return false;
+  }
+
+  function getConvTimestamp(containerEl) {
+    const el = containerEl.el || containerEl;
+    // Look for time element
+    const timeEl = el.querySelector('time') ||
+                    el.querySelector('[class*="time"]') ||
+                    el.querySelector('[class*="date"]') ||
+                    el.querySelector('[data-time]');
+    if (timeEl) {
+      const datetime = timeEl.getAttribute('datetime');
+      if (datetime) {
+        const ts = new Date(datetime).getTime();
+        if (!isNaN(ts)) return ts;
+      }
+      const text = (timeEl.textContent || '').trim();
+      // Parse relative time: "2m ago", "1h ago", "yesterday"
+      const mins = text.match(/(\d+)\s*m(?!s)/);
+      const hours = text.match(/(\d+)\s*h/);
+      const days = text.match(/(\d+)\s*d/);
+      if (mins) return Date.now() - parseInt(mins[1]) * 60 * 1000;
+      if (hours) return Date.now() - parseInt(hours[1]) * 60 * 60 * 1000;
+      if (days) return Date.now() - parseInt(days[1]) * 24 * 60 * 60 * 1000;
+    }
+    return null;
+  }
+
+  // ── SCAN ─────────────────────────────────────────────────────────────
+
   function scanConvs() {
     const items = findConvItems();
-    const unread = [];
+    if (!items.length) return [];
 
-    for (const item of items) {
-      const slug = extractConvSlug(item);
-      if (!slug || slug === 'cutieval' || slug === getSlug()) continue;
+    const currentSlug = getSlug();
+    const unreplied = [];
 
-      const lastMsgEl = getLastMsgEl(item);
+    for (const container of items) {
+      const slug = extractConvSlug(container);
+      if (!slug || slug.toLowerCase() === 'cutieval' || slug.toLowerCase() === currentSlug) continue;
+
+      const lastMsgEl = getLastMsgPreview(container);
       const replied = hasRepliedIcon(lastMsgEl);
-      const unreadBadge = hasUnreadBadge(item);
+      const unreadBadge = hasUnreadBadge(container);
+      const isMember = isMembershipConv(container);
+      const lastMsgTs = getConvTimestamp(container);
 
-      if (!replied || unreadBadge) {
-        unread.push({ slug, hasUnread: unreadBadge });
+      // Unreplied: Sukii NOT the last replier (no check icon = user last)
+      // Membership: skip entirely
+      if (!replied && !isMember) {
+        unreplied.push({ slug, hasUnread: unreadBadge, lastMsgTs, isMember });
       }
     }
 
-    return unread;
+    return unreplied;
   }
 
-  // ── MESSAGE SCANNER (DM page) ────────────────────────────────────────────
+  // ── MESSAGE SCANNER (DM page) ───────────────────────────────────────────
 
-  // Get all message elements in the current DM chat
   function findMessageEls() {
     const selectors = [
-      '[class*="message"]',
+      '[class*="message-item"]',
       '[class*="chat-item"]',
       '[class*="msg-item"]',
-      '[role="listitem"]',
+      '[class*="bubble"]',
       '[data-msg-id]',
-      'div[class*="bubble"]',
+      '[class*="message-bubble"]',
     ];
     for (const s of selectors) {
       const els = Array.from(document.querySelectorAll(s));
-      if (els.length > 3) return els;
+      if (els.length > 2) return els;
     }
+    // Fallback: all divs that look like messages
     return [];
   }
 
-  // Check if a message is from the USER (not from Sukii/cutieval)
+  // Detect if message is from USER (not from Sukii/cutieval)
+  // Strategy: right/left alignment, avatar, sender name, position
   function isFromUser(msgEl) {
-    // Check for "you" indicator or sender info
-    const html = msgEl.innerHTML || '';
     const cls = (msgEl.className || '').toLowerCase();
     const text = msgEl.textContent || '';
+    const html = msgEl.innerHTML || '';
 
-    // Own messages often have different styling
-    // Try to find sender info
-    const senderEl = msgEl.querySelector('[class*="sender"]') || msgEl.querySelector('[class*="name"]');
-    if (senderEl) {
-      const senderText = senderEl.textContent || '';
-      if (senderText.toLowerCase().includes('you') || senderText.toLowerCase().includes('kamu')) {
-        return true;
-      }
+    // Strategy 1: CSS alignment classes
+    if (cls.includes('right') || cls.includes('outgoing') || cls.includes('sent')) {
+      return false; // Sukii's message (right-aligned = outgoing)
     }
-
-    // Right-aligned messages are typically own messages
-    if (cls.includes('right') || cls.includes('outgoing') || cls.includes('own') || cls.includes('sent')) {
-      return false; // This is Sukii's message
-    }
-
-    // Left-aligned messages are from others
     if (cls.includes('left') || cls.includes('incoming') || cls.includes('received')) {
-      return true; // This is user's message
+      return true; // User's message
     }
 
-    // Check if message has avatar of the other user
-    const avatarEl = msgEl.querySelector('[class*="avatar"]');
+    // Strategy 2: Avatar — if avatar is Sukii/cutieval, it's NOT from user
+    const avatarEl = msgEl.querySelector('[class*="avatar"] img') ||
+                     msgEl.querySelector('img[class*="avatar"]') ||
+                     msgEl.querySelector('[class*="avatar"]');
     if (avatarEl) {
-      // If the avatar shows something other than Sukii, it's from user
-      const avatarText = avatarEl.textContent || '';
-      if (!avatarText.includes('Sukii') && !avatarText.includes('cutieval')) {
-        return true;
-      }
+      const avatarAlt = (avatarEl.getAttribute('alt') || '').toLowerCase();
+      const avatarSrc = (avatarEl.getAttribute('src') || '').toLowerCase();
+      if (avatarAlt.includes('sukii') || avatarSrc.includes('sukii')) return false;
+      if (avatarAlt.includes('cutieval') || avatarSrc.includes('cutieval')) return false;
+      // Has avatar that's not Sukii → from user
+      if (avatarAlt || avatarSrc) return true;
     }
 
-    // Check for image in message (user sending content)
-    if (msgEl.querySelector('img[class*="attachment"]') || msgEl.querySelector('[class*="image"] img')) {
+    // Strategy 3: Sender name element
+    const senderEl = msgEl.querySelector('[class*="sender-name"]') ||
+                     msgEl.querySelector('[class*="username"]') ||
+                     msgEl.querySelector('[data-sender]') ||
+                     msgEl.querySelector('[class*="name"]');
+    if (senderEl) {
+      const senderText = (senderEl.textContent || '').toLowerCase();
+      const senderData = senderEl.getAttribute('data-sender') || '';
+      if (senderText.includes('sukii') || senderData.includes('sukii')) return false;
+      if (senderText.includes('cutieval') || senderData.includes('cutieval')) return false;
+      if (senderText || senderData) return true;
+    }
+
+    // Strategy 4: "You:" prefix in text
+    if (text.trim().startsWith('You:') || text.trim().startsWith('Kamu:')) return true;
+
+    // Strategy 5: Image attachment = user sent it
+    if (msgEl.querySelector('img[src*="attachment"]') ||
+        msgEl.querySelector('img[class*="media"]') ||
+        msgEl.querySelector('[class*="image"] img')) {
       return true;
     }
 
-    // Check for the "you" prefix in text
-    if (text.trim().startsWith('You:') || text.trim().startsWith('Kamu:')) {
-      return true;
-    }
+    // Strategy 6: Checkmark icon = Sukii's message (already sent)
+    if (hasRepliedIcon(msgEl)) return false;
+
+    // Strategy 7: CSS float/textAlign
+    try {
+      const style = window.getComputedStyle(msgEl);
+      if (style.textAlign === 'right' || style.cssFloat === 'right') return false;
+      if (style.textAlign === 'left') return true;
+    } catch {}
 
     return false;
   }
 
-  // Check if last message has ✓/✓✓ icon (Sukii replied)
   function checkLastMsgReplied() {
     const msgs = findMessageEls();
-    if (msgs.length === 0) return { replied: false, lastMsgText: '', hasImage: false };
+    if (!msgs.length) return { replied: false, lastMsgText: '', hasImage: false, lastMsgTs: null };
 
     const lastMsg = msgs[msgs.length - 1];
     const replied = hasRepliedIcon(lastMsg);
     const text = (lastMsg.textContent || '').trim();
+    const hasImage = !!(lastMsg.querySelector('img'));
 
-    // Check if last msg has image
-    const hasImage = !!(lastMsg.querySelector('img[src*="image"]') ||
-      lastMsg.querySelector('img[class*="attachment"]') ||
-      lastMsg.querySelector('[class*="image"]') ||
-      lastMsg.querySelector('[class*="media"]'));
+    // Extract timestamp
+    let lastMsgTs = null;
+    const timeEl = lastMsg.querySelector('[class*="time"]') ||
+                   lastMsg.querySelector('time') ||
+                   lastMsg.querySelector('[class*="date"]');
+    if (timeEl) {
+      const datetime = timeEl.getAttribute('datetime');
+      if (datetime) {
+        const ts = new Date(datetime).getTime();
+        if (!isNaN(ts)) lastMsgTs = ts;
+      }
+    }
 
-    return { replied, lastMsgText: text.substring(0, 100), hasImage };
+    return { replied, lastMsgText: text.substring(0, 100), hasImage, lastMsgTs };
   }
 
-  // Get last N messages from USER (not Sukii)
   function getLastNMessages(n = 4) {
     const msgs = findMessageEls();
     const userMsgs = [];
@@ -250,22 +399,29 @@
     for (const msgEl of msgs) {
       if (isFromUser(msgEl)) {
         const text = (msgEl.textContent || '').trim();
-        if (text) {
+        if (text && text.length > 0) {
           const hasImage = !!(msgEl.querySelector('img'));
           userMsgs.push({ text: text.substring(0, 500), hasImage });
         }
       }
     }
 
+    // Return last N user messages
     return userMsgs.slice(-n);
   }
 
-  // ── SEND ────────────────────────────────────────────────────────────────
+  // ── SEND (fallback — primary is API-based) ─────────────────────────────
 
   function findInput() {
-    const specific = document.getElementById('_r_17_');
-    if (specific && isVisible(specific)) return specific;
-    const sels = ['textarea', 'div[contenteditable="true"]', 'div[role="textbox"]', 'div[contenteditable]', 'input[type="text"]'];
+    const byId = document.getElementById('_r_17_');
+    if (byId && isVisible(byId)) return byId;
+    const sels = [
+      'textarea',
+      'div[contenteditable="true"]',
+      'div[role="textbox"]',
+      'div[contenteditable]',
+      'input[type="text"]',
+    ];
     for (const s of sels) {
       const el = document.querySelector(s);
       if (el && isVisible(el)) return el;
@@ -274,71 +430,52 @@
   }
 
   function findSendBtn() {
-    const BLOCKLIST = ['get-star','buy','purchase','donate','tip','payment','bayar','langganan','subscribe','premium','upgrade'];
+    const BLOCK = ['get-star','buy','purchase','donate','tip','payment','subscribe','premium'];
     const byId = document.getElementById('dm-chat-send-message-btn');
     if (byId && isVisible(byId)) return byId;
-    const sels = [
-      'button[aria-label*="Kirim" i]',
-      'button[aria-label*="Send" i]',
-      'button:has(svg[data-icon="paper-plane"])',
-      'button:has(svg[data-icon="send"])',
-    ];
-    for (const s of sels) {
-      const el = document.querySelector(s);
-      if (el && isVisible(el)) return el;
-    }
     const btns = document.querySelectorAll('button');
     for (const el of btns) {
       if (!isVisible(el)) continue;
       const txt = (el.textContent || '').toLowerCase();
       const title = (el.title || '').toLowerCase();
-      if (BLOCKLIST.some(k => txt.includes(k) || title.includes(k))) continue;
-      if (el.textContent.trim().length > 25) continue;
-      if (el.querySelector('svg') && !txt.includes('send') && !txt.includes('kirim')) continue;
+      if (BLOCK.some(k => txt.includes(k) || title.includes(k))) continue;
+      if (el.textContent.trim().length > 30) continue;
+      const svg = el.querySelector('svg');
+      if (svg && !txt.includes('send') && !txt.includes('kirim')) continue;
       return el;
     }
     return null;
   }
 
-  async function typeText(inputEl, text) {
-    inputEl.focus();
-    if (inputEl.tagName === 'TEXTAREA') { inputEl.value = ''; inputEl.dispatchEvent(new Event('input', { bubbles: true })); }
-    else if (inputEl.tagName === 'DIV') { inputEl.textContent = ''; inputEl.innerHTML = ''; }
+  async function domSend(text) {
+    const input = findInput();
+    if (!input) return false;
+    await sleep(1500);
+    input.focus();
+    if (input.tagName === 'TEXTAREA') { input.value = ''; input.dispatchEvent(new Event('input', { bubbles: true })); }
+    else if (input.tagName === 'DIV') { input.textContent = ''; input.innerHTML = ''; }
     await sleep(800);
     for (let i = 0; i < text.length; i++) {
       const ch = text[i];
-      if (inputEl.tagName === 'TEXTAREA') inputEl.value += ch;
-      else inputEl.textContent += ch;
-      inputEl.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: ch === '\n' ? 'insertLineBreak' : 'insertText', data: ch }));
+      if (input.tagName === 'TEXTAREA') input.value += ch;
+      else input.textContent += ch;
+      input.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: ch === '\n' ? 'insertLineBreak' : 'insertText', data: ch }));
       let ms;
       if (ch === ' ') ms = 50 + Math.random() * 40;
       else if (ch === '.') ms = 80 + Math.random() * 60;
       else if (ch === ',') ms = 60 + Math.random() * 40;
-      else if (ch === '\n') ms = 100 + Math.random() * 80;
       else ms = 30 + Math.random() * 40;
       await sleep(ms);
     }
-    inputEl.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-
-  async function clickSend() {
-    const inp = findInput();
-    if (!inp) return false;
-    const textBefore = inp.tagName === 'TEXTAREA' ? inp.value : inp.textContent;
-    if (!textBefore || textBefore.trim().length === 0) return false;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    await sleep(1200);
     const btn = findSendBtn();
-    if (btn) { btn.click(); return true; }
-    inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
-    inp.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', keyCode: 13, bubbles: true }));
-    return true;
-  }
-
-  async function verifySent() {
+    if (btn) btn.click();
+    else input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
     await sleep(2000);
     const msgs = findMessageEls();
     for (const m of msgs) {
-      const t = m.textContent || '';
-      if (t.includes('Halo aku Sukii') || t.includes('Sukii, AI')) return true;
+      if ((m.textContent || '').includes('Halo aku Sukii')) return true;
     }
     const inp = findInput();
     if (inp) {
@@ -348,38 +485,98 @@
     return false;
   }
 
-  async function domSend(text) {
-    const input = findInput();
-    if (!input) return false;
-    await sleep(1500);
-    await typeText(input, text);
-    await sleep(1200);
-    const sent = await clickSend();
-    if (!sent) return false;
-    return await verifySent();
+  // ── INTERCEPT SEND (capture Tevi's API call) ───────────────────────────
+
+  let _interceptActive = false;
+
+  function activateIntercept() {
+    if (_interceptActive) return;
+    _interceptActive = true;
+
+    const _fetch = window.fetch;
+    const _xhrOpen = XMLHttpRequest.prototype.open;
+    const _xhrSend = XMLHttpRequest.prototype.send;
+    let captured = false;
+
+    function tryCapture(url, method, headers, body) {
+      if (captured) return;
+      if (!url.includes('wapi.flowstreamx')) return;
+      if (!url.match(/send|message|chat/i)) return;
+
+      captured = true;
+      // Parse JSON body
+      let parsedBody = {};
+      if (body && typeof body === 'string') {
+        try { parsedBody = JSON.parse(body); } catch {}
+      } else if (typeof body === 'object') {
+        parsedBody = body;
+      }
+
+      // Extract auth headers
+      let authToken = '';
+      if (headers) {
+        if (typeof headers.get === 'function') {
+          authToken = headers.get('Authorization') || headers.get('authorization') || '';
+        } else {
+          authToken = headers['Authorization'] || headers['authorization'] || '';
+        }
+      }
+
+      chrome.runtime.sendMessage({
+        type: 'API_SEND_PATTERN',
+        url,
+        method,
+        headers: { Authorization: authToken },
+        bodyFields: parsedBody,
+        capturedAt: Date.now(),
+      });
+      l('[INTERCEPT] Captured: ' + method + ' ' + url.substring(url.indexOf('/wapi')));
+    }
+
+    window.fetch = async function(input, init) {
+      const url = typeof input === 'string' ? input : input?.url || '';
+      const method = (init?.method || 'GET').toUpperCase();
+      const headers = init?.headers;
+      if (url.includes('wapi.flowstreamx') && method === 'POST') {
+        tryCapture(url, method, headers, init?.body);
+      }
+      return _fetch.apply(this, arguments);
+    };
+
+    XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+      this.__tevi_url = url;
+      this.__tevi_method = method.toUpperCase();
+      return _xhrOpen.call(this, method, url, ...rest);
+    };
+
+    XMLHttpRequest.prototype.send = function(body) {
+      if (this.__tevi_url) {
+        tryCapture(this.__tevi_url, this.__tevi_method, {}, body);
+      }
+      return _xhrSend.call(this, body);
+    };
+
+    l('[INTERCEPT] Send capture active');
   }
 
-  // ── MESSENGER ──────────────────────────────────────────────────────────
+  // ── MESSENGER ───────────────────────────────────────────────────────
+
   chrome.runtime.onMessage.addListener((msg, _, sendResp) => {
 
-    // SCAN: get all unread convs from messages page
     if (msg.type === 'SCAN_CONVS') {
-      const slug = getSlug();
       const convs = scanConvs();
-      l('[SCAN] ' + convs.length + ' unread convs found');
-      sendResp({ ok: true, convs, currentSlug: slug, url: location.href });
+      l('[SCAN] ' + convs.length + ' unreplied convs');
+      sendResp({ ok: true, convs, currentSlug: getSlug(), url: location.href });
       return true;
     }
 
-    // CHECK: check if current DM needs reply
     if (msg.type === 'CHECK_DM') {
       const status = checkLastMsgReplied();
-      l('[CHECK] replied=' + status.replied + ' text="' + status.lastMsgText.substring(0, 30) + '"');
+      l('[CHECK] replied=' + status.replied + ' ts=' + status.lastMsgTs);
       sendResp({ ok: true, ...status, slug: getSlug(), url: location.href });
       return true;
     }
 
-    // GET_MSGS: get last N user messages from current DM
     if (msg.type === 'GET_MSGS') {
       const msgs = getLastNMessages(msg.count || 4);
       l('[GET_MSGS] ' + msgs.length + ' user msgs');
@@ -387,14 +584,23 @@
       return true;
     }
 
-    // DOM_SEND: type + send in current DM
+    if (msg.type === 'IS_MEMBERSHIP') {
+      // Check current DM page for membership
+      const convEl = document.querySelector('[class*="conversation"]') ||
+                      document.querySelector('[class*="chat-header"]') ||
+                      document.querySelector('[class*="dm-header"]');
+      const isMember = convEl ? isMembershipConv({ el: convEl }) : false;
+      sendResp({ ok: true, isMembership: isMember });
+      return true;
+    }
+
     if (msg.type === 'DOM_SEND') {
       const { text } = msg;
       l('[DOM_SEND] ' + text.length + ' chars');
       (async () => {
         try {
           const ok = await domSend(text);
-          sendResp({ ok, slug: getSlug() });
+          sendResp({ ok });
         } catch (e) {
           l('[DOM_SEND] ERROR: ' + e.message);
           sendResp({ ok: false, reason: e.message });
@@ -403,65 +609,28 @@
       return true;
     }
 
-    // GET_DOM: basic DOM state
+    if (msg.type === 'INTERCEPT_SEND') {
+      activateIntercept();
+      sendResp({ ok: true });
+      return true;
+    }
+
     if (msg.type === 'GET_DOM') {
       sendResp({ slug: getSlug(), hasInput: !!findInput(), hasSendBtn: !!findSendBtn(), url: location.href });
       return true;
     }
 
-    // REFRESH: reload current page
     if (msg.type === 'REFRESH') {
-      l('[REFRESH] Reloading...');
       location.reload();
       sendResp({ ok: true });
       return true;
     }
 
-    // INTERCEPT_SEND: monkey-patch fetch/XHR to capture Tevi's send-message API call
-    if (msg.type === 'INTERCEPT_SEND') {
-      (function() {
-        const _fetch = window.fetch;
-        const _xhrOpen = XMLHttpRequest.prototype.open;
-        const _xhrSend = XMLHttpRequest.prototype.send;
-        let captured = false;
-        function tryCapture(url, method, headers, body) {
-          if (captured) return;
-          if (url.includes('send') || url.includes('message') || url.includes('chat')) {
-            captured = true;
-            chrome.runtime.sendMessage({ type: 'API_SEND_PATTERN', url, method, headers, bodyFields: body });
-            l('[INTERCEPT] Captured: ' + method + ' ' + url.substring(url.indexOf('/wapi')));
-          }
-        }
-        window.fetch = async function(input, init) {
-          const url = typeof input === 'string' ? input : input?.url || '';
-          const method = (init?.method || 'GET').toUpperCase();
-          if (url.includes('wapi.flowstreamx') && method === 'POST') {
-            let hdrs = {}; if (init?.headers instanceof Headers) init.headers.forEach((v, k) => hdrs[k] = v);
-            else if (init?.headers) hdrs = { ...init.headers };
-            tryCapture(url, method, hdrs, init?.body);
-          }
-          return _fetch.apply(this, arguments);
-        };
-        XMLHttpRequest.prototype.open = function(method, url, ...rest) {
-          this.__tevi_url = url; this.__tevi_method = method.toUpperCase();
-          return _xhrOpen.call(this, method, url, ...rest);
-        };
-        XMLHttpRequest.prototype.send = function(body) {
-          if (this.__tevi_url && this.__tevi_url.includes('wapi.flowstreamx')) tryCapture(this.__tevi_url, this.__tevi_method, {}, body);
-          return _xhrSend.call(this, body);
-        };
-        l('[INTERCEPT] Send capture active');
-      })();
-      sendResp({ ok: true });
-      return true;
-    }
-
-    // PING
     if (msg.type === 'PING') {
       sendResp({ ok: true, slug: getSlug(), url: location.href });
       return true;
     }
   });
 
-  l('v0.9 active — ' + location.href);
+  l('v0.9.1 active — ' + location.href);
 })();
