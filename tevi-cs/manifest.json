@@ -31,7 +31,7 @@
   "content_scripts": [
     {
       "matches": ["https://tevi.com/*"],
-      "js": ["content-script.js?v=0910", "overlay.js", "api-discovery.js", "sniffer.js"],
+      "js": ["content-script.js", "overlay.js", "api-discovery.js", "sniffer.js"],
       "run_at": "document_idle"
     }
   ],
