@@ -1082,3 +1082,49 @@ Chat langsung:..."
 [2026-06-25T16:52:38.099Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
 [2026-06-25T16:52:38.128Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (415ms)
 [2026-06-25T16:52:39.177Z] [CS] [INFO] [CS] v0.5.2.0 active — https://tevi.com/@jjjikj/messages
+[2026-06-25T16:53:34.703Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T16:53:34.733Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:53:34.743Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:53:36.707Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:53:36.873Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:53:36.904Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:53:36.914Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:53:36.929Z] [BG] [INFO] [DOM] → @jjjikj: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T16:53:36.936Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
+[2026-06-25T16:53:36.944Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:53:36.951Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (181ms)
+[2026-06-25T16:54:04.715Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:54:04.831Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:54:04.843Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:54:04.856Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:54:04.866Z] [BG] [INFO] [DOM] → @jjjikj: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T16:54:04.877Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
+[2026-06-25T16:54:04.886Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:54:04.894Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (175ms)
+[2026-06-25T16:54:07.491Z] [CS] [INFO] [CS] v0.5.2.0 active — https://tevi.com/@jjjikj/messages
+[2026-06-25T16:54:35.947Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T16:54:35.962Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:54:35.981Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:54:36.580Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T16:54:36.589Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:54:36.598Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:54:38.606Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:54:38.718Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:54:38.732Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:54:38.740Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:54:38.750Z] [BG] [INFO] [DOM] → @jjjikj: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T16:54:38.756Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
+[2026-06-25T16:54:38.765Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:54:38.774Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (129ms)
+[2026-06-25T16:55:06.979Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:55:07.081Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:55:07.090Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:55:07.099Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:55:07.105Z] [BG] [INFO] [DOM] → @jjjikj: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T16:55:07.116Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
+[2026-06-25T16:55:07.122Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:55:07.133Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (114ms)

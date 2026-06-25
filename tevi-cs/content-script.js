@@ -150,6 +150,9 @@
             _busy = false; sendResp({ ok: false, reason: 'wrong_page', slug, need: slug }); return;
           }
 
+          // Wait for DOM to settle after page load
+          await sleep(800);
+
           const input = await waitForEl(() => findInput(), 15000);
           if (!input) {
             l(`[DOM_SEND] ❌ Input not found`);
