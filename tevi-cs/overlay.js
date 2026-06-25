@@ -1,7 +1,8 @@
 /**
- * UNIFIED OVERLAY + SNIFFER — Tevi CS Bot v0.5.1.0
- * Single FAB: shows bot status + sniffer ring
- * Popup has full rules editor — overlay is minimal companion
+ * OVERLAY — Tevi CS Bot v0.6.0
+ * Cute cat character with CSS animations
+ * States: sleeping (idle) / alert (new msg) / typing (sukii typing)
+ * Shares state via chrome.storage.local
  */
 
 (function() {
@@ -10,112 +11,11 @@
   if (window.__TEVI_CS__) return;
   window.__TEVI_CS__ = true;
 
-  const VER = '0.5.2.0';
+  const VER = '0.6.0';
+  const STATE_KEY = 'tevi_cs_overlay_state';
   const LOG = 'http://localhost:3131';
-  const SN_KEY = 'tevi_sniff';
-  const EP_KEY = 'tevi_endpoints';
 
-  // ═══════════════════════════════════════════════════════════════════
-  // PART 1: SNIFFER (silent)
-  // ═══════════════════════════════════════════════════════════════════
-
-  function isTeviApi(url) {
-    return url.includes('wapi.flowstreamx.com') ||
-           url.includes('api.tevi') ||
-           url.includes('firebase') ||
-           url.includes('googleapis');
-  }
-
-  function snLog(msg) {
-    try {
-      fetch(`${LOG}/log`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: 'SNIFFER', level: 'INFO', message: msg }),
-      }).catch(() => {});
-    } catch {}
-  }
-
-  function saveEntry(entry) {
-    chrome.storage.local.get(SN_KEY, d => {
-      const list = d[SN_KEY] || [];
-      list.push(entry);
-      if (list.length > 3000) list.splice(0, list.length - 3000);
-      chrome.storage.local.set({ [SN_KEY]: list });
-    });
-  }
-
-  function saveEndpoint(method, url, status, isSend) {
-    try {
-      const u = new URL(url, location.href);
-      chrome.storage.local.get(EP_KEY, d => {
-        const eps = d[EP_KEY] || {};
-        const key = `${method}:${u.pathname}`;
-        eps[key] = { method, pathname: u.pathname, status, isSend, capturedAt: new Date().toISOString(), count: (eps[key]?.count || 0) + 1 };
-        chrome.storage.local.set({ [EP_KEY]: eps });
-      });
-    } catch {}
-  }
-
-  // Intercept fetch
-  const _fetch = window.fetch.bind(window);
-  window.fetch = async function(input, init = {}) {
-    const url = typeof input === 'string' ? input : input?.url || '';
-    const method = (init?.method || 'GET').toUpperCase();
-    if (!isTeviApi(url)) return _fetch(input, init);
-
-    let status = 0, bodyJson = null;
-    try {
-      const res = await _fetch(input, init);
-      status = res.status;
-      try {
-        if (res.headers.get('content-type')?.includes('json')) {
-          bodyJson = await res.clone().json().catch(() => null);
-        }
-      } catch {}
-      saveEntry({ type: 'fetch', method, url, status, ts: Date.now() });
-      saveEndpoint(method, url, status, method !== 'GET');
-      return res;
-    } catch {
-      saveEntry({ type: 'fetch', method, url, status: 0, ts: Date.now() });
-      return _fetch(input, init);
-    }
-  };
-
-  // Intercept XHR
-  const _xOpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function(m, u, ...r) { this.__u = u; this.__m = m; return _xOpen.call(this, m, u, ...r); };
-  const _xSend = XMLHttpRequest.prototype.send;
-  XMLHttpRequest.prototype.send = function() {
-    if (this.__u && isTeviApi(this.__u)) {
-      saveEntry({ type: 'xhr', method: this.__m, url: this.__u, ts: Date.now() });
-      saveEndpoint(this.__m, this.__u, 0, true);
-    }
-    return _xSend.call(this);
-  };
-
-  // Intercept WebSocket
-  if (typeof WebSocket !== 'undefined') {
-    const _WS = window.WebSocket;
-    window.WebSocket = function(url, ...r) {
-      if (isTeviApi(url)) saveEntry({ type: 'ws', url, ts: Date.now() });
-      const ws = new _WS(url, ...r);
-      const _send = ws.send.bind(ws);
-      ws.send = function(data) {
-        if (isTeviApi(url)) { saveEntry({ type: 'ws_send', url, data: String(data).substring(0, 150), ts: Date.now() }); saveEndpoint('WS', url, 0, true); }
-        return _send(data);
-      };
-      return ws;
-    };
-    ['CONNECTING','OPEN','CLOSING','CLOSED'].forEach(k => { window.WebSocket[k] = _WS[k]; });
-  }
-
-  snLog(`[SNIFFER] ✅ ${location.href}`);
-
-  // ═══════════════════════════════════════════════════════════════════
-  // PART 2: OVERLAY UI
-  // ═══════════════════════════════════════════════════════════════════
-
+  // ── STYLES ────────────────────────────────────────────────────────────────
   function inject(css) {
     const s = document.createElement('style');
     s.textContent = css;
@@ -123,179 +23,508 @@
   }
 
   inject(`
-    .tc * { box-sizing: border-box; margin: 0; padding: 0; }
-    .tc { position: fixed; bottom: 24px; right: 24px; z-index: 2147483647; font-family: 'Segoe UI', sans-serif; }
-
-    /* FAB */
-    .tc-fab {
-      width: 56px; height: 56px; border-radius: 16px; border: none; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); padding: 0; position: relative;
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
     }
-    .tc-fab.on  { background: linear-gradient(135deg,#00cc6a,#009955); box-shadow: 0 4px 20px rgba(0,204,106,.35),0 2px 8px rgba(0,0,0,.3); }
-    .tc-fab.off { background: linear-gradient(135deg,#2a2a3a,#1a1a28); box-shadow: 0 4px 16px rgba(0,0,0,.3); border: 1px solid #333; }
-    .tc-fab:hover { transform: scale(1.08); }
-    .tc-fab:active { transform: scale(.95); }
-    .tc-fab .ic { font-size: 22px; line-height: 1; }
-    .tc-fab .lb { font-size: 7px; font-weight: 700; color: rgba(255,255,255,.8); letter-spacing: .3px; }
+    @keyframes blink {
+      0%, 90%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.1); }
+    }
+    @keyframes tail {
+      0%, 100% { transform: rotate(-15deg); }
+      50% { transform: rotate(15deg); }
+    }
+    @keyframes breath {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.04); }
+    }
+    @keyframes ear_twitch {
+      0%, 80%, 100% { transform: rotate(0deg); }
+      85% { transform: rotate(-8deg); }
+      90% { transform: rotate(5deg); }
+      95% { transform: rotate(-3deg); }
+    }
+    @keyframes zzz {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; transform: translate(15px, -20px) scale(0.8); }
+    }
+    @keyframes notif_pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,100,148,0.6); }
+      50% { box-shadow: 0 0 0 10px rgba(255,100,148,0); }
+    }
+    @keyframes notif_bounce {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-6px); }
+      50% { transform: translateY(0); }
+      75% { transform: translateY(-3px); }
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes typing_dots {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-4px); }
+    }
+    @keyframes msg_fade {
+      0% { opacity: 0; transform: translateY(4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes paw_tap {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-10deg); }
+    }
 
-    .tc-fab .dot { position: absolute; top: 8px; right: 8px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid #0f0f1a; }
-    .dot.G { background: #00ff88; box-shadow: 0 0 6px #00ff88; }
-    .dot.R { background: #ff4757; box-shadow: 0 0 6px #ff4757; }
-    .dot.O { background: #ffa502; box-shadow: 0 0 6px #ffa502; }
-    .dot.N { background: #555; }
+    .tc-wrap * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Sniffer ring */
-    .tc-fab.sniffing::after { content: ''; position: absolute; inset: -4px; border-radius: 20px; border: 2px solid #a29bfe; box-shadow: 0 0 8px rgba(108,92,231,.5); pointer-events: none; animation: snr 2s ease-in-out infinite alternate; }
-    @keyframes snr { from { opacity: .4; } to { opacity: 1; } }
+    .tc-wrap {
+      position: fixed; bottom: 24px; right: 24px; z-index: 2147483647;
+      font-family: 'Quicksand', 'Nunito', 'Segoe UI', sans-serif;
+      user-select: none;
+    }
 
-    /* Panel */
-    .tc-pn { position: absolute; bottom: 68px; right: 0; width: 260px; background: #0f0f1a; border: 1px solid #1e1e30; border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,.5); overflow: hidden; display: none; }
-    .tc-pn.o { display: block; animation: tcp-in .22s cubic-bezier(.34,1.56,.64,1); }
-    @keyframes tcp-in { from { opacity:0; transform:scale(.88) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    /* ── CAT CONTAINER ─────────────────────────────────────────────── */
+    .tc-cat {
+      width: 80px; height: 80px; position: relative; cursor: pointer;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+      transition: transform 0.2s;
+    }
+    .tc-cat:hover { transform: scale(1.08); }
+    .tc-cat:active { transform: scale(0.95); }
 
-    .tc-hd { background: linear-gradient(135deg,#00cc6a,#008844); padding: 10px 14px; display: flex; align-items: center; gap: 8px; border-radius: 16px 16px 0 0; }
-    .tc-hd .ic { font-size: 20px; }
-    .tc-hd .ti { flex: 1; }
-    .tc-hd .ti .tt { font-size: 13px; font-weight: 700; color: #fff; }
-    .tc-hd .ti .tv { font-size: 9px; color: rgba(255,255,255,.5); }
-    .tc-hd .bd { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: rgba(255,255,255,.2); color: #fff; }
+    /* ── CAT BODY ─────────────────────────────────────────────────── */
+    .tc-body {
+      width: 52px; height: 38px; background: #FFE0B2; border-radius: 50% 50% 46% 46%;
+      position: absolute; bottom: 4px; left: 14px;
+      animation: breath 3s ease-in-out infinite;
+      box-shadow: inset -4px -4px 8px rgba(0,0,0,0.08);
+    }
+    .tc-body::before {
+      content: ''; position: absolute; top: 2px; left: 6px; right: 6px; height: 8px;
+      background: rgba(255,255,255,0.5); border-radius: 50%;
+    }
 
-    .tc-bd { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+    /* ── CAT HEAD ─────────────────────────────────────────────────── */
+    .tc-head {
+      width: 46px; height: 40px; background: #FFE0B2; border-radius: 50% 50% 44% 44%;
+      position: absolute; top: 2px; left: 17px;
+      box-shadow: inset -3px -3px 7px rgba(0,0,0,0.07);
+    }
+    /* Ears */
+    .tc-ear {
+      width: 16px; height: 18px; background: #FFE0B2;
+      position: absolute; top: -8px; clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      transform-origin: bottom center;
+    }
+    .tc-ear.l { left: 3px; transform: rotate(-12deg); }
+    .tc-ear.r { right: 3px; transform: rotate(12deg); }
+    .tc-ear::after {
+      content: ''; position: absolute; top: 6px; left: 4px; width: 8px; height: 10px;
+      background: #FFB6C1; clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+    .tc-ear.l { animation: ear_twitch 5s ease-in-out infinite; }
+    /* Face patch */
+    .tc-head::after {
+      content: ''; position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      width: 26px; height: 20px; background: rgba(255,255,255,0.35);
+      border-radius: 50% 50% 44% 44%;
+    }
 
-    .tc-sr { display: flex; align-items: center; gap: 10px; background: #1a1a2e; border-radius: 10px; padding: 8px 12px; }
-    .tc-sr .do { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .tc-sr .do.G { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
-    .tc-sr .do.R { background: #ff4757; box-shadow: 0 0 8px #ff4757; }
-    .tc-sr .do.N { background: #555; }
-    .tc-sr .lb { font-weight: 600; font-size: 13px; color: #fff; }
-    .tc-sr .sb { font-size: 10px; color: #888; margin-top: 1px; }
+    /* ── EYES ──────────────────────────────────────────────────────── */
+    .tc-eyes { position: absolute; top: 14px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; }
+    .tc-eye {
+      width: 10px; height: 10px; background: #3D2914; border-radius: 50%;
+      position: relative; transition: all 0.2s;
+    }
+    .tc-eye::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 4px; height: 4px; background: white; border-radius: 50%;
+    }
 
-    .tc-st { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
-    .tc-st .sk { background: #1a1a2e; border-radius: 8px; padding: 6px 4px; text-align: center; }
-    .tc-st .sn { font-size: 18px; font-weight: 700; color: #fff; }
-    .tc-st .sl { font-size: 8px; color: #555; margin-top: 1px; text-transform: uppercase; }
+    /* Alert eyes — big + sparkle */
+    .tc-alert .tc-eye {
+      width: 13px; height: 13px; background: #5DADE2;
+      animation: notif_bounce 0.5s ease infinite;
+    }
+    .tc-alert .tc-eye::after { width: 5px; height: 5px; top: 2px; left: 3px; }
+    .tc-alert .tc-eye::before {
+      content: '★'; position: absolute; top: -10px; right: -8px;
+      font-size: 7px; color: #FFD700; animation: sparkle 0.8s ease infinite;
+    }
 
-    .tc-if { background: #1a1a2e; border-radius: 10px; padding: 7px 12px; }
-    .tc-if .ir { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; }
-    .tc-if .ir:last-child { margin-bottom: 0; }
-    .tc-if .ir span:first-child { color: #555; }
-    .tc-if .ir span:last-child { color: #aaa; font-family: monospace; }
+    /* Sleep eyes — closed lines */
+    .tc-sleep .tc-eye {
+      height: 2px; background: #3D2914; border-radius: 2px;
+      animation: blink 4s ease-in-out infinite;
+    }
+    .tc-sleep .tc-eye::after { display: none; }
+    .tc-sleep .tc-eye:nth-child(2) { animation-delay: 0.2s; }
 
-    .tc-link { display: block; text-align: center; font-size: 9px; color: #333; margin-top: 6px; text-decoration: none; }
-    .tc-link:hover { color: #00cc6a; }
+    /* Typing eyes — looking down curious */
+    .tc-typing .tc-eye {
+      height: 6px; border-radius: 0 0 6px 6px;
+      background: #3D2914;
+    }
+    .tc-typing .tc-eye::after { display: none; }
+
+    /* ── NOSE ─────────────────────────────────────────────────────── */
+    .tc-nose {
+      width: 6px; height: 5px; background: #FF8A80; border-radius: 50% 50% 40% 40%;
+      position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+    }
+    .tc-mouth {
+      position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
+      width: 10px; height: 6px;
+      border-bottom: 1.5px solid #C97A7A;
+      border-left: 1.5px solid #C97A7A;
+      border-right: 1.5px solid #C97A7A;
+      border-top: none; border-radius: 0 0 50% 50%;
+    }
+    /* Smile when typing */
+    .tc-typing .tc-mouth {
+      border-bottom: 2px solid #C97A7A;
+      border-left: 2px solid #C97A7A;
+      border-right: 2px solid #C97A7A;
+      height: 8px; width: 12px;
+    }
+
+    /* ── WHISKERS ─────────────────────────────────────────────────── */
+    .tc-whiskers { position: absolute; top: 26px; left: 0; right: 0; }
+    .tc-wh { position: absolute; width: 14px; height: 1px; background: rgba(61,41,20,0.3); }
+    .tc-wh.l1 { left: -2px; top: 0; transform: rotate(-10deg); }
+    .tc-wh.l2 { left: -4px; top: 5px; transform: rotate(0deg); }
+    .tc-wh.l3 { left: -2px; top: 10px; transform: rotate(10deg); }
+    .tc-wh.r1 { right: -2px; top: 0; transform: rotate(10deg); }
+    .tc-wh.r2 { right: -4px; top: 5px; transform: rotate(0deg); }
+    .tc-wh.r3 { right: -2px; top: 10px; transform: rotate(-10deg); }
+
+    /* ── PAWS ─────────────────────────────────────────────────────── */
+    .tc-paw {
+      width: 14px; height: 12px; background: #FFE0B2; border-radius: 50% 50% 40% 40%;
+      position: absolute; bottom: 0;
+      box-shadow: inset -2px -2px 4px rgba(0,0,0,0.06);
+    }
+    .tc-paw.l { left: 16px; }
+    .tc-paw.r { right: 16px; }
+    .tc-typing .tc-paw.r {
+      animation: paw_tap 0.4s ease infinite;
+      animation-delay: 0.2s;
+    }
+    .tc-paw::after {
+      content: ''; position: absolute; top: 1px; left: 3px;
+      width: 8px; height: 5px; background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+    }
+
+    /* ── TAIL ─────────────────────────────────────────────────────── */
+    .tc-tail {
+      width: 8px; height: 24px; background: #FFE0B2;
+      position: absolute; bottom: 8px; right: 2px;
+      border-radius: 4px 4px 0 0;
+      transform-origin: bottom center; transform: rotate(25deg);
+      animation: tail 2s ease-in-out infinite;
+    }
+    .tc-tail::after {
+      content: ''; position: absolute; top: -2px; left: -2px;
+      width: 12px; height: 12px; background: #FFE0B2;
+      border-radius: 50%;
+    }
+
+    /* ── SLEEP ZZZ ────────────────────────────────────────────────── */
+    .tc-zzz {
+      position: absolute; top: 0; right: 0;
+      font-size: 10px; color: #7EB6FF; font-weight: 900;
+      display: none;
+    }
+    .tc-sleep .tc-zzz { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+    .tc-zzz span {
+      animation: zzz 2.5s ease-in-out infinite;
+      display: block;
+    }
+    .tc-zzz span:nth-child(1) { font-size: 8px; animation-delay: 0s; }
+    .tc-zzz span:nth-child(2) { font-size: 11px; animation-delay: 0.8s; }
+    .tc-zzz span:nth-child(3) { font-size: 14px; animation-delay: 1.6s; }
+
+    /* ── HEART SPARKLES ───────────────────────────────────────────── */
+    .tc-hearts { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); display: none; }
+    .tc-alert .tc-hearts { display: flex; gap: 2px; }
+    .tc-hearts span {
+      font-size: 9px; color: #FF6B9D;
+      animation: sparkle 1s ease infinite;
+    }
+    .tc-hearts span:nth-child(2) { animation-delay: 0.3s; }
+    .tc-hearts span:nth-child(3) { animation-delay: 0.6s; }
+
+    /* ── BUBBLE ────────────────────────────────────────────────────── */
+    .tc-bubble {
+      position: absolute; bottom: 88px; left: 50%; transform: translateX(-50%);
+      min-width: 140px; max-width: 220px;
+      background: #fff; border-radius: 16px 16px 16px 4px;
+      padding: 8px 12px; font-size: 11px; color: #333;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      display: none; white-space: pre-wrap; line-height: 1.5;
+      animation: msg_fade 0.2s ease;
+    }
+    .tc-bubble.show { display: block; }
+    .tc-bubble::after {
+      content: ''; position: absolute; bottom: -6px; left: 12px;
+      border-left: 6px solid transparent; border-right: 6px solid transparent;
+      border-top: 7px solid #fff;
+    }
+    .tc-bubble .tc-bubble-tail {
+      display: block; margin-top: 3px; color: #aaa; font-size: 9px;
+    }
+    /* Typing dots inside bubble */
+    .tc-bubble .typing-dots { display: inline-flex; gap: 3px; margin-left: 4px; vertical-align: middle; }
+    .tc-bubble .typing-dots span {
+      width: 4px; height: 4px; background: #999; border-radius: 50%;
+      display: inline-block; animation: typing_dots 1.2s ease infinite;
+    }
+    .tc-bubble .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .tc-bubble .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    /* ── PANEL ─────────────────────────────────────────────────────── */
+    .tc-panel {
+      position: absolute; bottom: 90px; right: 0; width: 200px;
+      background: #FFF8F0; border: 1.5px solid #FFE0B2;
+      border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      overflow: hidden; display: none; font-size: 11px;
+    }
+    .tc-panel.open { display: block; animation: msg_fade 0.2s ease; }
+    .tc-ph {
+      background: linear-gradient(135deg,#FF9EB5,#FF6B9D);
+      padding: 8px 12px; color: white; font-weight: 700; font-size: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .tc-pb { padding: 8px 12px; display: flex; flex-direction: column; gap: 5px; }
+    .tc-pr { display: flex; justify-content: space-between; }
+    .tc-pr span:first-child { color: #999; }
+    .tc-pr span:last-child { color: #555; font-weight: 600; }
+    .tc-pf {
+      margin-top: 4px; padding-top: 6px; border-top: 1px solid #FFE0B2;
+      display: flex; justify-content: space-between;
+    }
+    .tc-pf span:first-child { color: #999; }
+    .tc-pf .tc-badge {
+      padding: 1px 6px; border-radius: 10px; font-size: 9px; font-weight: 700;
+    }
+    .tc-badge.on  { background: #E8F5E9; color: #2E7D32; }
+    .tc-badge.off { background: #FFEBEE; color: #C62828; }
+    .tc-badge.err { background: #FFF3E0; color: #E65100; }
+
+    /* ── STATUS DOT on cat ────────────────────────────────────────── */
+    .tc-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      position: absolute; top: -2px; right: -2px;
+      border: 2px solid #FFF8F0; font-size: 7px; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900;
+    }
+    .tc-dot.G { background: #4CAF50; }
+    .tc-dot.R { background: #F44336; }
+    .tc-dot.O { background: #FF9800; }
+    .tc-dot.N { background: #9E9E9E; }
   `);
 
+  // ── BUILD CAT DOM ─────────────────────────────────────────────────────────
   const ui = document.createElement('div');
-  ui.className = 'tc';
+  ui.className = 'tc-wrap';
   ui.innerHTML = `
-    <div class="tc-pn" id="tcPn">
-      <div class="tc-hd">
-        <div class="ic">🤖</div>
-        <div class="ti"><div class="tt">Tevi CS Bot</div><div class="tv">v${VER}</div></div>
-        <div class="bd" id="tcBd">OFF</div>
-      </div>
-      <div class="tc-bd">
-        <div class="tc-sr">
-          <div class="do N" id="tcDot"></div>
-          <div><div class="lb" id="tcLb">Memuat...</div><div class="sb" id="tcSb">—</div></div>
+    <div class="tc-bubble" id="tcBubble">
+      <span id="tcBubbleText"></span>
+      <span class="tc-bubble-tail" id="tcBubbleTail"></span>
+    </div>
+    <div class="tc-panel" id="tcPanel">
+      <div class="tc-ph">🐱 Sukii Status</div>
+      <div class="tc-pb">
+        <div class="tc-pr"><span>Mode</span><span id="tcPdMode">—</span></div>
+        <div class="tc-pr"><span>Bot</span><span id="tcPdBot"><span class="tc-badge err">—</span></span></div>
+        <div class="tc-pr"><span>Poll</span><span id="tcPdPoll">—</span></div>
+        <div class="tc-pf">
+          <span>Counter</span>
+          <span id="tcPdCount">Intro:— Done:— CS:—</span>
         </div>
-        <div class="tc-st">
-          <div class="sk"><div class="sn" id="tcCS">—</div><div class="sl">Active</div></div>
-          <div class="sk"><div class="sn" id="tcDone">—</div><div class="sl">Done</div></div>
-          <div class="sk"><div class="sn" id="tcIntro">—</div><div class="sl">Intro</div></div>
-        </div>
-        <div class="tc-if">
-          <div class="ir"><span>Last Poll</span><span id="tcLP">—</span></div>
-          <div class="ir"><span>Hours</span><span id="tcHr">—</span></div>
-          <div class="ir"><span>Sniffer</span><span id="tcSn" style="color:#a29bfe">—</span></div>
-        </div>
-        <a class="tc-link" href="#" id="tcPopup">Open Rules Editor →</a>
       </div>
     </div>
-    <button class="tc-fab off" id="tcFab">
-      <div class="dot N" id="tcFabDot"></div>
-      <div class="ic">🤖</div>
-      <div class="lb">TEVI</div>
-    </button>
+    <div class="tc-cat" id="tcCat">
+      <div class="tc-dot N" id="tcDot">?</div>
+      <div class="tc-hearts"><span>♥</span><span>♥</span><span>♥</span></div>
+      <div class="tc-zzz"><span>z</span><span>z</span><span>z</span></div>
+      <div class="tc-ear l"></div>
+      <div class="tc-ear r"></div>
+      <div class="tc-head">
+        <div class="tc-eyes">
+          <div class="tc-eye"></div>
+          <div class="tc-eye"></div>
+        </div>
+        <div class="tc-nose"></div>
+        <div class="tc-mouth"></div>
+        <div class="tc-whiskers">
+          <div class="tc-wh l1"></div><div class="tc-wh l2"></div><div class="tc-wh l3"></div>
+          <div class="tc-wh r1"></div><div class="tc-wh r2"></div><div class="tc-wh r3"></div>
+        </div>
+      </div>
+      <div class="tc-body"></div>
+      <div class="tc-paw l"></div>
+      <div class="tc-paw r"></div>
+      <div class="tc-tail"></div>
+    </div>
   `;
   document.body.appendChild(ui);
 
-  const fab    = document.getElementById('tcFab');
-  const fabDot = document.getElementById('tcFabDot');
-  const pn     = document.getElementById('tcPn');
-  const bd     = document.getElementById('tcBd');
-  const dot    = document.getElementById('tcDot');
-  const lb     = document.getElementById('tcLb');
-  const sb     = document.getElementById('tcSb');
-  const tcCS   = document.getElementById('tcCS');
-  const tcDone = document.getElementById('tcDone');
-  const tcIntro= document.getElementById('tcIntro');
-  const tcLP   = document.getElementById('tcLP');
-  const tcHr   = document.getElementById('tcHr');
-  const tcSn   = document.getElementById('tcSn');
+  // ── ELEMENTS ──────────────────────────────────────────────────────────────
+  const cat     = document.getElementById('tcCat');
+  const dot     = document.getElementById('tcDot');
+  const bubble  = document.getElementById('tcBubble');
+  const bText   = document.getElementById('tcBubbleText');
+  const bTail   = document.getElementById('tcBubbleTail');
+  const panel   = document.getElementById('tcPanel');
+  const pdMode  = document.getElementById('tcPdMode');
+  const pdBot   = document.getElementById('tcPdBot');
+  const pdPoll  = document.getElementById('tcPdPoll');
+  const pdCount = document.getElementById('tcPdCount');
 
-  function fmt(iso) {
-    if (!iso) return '—';
-    try { return new Date(iso).toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }); }
-    catch { return '—'; }
+  // ── STATE ─────────────────────────────────────────────────────────────────
+  // 'sleep' | 'alert' | 'typing'
+  let currentState = 'sleep';
+  let typingText = '';
+  let typingTimer = null;
+
+  function setState(state, msg) {
+    if (currentState === state) {
+      if (state === 'typing' && msg) showBubble(msg);
+      return;
+    }
+    currentState = state;
+
+    // Remove all states
+    cat.classList.remove('tc-sleep', 'tc-alert', 'tc-typing');
+
+    if (state === 'sleep') {
+      dot.className = 'tc-dot G'; dot.textContent = 'Z';
+      hideBubble();
+    } else if (state === 'alert') {
+      dot.className = 'tc-dot R'; dot.textContent = '!';
+      cat.classList.add('tc-alert');
+      hideBubble();
+      setTimeout(() => setState('sleep'), 6000);
+    } else if (state === 'typing') {
+      dot.className = 'tc-dot O'; dot.textContent = '…';
+      cat.classList.add('tc-typing');
+    }
   }
 
-  function updateSniffUI() {
-    chrome.storage.local.get([SN_KEY, EP_KEY], d => {
-      const n = (d[SN_KEY] || []).length;
-      tcSn.textContent = n > 0 ? `${n} calls` : '—';
-      if (n > 10) fab.classList.add('sniffing'); else fab.classList.remove('sniffing');
+  function showBubble(text, tail) {
+    if (text) {
+      bText.textContent = text;
+      bTail.textContent = tail || '';
+      bubble.classList.add('show');
+    } else {
+      hideBubble();
+    }
+  }
+
+  function hideBubble() {
+    bubble.classList.remove('show');
+  }
+
+  // Typing animation: show text being typed char by char
+  let typeIdx = 0;
+  function animateTyping(fullText, onDone) {
+    if (typingTimer) clearInterval(typingTimer);
+    typeIdx = 0;
+    showBubble('', 'Sukii sedang mengetik…');
+    bubble.classList.add('show');
+
+    // Add dots
+    const dotsEl = document.createElement('span');
+    dotsEl.className = 'typing-dots';
+    dotsEl.innerHTML = '<span></span><span></span><span></span>';
+    bText.textContent = '';
+    bText.appendChild(dotsEl);
+
+    typingTimer = setInterval(() => {
+      if (typeIdx < fullText.length) {
+        // Show partial text + dots
+        bText.textContent = fullText.substring(0, typeIdx + 1);
+        bText.appendChild(dotsEl);
+        typeIdx++;
+      } else {
+        clearInterval(typingTimer);
+        typingTimer = null;
+        bText.textContent = fullText;
+        if (onDone) setTimeout(onDone, 1500);
+      }
+    }, 60);
+  }
+
+  // ── PANEL TOGGLE ──────────────────────────────────────────────────────────
+  cat.addEventListener('click', e => {
+    e.stopPropagation();
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) refreshPanel();
+  });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+
+  // ── STORAGE WATCH ─────────────────────────────────────────────────────────
+  // Poll storage for overlay state changes
+  let lastPollKey = '';
+  function pollOverlayState() {
+    chrome.storage.local.get([STATE_KEY, 'tevi_cs_state', 'tevi_cs_config'], d => {
+      const os = d[STATE_KEY] || {};
+      const st = d['tevi_cs_state'] || {};
+      const cfg = d['tevi_cs_config'] || {};
+      renderOverlay(os, st, cfg);
     });
   }
 
-  function render(state) {
-    const { enabled, hasToken, result } = state;
-    const ah = new Date().getHours() >= 17 || new Date().getHours() < 5;
-
-    if (!enabled) {
-      fab.className = 'tc-fab off'; fabDot.className = 'dot N';
-      bd.textContent = 'OFF'; dot.className = 'do N';
-      lb.textContent = 'Nonaktif'; sb.textContent = 'Toggle di popup';
-    } else if (!hasToken) {
-      fab.className = 'tc-fab off'; fabDot.className = 'dot R';
-      bd.textContent = 'ERR'; dot.className = 'do R';
-      lb.textContent = 'No Token'; sb.textContent = 'Login ke Tevi';
+  function renderOverlay(os, st, cfg) {
+    // Update dot
+    if (!st.botEnabled) {
+      dot.className = 'tc-dot N'; dot.textContent = '✕';
+      setState('sleep');
     } else {
-      fab.className = 'tc-fab on'; fabDot.className = 'dot G';
-      bd.textContent = 'ON'; dot.className = 'do G';
-      lb.textContent = 'Aktif'; sb.textContent = ah ? '🟢 Memantau' : '🟡 Closed';
+      dot.className = 'tc-dot G'; dot.textContent = 'Z';
     }
 
-    tcCS.textContent   = result?.stats?.activeConvs ?? '—';
-    tcDone.textContent = result?.stats?.doneConvs   ?? '—';
-    tcIntro.textContent= result?.stats?.introSent   ?? '—';
-    tcLP.textContent   = fmt(result?.time);
-    tcHr.innerHTML     = ah ? '<span style="color:#00cc6a;font-weight:600">BUKA</span>' : '<span style="color:#ff4757;font-weight:600">TUTUP</span>';
-    updateSniffUI();
+    // React to typing state
+    if (os.typing === true && os.typingText) {
+      setState('typing', os.typingText);
+      animateTyping(os.typingText, () => {
+        setState('sleep');
+        chrome.storage.local.set({ [STATE_KEY]: { ...os, typing: false, typingText: '' } });
+      });
+    } else if (os.newMessage) {
+      setState('alert', os.newMessage);
+      showBubble(os.newMessage, os.newSlug ? `@${os.newSlug}` : '');
+      // Clear after 5s
+      setTimeout(() => {
+        chrome.storage.local.get(STATE_KEY, d => {
+          const s = d[STATE_KEY] || {};
+          if (s.newMessage === os.newMessage) {
+            chrome.storage.local.set({ [STATE_KEY]: { ...s, newMessage: '' } });
+          }
+        });
+      }, 5000);
+    }
+
+    // Panel data
+    if (st.botEnabled) {
+      pdBot.innerHTML = '<span class="tc-badge on">ON</span>';
+    } else {
+      pdBot.innerHTML = '<span class="tc-badge off">OFF</span>';
+    }
+    const ah = new Date().getHours() >= 17 || new Date().getHours() < 5;
+    pdMode.textContent = ah ? '🌙 Aktif' : '☀️ Tutup';
+    pdPoll.textContent = os.pollTime ? new Date(os.pollTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '—';
+    const stats = st.lastResult?.stats || {};
+    pdCount.textContent = `Intro:${stats.introSent ?? '—'} Done:${stats.doneConvs ?? '—'} CS:${stats.activeConvs ?? '—'}`;
   }
 
-  async function refresh() {
-    let state = { enabled: false, hasToken: false, result: {} };
-    try { const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' }); if (s) state = { ...state, ...s }; } catch {}
-    render(state);
-  }
-
-  fab.addEventListener('click', () => {
-    pn.classList.toggle('o');
-    if (pn.classList.contains('o')) refresh();
-  });
-
-  document.getElementById('tcPopup').addEventListener('click', e => {
-    e.preventDefault();
-    chrome.runtime.sendMessage({ type: 'OPEN_POPUP' }).catch(() => {});
-  });
-
-  setInterval(() => {
-    if (pn.classList.contains('o')) refresh();
-    updateSniffUI();
-  }, 15000);
-
-  refresh();
-  updateSniffUI();
+  // ── INITIAL ───────────────────────────────────────────────────────────────
+  pollOverlayState();
+  setInterval(pollOverlayState, 3000);
 })();

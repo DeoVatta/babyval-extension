@@ -970,3 +970,45 @@ bisa payment k..."
 [2026-06-25T16:34:06.474Z] [BG] [INFO] [API] ✅ 0 unread
 [2026-06-25T16:34:06.487Z] [BG] [INFO] [POLL] 0 unread — active=true
 [2026-06-25T16:34:06.497Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (121ms)
+[2026-06-25T16:35:24.269Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.4.0 — config-driven, loop greeting, payment proof silent
+[2026-06-25T16:35:24.289Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:35:24.304Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:35:26.576Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:35:26.744Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:35:26.756Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:35:26.771Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (171ms)
+[2026-06-25T16:35:34.417Z] [CS] [INFO] [CS] v0.5.2.0 active — https://tevi.com/messages
+[2026-06-25T16:36:13.154Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:36:20.100Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:36:20.129Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:36:20.153Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (14847ms)
+[2026-06-25T16:38:54.706Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.4.0 — config-driven, loop greeting, payment proof silent
+[2026-06-25T16:38:54.723Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:38:54.731Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:38:54.739Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:38:54.817Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:38:54.827Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:38:54.834Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (285ms)
+[2026-06-25T16:38:56.559Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:38:56.755Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:38:56.769Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:38:56.783Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (151ms)
+[2026-06-25T16:39:25.567Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:39:25.760Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:39:25.773Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:39:25.789Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (426ms)
+[2026-06-25T16:42:38.270Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.4.0 — config-driven, loop greeting, payment proof silent
+[2026-06-25T16:42:41.834Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:42:42.276Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:42:42.356Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:42:42.459Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:42:42.610Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:42:42.869Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:42:43.034Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:42:43.148Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:42:43.373Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (8782ms)
+[2026-06-25T16:42:44.020Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (6943ms)
+[2026-06-25T16:43:02.433Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:43:03.248Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:43:03.266Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:43:03.292Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (1078ms)

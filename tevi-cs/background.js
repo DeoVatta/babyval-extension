@@ -1,9 +1,10 @@
 /**
- * BACKGROUND — Service Worker Tevi CS Bot v0.5.4.0
+ * BACKGROUND — Service Worker Tevi CS Bot v0.6.0
  * Config-driven: all behavior from tevi_cs_config
  * Flow: intro → CS turns → loop-to-greeting (annoying tactic)
  * Payment proof → silent end (no reply, no read)
- * DOM typing for visible send
+ * Sukii must always be last replier — no unanswered unless: membership, payment, >24h
+ * DOM typing for visible send + overlay cat state signaling
  */
 
 const MY_UID    = '392388705';
@@ -12,6 +13,27 @@ const STATE_KEY = 'tevi_cs_state';
 const TOKEN_KEY = 'tevi_cs_token';
 const SEC_KEY   = 'tevi_cs_secrets';
 const AI_BASE   = 'https://gateway.olagon.site/anthropic/v1';
+const OVERLAY_KEY = 'tevi_cs_overlay_state';
+
+// ── OVERLAY STATE (cat UI) ────────────────────────────────────────────────
+async function setOverlay(updates) {
+  try {
+    const d = await chrome.storage.local.get(OVERLAY_KEY);
+    await chrome.storage.local.set({ [OVERLAY_KEY]: { ...(d[OVERLAY_KEY] || {}), ...updates } });
+  } catch {}
+}
+
+function signalTyping(text, slug) {
+  setOverlay({ typing: true, typingText: text, typingSlug: slug });
+}
+
+function signalNewMessage(text, slug) {
+  setOverlay({ newMessage: text, newSlug: slug });
+}
+
+function clearOverlay() {
+  setOverlay({ typing: false, typingText: '', newMessage: '' });
+}
 
 // ── SECRETS ─────────────────────────────────────────────────────────────
 let _secrets = null;
@@ -271,7 +293,7 @@ async function markRead(convId) {
 // ── STATE ────────────────────────────────────────────────────────────────
 const DEF = () => ({
   botEnabled: false,
-  convMeta: {},   // convId -> { stage, introAt, turns, lastText, lastReply, done }
+  convMeta: {},   // convId -> { stage, introAt, turns, lastText, lastReply, done, lastSukiiReplyAt, userLastMsgAt, paymentConfirmedAt, membershipAt }
   knownSenders: {},
   lastResult: null,
 });
@@ -344,6 +366,42 @@ async function poll() {
     return hasTextKw || hasImage;
   }
 
+  // ── SUKII LAST REPLY LOGIC ───────────────────────────────────────────
+  // Sukii harus selalu terakhir balas.
+  // Skip reply (no reply, no read) if ALL of:
+  //   1. NOT a member (handled above)
+  //   2. NOT payment (paymentConfirmedAt + 6h not passed yet)
+  //   3. NOT user silent >24h
+  //   4. Sukii was already the LAST replier (user just following up)
+  function shouldSkipReply(meta, msgTime) {
+    if (!meta) return false;
+    const now = Date.now();
+    const sixHours = 6 * 60 * 60 * 1000;
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    // Rule 4: Sukii was last → user is following up on Sukii's message → skip
+    if (meta.sukiiLastReplyAt && meta.sukiiLastReplyAt >= (meta.userLastMsgAt || 0)) {
+      logD(`  [skip] Sukii was last replier (sukii=${meta.sukiiLastReplyAt} >= user=${meta.userLastMsgAt})`);
+      return true;
+    }
+
+    // Rule 3: User silent >24h → OK to reply (wake them up)
+    const userAge = (meta.userLastMsgAt || msgTime) ? now - (meta.userLastMsgAt || msgTime) : 0;
+    if (userAge > oneDay) {
+      logD(`  [allow] User silent >24h (${Math.round(userAge/3600000)}h) — will reply`);
+      return false;
+    }
+
+    // Rule 2: Payment delay (6h)
+    if (meta.paymentConfirmedAt && now - meta.paymentConfirmedAt < sixHours) {
+      const remaining = Math.round((sixHours - (now - meta.paymentConfirmedAt)) / 3600000);
+      logD(`  [skip] Payment confirmed, ${remaining}h remaining before reply window`);
+      return true;
+    }
+
+    return false;
+  }
+
   for (const conv of convs) {
     const convId    = conv.id;
     if (!convId) { processed++; continue; }
@@ -357,20 +415,34 @@ async function poll() {
     const meta      = state.convMeta[convId] || {};
     const stage     = meta.stage || 'new';
 
+    // Message timestamp (fallback to now)
+    let msgTime = Date.now();
+    if (msg?.created_at) {
+      const ts = Number(msg.created_at) * 1000;
+      if (ts > 1700000000000) msgTime = ts;
+    }
+
     processed++;
 
     // ── MEMBER: never touch ─────────────────────────────────────────────
     if (isSub) {
-      if (stage !== 'member') { state.convMeta[convId] = { ...meta, stage: 'member', done: true }; }
+      if (stage !== 'member') { state.convMeta[convId] = { ...meta, stage: 'member', done: true, membershipAt: Date.now() }; }
       logD(`  @${slug} [member] skipped`);
       ignored++;
       continue;
     }
 
     // ── OWN MESSAGE ────────────────────────────────────────────────────
-    if (senderUid === MY_UID) { ignored++; continue; }
-
-    state.knownSenders[senderUid] = Date.now();
+    if (senderUid === MY_UID) {
+      // Sukii just replied → update timestamp
+      if (text && meta.lastReply === text) {
+        state.convMeta[convId] = { ...meta, sukiiLastReplyAt: msgTime };
+        // Update overlay: Sukii typing done
+        clearOverlay();
+      }
+      ignored++;
+      continue;
+    }
 
     // ── DONE: stop replying ────────────────────────────────────────────
     if (meta.done) {
@@ -384,27 +456,37 @@ async function poll() {
       const elapsed = Date.now() - (meta.introAt || 0);
       const waitExpired = elapsed >= introWait;
 
-      // Payment proof in intro_sent → silent end, no reply, no read
+      // Payment proof in intro_sent → silent end, mark payment time
       if (text && isPaymentProof(msg)) {
-        log(`  @${slug} [intro→done] payment proof detected — silent end`);
-        state.convMeta[convId] = { ...meta, done: true, lastText: text };
+        log(`  @${slug} [intro→done] payment proof — silent end`);
+        state.convMeta[convId] = { ...meta, done: true, lastText: text, paymentConfirmedAt: Date.now() };
         ignored++;
         continue;
       }
 
       if (text && text !== meta.lastText) {
-        // User replied! → CS mode
+        // User replied! → CS mode, Sukii replied (greeting) so Sukii is last
         log(`  @${slug} [intro→CS] replied: "${text.substring(0,30)}"`);
         const rule = findReply(text, rules);
         let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
         replyText = await aiEnrich(replyText, text);
+        signalTyping(replyText, slug);
         const sent = await domSend(replyText, slug);
+        clearOverlay();
         if (sent) {
-          state.convMeta[convId] = { ...meta, stage: 'cs', turns: 1, lastText: text, lastReply: replyText, introAt: meta.introAt };
+          state.convMeta[convId] = {
+            ...meta,
+            stage: 'cs',
+            turns: 1,
+            lastText: text,
+            lastReply: replyText,
+            introAt: meta.introAt,
+            sukiiLastReplyAt: Date.now(),
+            userLastMsgAt: msgTime,
+          };
           replied++;
         } else { ignored++; }
       } else if (waitExpired) {
-        // 3h passed without reply → done
         log(`  @${slug} [intro→done] timeout (${Math.round(elapsed/60000)}m)`);
         state.convMeta[convId] = { ...meta, stage: 'cs', done: true };
         ignored++;
@@ -417,31 +499,43 @@ async function poll() {
 
     // ── STAGE: cs (CS conversation) ────────────────────────────────────
     if (stage === 'cs') {
-      // Payment proof → silent end, do NOT reply, do NOT read
+      // Payment proof → silent end
       if (text && isPaymentProof(msg)) {
-        log(`  @${slug} [CS→done] payment proof detected — silent end`);
-        state.convMeta[convId] = { ...meta, done: true, lastText: text };
+        log(`  @${slug} [CS→done] payment proof — silent end`);
+        state.convMeta[convId] = { ...meta, done: true, lastText: text, paymentConfirmedAt: Date.now() };
         ignored++;
         continue;
       }
 
       if (text && text !== meta.lastText) {
-        // New message → count as new turn
+        // New message from user — update user timestamp
+        const newMeta = { ...meta, userLastMsgAt: msgTime, lastText: text };
+        state.convMeta[convId] = newMeta;
+
+        // Check Sukii-last-replier rule
+        if (shouldSkipReply(newMeta, msgTime)) {
+          log(`  @${slug} [CS→skip] Sukii was last replier — no reply`);
+          // Don't update sukiiLastReplyAt, don't reply
+          ignored++;
+          continue;
+        }
+
+        // Count turn
         const newTurns = (meta.turns || 0) + 1;
         log(`  @${slug} [CS turn ${newTurns}/${maxTurns}] "${text.substring(0,30)}"`);
 
         if (newTurns > maxTurns) {
-          // Max turns → LOOP back to greeting (annoying tactic)
-          log(`  @${slug} [CS→intro] max turns reached — looping to greeting`);
+          // Max turns → LOOP back to greeting
+          log(`  @${slug} [CS→intro] max turns — looping greeting`);
           const sent = await domSend(greeting, slug);
           if (sent) {
             state.convMeta[convId] = {
-              ...meta,
+              ...newMeta,
               stage: 'intro_sent',
               introAt: Date.now(),
               turns: 0,
-              lastText: text,
               lastReply: greeting,
+              sukiiLastReplyAt: Date.now(),
             };
             replied++;
           } else { ignored++; }
@@ -452,15 +546,22 @@ async function poll() {
         const rule = findReply(text, rules);
         let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
         replyText = await aiEnrich(replyText, text);
+        signalTyping(replyText, slug);
         const sent = await domSend(replyText, slug);
+        clearOverlay();
 
         if (sent) {
-          state.convMeta[convId] = { ...meta, turns: newTurns, lastText: text, lastReply: replyText };
+          state.convMeta[convId] = {
+            ...newMeta,
+            turns: newTurns,
+            lastReply: replyText,
+            sukiiLastReplyAt: Date.now(),
+          };
           replied++;
         } else { ignored++; }
       } else {
         // Same message (no new), check idle
-        const idleElapsed = Date.now() - (meta.lastActivityAt || meta.introAt || Date.now());
+        const idleElapsed = Date.now() - (meta.lastActivityAt || meta.sukiiLastReplyAt || Date.now());
         if (idleElapsed >= idleMs) {
           log(`  @${slug} [CS→done] idle timeout (${Math.round(idleElapsed/60000)}m)`);
           state.convMeta[convId] = { ...meta, done: true };
@@ -475,11 +576,14 @@ async function poll() {
 
     // ── STAGE: new ────────────────────────────────────────────────────
     log(`  @${slug} [new→intro] "${text.substring(0,40)}"`);
+    signalNewMessage(`Hai @${slug}!`, slug);
     const sent = await domSend(greeting, slug);
     if (sent) {
       state.convMeta[convId] = {
         stage: 'intro_sent', introAt: Date.now(),
         senderUid, lastText: text, turns: 0,
+        sukiiLastReplyAt: Date.now(),
+        userLastMsgAt: msgTime,
       };
       log(`  @${slug} [intro_sent] ✅ greeting sent`);
       replied++;
@@ -501,6 +605,7 @@ async function poll() {
   };
 
   await saveState({ ...state, lastResult: result });
+  await setOverlay({ pollTime: Date.now() });
   log(`[POLL] Done p=${processed} r=${replied} i=${ignored} (${result.durationMs}ms)`);
 }
 
@@ -588,7 +693,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
 // ── STARTUP ───────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.5.4.0 — config-driven, loop greeting, payment proof silent');
+  log('[SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule');
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
