@@ -361,3 +361,612 @@
 [2026-06-25T15:12:17.171Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
 [2026-06-25T15:12:17.190Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
 [2026-06-25T15:12:17.201Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:13:22.954Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.1.0 started
+[2026-06-25T15:13:23.181Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:13:23.213Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:13:23.817Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.1.0 started
+[2026-06-25T15:13:23.902Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:13:23.962Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:13:25.857Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:13:26.600Z] [BG] [INFO] [POLL] 7 unread, dry=false
+[2026-06-25T15:13:26.746Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:13:27.171Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:27.522Z] [BG] [DEBUG]   [2] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:13:27.936Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:13:28.012Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — watching API calls on https://tevi.com/messages
+[2026-06-25T15:13:28.032Z] [SNIFFER] [INFO] [SNIFFER] Capturing: wapi.flowstreamx.com, firebase, googleapis
+[2026-06-25T15:13:28.625Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:28.634Z] [BG] [DEBUG]   [3] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:13:28.654Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:13:28.715Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:28.726Z] [BG] [DEBUG]   [4] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:13:28.786Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:28.797Z] [BG] [DEBUG]   [5] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:13:28.870Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:28.882Z] [BG] [DEBUG]   [6] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:13:28.966Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:28.984Z] [BG] [DEBUG]   [7] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:13:29.066Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:29.091Z] [BG] [INFO] [POLL] Done — p=7 r=0 i=0 (3209ms)
+[2026-06-25T15:13:33.131Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:13:42.182Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:13:53.935Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:13:54.133Z] [BG] [INFO] [POLL] 6 unread, dry=false
+[2026-06-25T15:13:54.144Z] [BG] [DEBUG]   [1] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:13:54.194Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:54.202Z] [BG] [DEBUG]   [2] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:13:54.248Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:54.256Z] [BG] [DEBUG]   [3] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:13:54.299Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:54.304Z] [BG] [DEBUG]   [4] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:13:54.360Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:54.367Z] [BG] [DEBUG]   [5] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:13:54.409Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:54.413Z] [BG] [DEBUG]   [6] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:13:54.461Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:13:54.473Z] [BG] [INFO] [POLL] Done — p=6 r=0 i=0 (531ms)
+[2026-06-25T15:13:57.198Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:14:13.200Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:14:28.271Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:14:43.243Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:14:58.159Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:15:13.182Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:15:44.424Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.1.0 started
+[2026-06-25T15:15:44.481Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:15:44.508Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:15:44.525Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:15:46.240Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:15:47.358Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:15:47.379Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:15:47.443Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:15:47.464Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:15:47.624Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:15:47.630Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:15:47.679Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:15:47.689Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:15:47.784Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:15:47.796Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:15:47.887Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:15:47.914Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (1683ms)
+[2026-06-25T15:15:58.173Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:16:13.277Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:16:14.509Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:16:14.725Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:16:14.734Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:16:14.913Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:16:14.919Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:16:15.012Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:16:15.022Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:16:15.079Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:16:15.085Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:16:15.163Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:16:15.169Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:16:15.221Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:16:15.226Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (714ms)
+[2026-06-25T15:17:27.821Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:17:28.029Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.1.0 started
+[2026-06-25T15:17:28.121Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:17:28.204Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:17:28.230Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:17:28.328Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:17:28.799Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:17:28.815Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:17:28.883Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:28.891Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:17:28.990Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:28.997Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:17:29.062Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:29.068Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:17:29.112Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:29.118Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:17:29.168Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:29.191Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (862ms)
+[2026-06-25T15:17:58.730Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:17:58.958Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:17:58.967Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:17:58.999Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:59.018Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:17:59.054Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:59.068Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:17:59.104Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:59.111Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:17:59.154Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:59.162Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:17:59.207Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:17:59.212Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (497ms)
+[2026-06-25T15:18:01.949Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:18:13.165Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:18:59.586Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.1.0 started
+[2026-06-25T15:18:59.601Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:18:59.613Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:18:59.625Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:19:00.616Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:19:00.847Z] [BG] [INFO] [POLL] 6 unread, dry=false
+[2026-06-25T15:19:00.882Z] [BG] [DEBUG]   [1] @radar_86: "hi" → vcs/first
+[2026-06-25T15:19:00.964Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:00.974Z] [BG] [DEBUG]   [2] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:19:01.065Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:01.072Z] [BG] [DEBUG]   [3] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:19:01.078Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:01.082Z] [BG] [DEBUG]   [4] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:19:01.114Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:01.120Z] [BG] [DEBUG]   [5] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:19:01.198Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:01.206Z] [BG] [DEBUG]   [6] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:19:01.249Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:01.270Z] [BG] [INFO] [POLL] Done — p=6 r=0 i=0 (636ms)
+[2026-06-25T15:19:13.370Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:19:27.217Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:19:29.583Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:19:29.839Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:19:29.850Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:19:29.891Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:29.900Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:19:29.937Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:29.952Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:19:29.985Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:29.990Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:19:30.035Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:30.055Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:19:30.109Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:19:30.142Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (517ms)
+[2026-06-25T15:19:42.250Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:20:48.639Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.1.0 started
+[2026-06-25T15:20:48.660Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:20:48.679Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:20:48.691Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:20:49.673Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:20:49.803Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:20:49.815Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:20:49.857Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:20:49.873Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:20:49.941Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:20:49.956Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:20:49.999Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:20:50.009Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:20:50.063Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:20:50.074Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:20:50.125Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:20:50.141Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (462ms)
+[2026-06-25T15:20:57.194Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:21:18.788Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:21:19.104Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:21:19.120Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:21:19.155Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:19.165Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:21:19.218Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:19.225Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:21:19.291Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:19.299Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:21:19.350Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:19.357Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:21:19.411Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:19.424Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (743ms)
+[2026-06-25T15:21:53.402Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.1.0 started
+[2026-06-25T15:21:53.414Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:21:53.423Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:21:53.444Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:21:54.502Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:21:54.727Z] [BG] [INFO] [POLL] 6 unread, dry=false
+[2026-06-25T15:21:54.739Z] [BG] [DEBUG]   [1] @jjjikj: "orang mana siapa tau deket bisa cek in k" → vcs/first
+[2026-06-25T15:21:54.790Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:54.798Z] [BG] [DEBUG]   [2] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:21:54.847Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:54.859Z] [BG] [DEBUG]   [3] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:21:54.908Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:54.917Z] [BG] [DEBUG]   [4] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:21:54.982Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:54.992Z] [BG] [DEBUG]   [5] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:21:55.039Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:55.044Z] [BG] [DEBUG]   [6] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:21:55.089Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:21:55.097Z] [BG] [INFO] [POLL] Done — p=6 r=0 i=0 (594ms)
+[2026-06-25T15:21:58.955Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:21:59.071Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:21:59.129Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — watching API calls on https://tevi.com/messages
+[2026-06-25T15:21:59.212Z] [SNIFFER] [INFO] [SNIFFER] Capturing: wapi.flowstreamx.com, firebase, googleapis
+[2026-06-25T15:22:23.534Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:22:23.903Z] [BG] [INFO] [POLL] 5 unread, dry=false
+[2026-06-25T15:22:23.917Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:22:23.987Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:22:23.993Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan WD diprior" → vcs/first
+[2026-06-25T15:22:24.053Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:22:24.067Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:22:24.107Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:22:24.117Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:22:24.168Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:22:24.174Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di website?" → vcs/first
+[2026-06-25T15:22:24.220Z] [BG] [ERROR] [API] Send fail | {"status":404,"body":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T15:22:24.234Z] [BG] [INFO] [POLL] Done — p=5 r=0 i=0 (711ms)
+[2026-06-25T15:24:42.184Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:24:42.285Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:24:42.330Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:24:43.793Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:24:43.994Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 5 unread
+[2026-06-25T15:24:44.001Z] [BG] [INFO] [POLL] 5 unread — dry=false
+[2026-06-25T15:24:44.013Z] [BG] [DEBUG]   [1] @alann17529: "mf pas pgi ketiduran" → vcs/first
+[2026-06-25T15:24:44.019Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:24:44.062Z] [BG] [DEBUG] [SEND] /messenger/v2/message/ → 404: {"success":false,"message":"Not Found","code":"","data":null
+[2026-06-25T15:24:44.331Z] [BG] [INFO] [SEND] ✅ FOUND: /messenger/v2/rpc/send_message/ → status=200
+[2026-06-25T15:24:44.344Z] [BG] [INFO] [POLL] ✅ Replied to @alann17529
+[2026-06-25T15:24:44.356Z] [BG] [DEBUG]   [2] @MEKOOMCN: "join kak,agar bonus event dan " → vcs/first
+[2026-06-25T15:24:44.377Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:24:44.597Z] [BG] [INFO] [SEND] ✅ cached path: /messenger/v2/rpc/send_message/
+[2026-06-25T15:24:44.622Z] [BG] [INFO] [POLL] ✅ Replied to @MEKOOMCN
+[2026-06-25T15:24:44.631Z] [BG] [DEBUG]   [3] @suzeep: "kok udah end live?" → vcs/first
+[2026-06-25T15:24:44.662Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:24:45.167Z] [BG] [INFO] [SEND] ✅ cached path: /messenger/v2/rpc/send_message/
+[2026-06-25T15:24:45.201Z] [BG] [INFO] [POLL] ✅ Replied to @suzeep
+[2026-06-25T15:24:45.232Z] [BG] [DEBUG]   [4] @bidinisreal: "kapan live" → vcs/first
+[2026-06-25T15:24:45.249Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:24:46.372Z] [BG] [INFO] [SEND] ✅ cached path: /messenger/v2/rpc/send_message/
+[2026-06-25T15:24:46.395Z] [BG] [INFO] [POLL] ✅ Replied to @bidinisreal
+[2026-06-25T15:24:46.411Z] [BG] [DEBUG]   [5] @miracleboyyzz: "Ig nya asli kamu tu yg di webs" → vcs/first
+[2026-06-25T15:24:46.429Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:24:46.661Z] [BG] [INFO] [SEND] ✅ cached path: /messenger/v2/rpc/send_message/
+[2026-06-25T15:24:46.674Z] [BG] [INFO] [POLL] ✅ Replied to @miracleboyyzz
+[2026-06-25T15:24:46.964Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — https://tevi.com/@jjjikj/messages
+[2026-06-25T15:24:47.689Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:24:48.273Z] [BG] [INFO] [POLL] Done p=5 r=5 i=0 (4190ms)
+[2026-06-25T15:25:05.211Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:25:05.443Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — https://tevi.com/@jjjikj/messages
+[2026-06-25T15:25:13.686Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:25:13.800Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:25:13.831Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:25:13.849Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (127ms)
+[2026-06-25T15:28:12.732Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:28:12.749Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:28:12.764Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:28:12.776Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:28:12.841Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 1 unread
+[2026-06-25T15:28:12.868Z] [BG] [INFO] [POLL] 1 unread — dry=false
+[2026-06-25T15:28:12.882Z] [BG] [DEBUG]   [1] @jjjikj: "kalo ketemu bisa kk" → vcs/first
+[2026-06-25T15:28:12.903Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:28:12.921Z] [BG] [DEBUG] [SEND] /messenger/v2/message/ → 404: {"success":false,"message":"Not Found","code":"","data":null
+[2026-06-25T15:28:13.145Z] [BG] [INFO] [SEND] ✅ FOUND: /messenger/v2/rpc/send_message/ → status=200
+[2026-06-25T15:28:13.152Z] [BG] [INFO] [POLL] ✅ Replied to @jjjikj
+[2026-06-25T15:28:13.158Z] [BG] [INFO] [POLL] Done p=1 r=1 i=0 (473ms)
+[2026-06-25T15:28:14.205Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:28:14.362Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:28:14.388Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:28:14.401Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (155ms)
+[2026-06-25T15:28:43.325Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:28:43.528Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:28:43.537Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:28:43.544Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (214ms)
+[2026-06-25T15:31:42.955Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:31:42.976Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:31:42.993Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:31:43.003Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:31:43.209Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:31:43.246Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:31:43.258Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (325ms)
+[2026-06-25T15:31:46.912Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:31:47.369Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:31:47.386Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:31:47.494Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (1517ms)
+[2026-06-25T15:32:12.978Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:32:13.199Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 1 unread
+[2026-06-25T15:32:13.215Z] [BG] [INFO] [POLL] 1 unread — dry=false
+[2026-06-25T15:32:13.234Z] [BG] [DEBUG]   [1] @user6032682438248: "boleh minta no kamu ga" → vcs/first
+[2026-06-25T15:32:13.255Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:32:13.481Z] [BG] [DEBUG] [SEND] /messenger/v2/message/ → 404: {"success":false,"message":"Not Found","code":"","data":null
+[2026-06-25T15:32:13.700Z] [BG] [INFO] [SEND] ✅ FOUND: /messenger/v2/rpc/send_message/ → status=200
+[2026-06-25T15:32:13.719Z] [BG] [INFO] [POLL] ✅ Replied to @user6032682438248
+[2026-06-25T15:32:13.750Z] [BG] [INFO] [POLL] Done p=1 r=1 i=0 (776ms)
+[2026-06-25T15:32:39.611Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:32:40.227Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — https://tevi.com/@4279725502/messages
+[2026-06-25T15:33:17.268Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — https://tevi.com/@4279725502/messages
+[2026-06-25T15:33:17.700Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:33:25.308Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:33:25.327Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:33:25.349Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:33:26.842Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:33:26.999Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 1 unread
+[2026-06-25T15:33:27.010Z] [BG] [INFO] [POLL] 1 unread — dry=false
+[2026-06-25T15:33:27.017Z] [BG] [DEBUG]   [1] @teknik_bu: "kangen" → vcs/first
+[2026-06-25T15:33:27.026Z] [BG] [INFO]     → REPLY (vcs): "vcs available💕
+bisa payment k..."
+[2026-06-25T15:33:27.062Z] [BG] [DEBUG] [SEND] /messenger/v2/message/ → 404: {"success":false,"message":"Not Found","code":"","data":null
+[2026-06-25T15:33:27.327Z] [BG] [INFO] [SEND] ✅ FOUND: /messenger/v2/rpc/send_message/ → status=200
+[2026-06-25T15:33:27.333Z] [BG] [INFO] [POLL] ✅ Replied to @teknik_bu
+[2026-06-25T15:33:27.349Z] [BG] [INFO] [POLL] Done p=1 r=1 i=0 (487ms)
+[2026-06-25T15:33:42.889Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:33:42.918Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — https://tevi.com/@user6032682438248/messages
+[2026-06-25T15:33:55.344Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:33:55.488Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:33:55.503Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:33:55.512Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (153ms)
+[2026-06-25T15:36:56.412Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:36:56.427Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:36:56.440Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:36:56.450Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:36:56.587Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:36:56.596Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:36:56.603Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (200ms)
+[2026-06-25T15:36:57.901Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:36:58.020Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:36:58.029Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:36:58.036Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (124ms)
+[2026-06-25T15:37:26.407Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:37:26.527Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:37:26.533Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:37:26.540Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (127ms)
+[2026-06-25T15:40:27.627Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:40:27.654Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:40:27.667Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:40:27.675Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:40:27.803Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:40:27.825Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:40:27.843Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (318ms)
+[2026-06-25T15:40:29.056Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:40:29.176Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:40:29.189Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:40:29.203Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (134ms)
+[2026-06-25T15:40:57.544Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:40:57.637Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:40:57.644Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:40:57.651Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (99ms)
+[2026-06-25T15:43:59.105Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:43:59.131Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:43:59.203Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:43:59.236Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:43:59.258Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:43:59.278Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:43:59.315Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (189ms)
+[2026-06-25T15:44:00.600Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:44:00.748Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:44:00.761Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:44:00.780Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (148ms)
+[2026-06-25T15:44:58.495Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:45:05.327Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:45:06.221Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:45:06.369Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (13213ms)
+[2026-06-25T15:47:34.223Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:47:34.432Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — https://tevi.com/@teknik_bu/messages
+[2026-06-25T15:47:35.330Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:47:36.199Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:47:38.233Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:47:38.469Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:47:38.891Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:47:38.953Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:47:39.029Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (641ms)
+[2026-06-25T15:47:42.973Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:47:43.245Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:47:43.296Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:47:43.327Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (703ms)
+[2026-06-25T15:48:34.848Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:48:50.947Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:48:50.982Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:48:51.074Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (41498ms)
+[2026-06-25T15:51:07.252Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:51:07.320Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:51:07.654Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:51:07.698Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:51:08.168Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:51:08.181Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:51:08.205Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (521ms)
+[2026-06-25T15:51:09.219Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:51:09.381Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:51:09.440Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:51:09.564Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (174ms)
+[2026-06-25T15:51:37.696Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:51:37.912Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:51:37.927Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:51:37.937Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (252ms)
+[2026-06-25T15:58:20.920Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T15:58:21.688Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T15:58:24.250Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:58:24.283Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:58:29.824Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T15:58:30.649Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:58:30.770Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:58:30.805Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:58:30.842Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:58:30.862Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:58:30.891Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (6419ms)
+[2026-06-25T15:58:30.920Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (6394ms)
+[2026-06-25T15:58:30.977Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:58:31.016Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:58:31.038Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (371ms)
+[2026-06-25T15:59:03.858Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T15:59:07.131Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T15:59:07.177Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T15:59:07.654Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (4655ms)
+[2026-06-25T16:02:01.889Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T16:02:02.084Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T16:02:02.196Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:02:02.283Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:02:02.309Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:02:02.384Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:02:02.495Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (649ms)
+[2026-06-25T16:02:03.187Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:02:03.498Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:02:03.538Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:02:03.615Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (329ms)
+[2026-06-25T16:02:32.093Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:02:37.377Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:02:37.426Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:02:37.455Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (5433ms)
+[2026-06-25T16:05:31.931Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T16:05:31.957Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:05:31.970Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T16:05:32.000Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:05:32.049Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 1 unread
+[2026-06-25T16:05:32.063Z] [BG] [INFO] [POLL] 1 unread — dry=false
+[2026-06-25T16:05:32.086Z] [BG] [DEBUG]   [1] @jjjikj: "cekin" → vcs/first
+[2026-06-25T16:05:32.095Z] [BG] [DEBUG]     → already replied → mark read
+[2026-06-25T16:05:32.137Z] [BG] [DEBUG] [MARK] read: 9739e09f
+[2026-06-25T16:05:32.148Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (280ms)
+[2026-06-25T16:05:33.381Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:05:33.481Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 1 unread
+[2026-06-25T16:05:33.490Z] [BG] [INFO] [POLL] 1 unread — dry=false
+[2026-06-25T16:05:33.509Z] [BG] [DEBUG]   [1] @jjjikj: "cekin" → casual/casual
+[2026-06-25T16:05:33.519Z] [BG] [DEBUG]     → already replied → mark read
+[2026-06-25T16:05:33.671Z] [BG] [DEBUG] [MARK] read: 9739e09f
+[2026-06-25T16:05:33.700Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (239ms)
+[2026-06-25T16:06:01.921Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:06:02.047Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:06:02.057Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:06:02.064Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (151ms)
+[2026-06-25T16:08:32.148Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T16:08:32.638Z] [SNIFFER] [INFO] [SNIFFER] ✅ Active — https://tevi.com/@jjjikj/messages
+[2026-06-25T16:08:39.245Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T16:08:39.326Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T16:08:39.358Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:08:40.834Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:08:40.984Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:08:40.993Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:08:41.003Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (150ms)
+[2026-06-25T16:09:09.402Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:09:09.541Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:09:09.555Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:09:09.576Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (169ms)
+[2026-06-25T16:12:10.210Z] [BG] [INFO] [SW] Tevi CS Bot v0.3.0.0 started
+[2026-06-25T16:12:10.238Z] [BG] [INFO] [TOKEN] Loaded — UID=392388705
+[2026-06-25T16:12:10.259Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:12:10.303Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:12:10.476Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:12:10.489Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:12:10.495Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (314ms)
+[2026-06-25T16:12:11.673Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:12:11.795Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:12:11.803Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:12:11.810Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (124ms)
+[2026-06-25T16:12:40.373Z] [BG] [DEBUG] [POLL] dry=false active=true
+[2026-06-25T16:12:40.506Z] [BG] [INFO] [API] ✅ Convs: /messenger/v2/rpc/get_recent_conversations → 0 unread
+[2026-06-25T16:12:40.518Z] [BG] [INFO] [POLL] 0 unread — dry=false
+[2026-06-25T16:12:40.531Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (150ms)
+[2026-06-25T16:13:02.319Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.1.0 — config-driven
+[2026-06-25T16:13:02.333Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:13:02.342Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:13:04.335Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:13:04.471Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:13:04.501Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:13:04.519Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (145ms)
+[2026-06-25T16:13:07.659Z] [CS] [INFO] [CS] [CS] v0.5.0.0 active — https://tevi.com/@jjjikj/messages
+[2026-06-25T16:13:32.421Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:13:33.115Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:13:33.130Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:13:33.245Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (748ms)
+[2026-06-25T16:16:33.727Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.1.0 — config-driven
+[2026-06-25T16:16:33.760Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:16:33.857Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:16:33.868Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:16:33.876Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:16:33.892Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:16:33.905Z] [BG] [INFO]   @evan_669 [new→intro] "👋👋👋"
+[2026-06-25T16:16:33.913Z] [BG] [INFO] [DOM] → @evan_669: "Halo! Aku Sukii, AI Assistant-nya Baby V..."
+[2026-06-25T16:16:34.027Z] [CS] [INFO] [CS] [DOM_SEND] target=@evan_669 current=Qaz20 len=45
+[2026-06-25T16:16:34.036Z] [CS] [INFO] [CS] [DOM_SEND] Navigating to @evan_669/messages...
+[2026-06-25T16:16:34.352Z] [BG] [ERROR] [DOM] Error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
+[2026-06-25T16:16:34.497Z] [BG] [ERROR]   @evan_669 [new] ❌ greeting failed
+[2026-06-25T16:16:34.547Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (825ms)
+[2026-06-25T16:16:35.758Z] [CS] [INFO] [CS] [CS] v0.5.0.0 active — https://tevi.com/@evan_669/messages
+[2026-06-25T16:16:35.884Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:16:39.333Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:16:39.563Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:16:39.633Z] [BG] [INFO]   @evan_669 [new→intro] "kalau Deket kamu mau gak pipis ke mulutk"
+[2026-06-25T16:16:39.838Z] [BG] [INFO] [DOM] → @evan_669: "Halo! Aku Sukii, AI Assistant-nya Baby V..."
+[2026-06-25T16:16:40.077Z] [CS] [INFO] [CS] [DOM_SEND] target=@evan_669 current=evan_669 len=45
+[2026-06-25T16:16:40.111Z] [CS] [INFO] [CS] [DOM_SEND] Typing 45 chars...
+[2026-06-25T16:16:44.416Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @evan_669
+[2026-06-25T16:16:45.249Z] [BG] [INFO] [DOM] ✅ Sent to @evan_669
+[2026-06-25T16:16:45.270Z] [BG] [INFO]   @evan_669 [intro_sent] ✅ greeting sent
+[2026-06-25T16:16:45.453Z] [BG] [INFO] [POLL] Done p=1 r=1 i=0 (9139ms)
+[2026-06-25T16:17:03.987Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:17:04.237Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:17:04.253Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:17:04.265Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (271ms)
+[2026-06-25T16:20:04.794Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.1.0 — config-driven
+[2026-06-25T16:20:04.816Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:20:04.827Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:20:04.849Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:20:05.039Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:20:05.053Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:20:05.093Z] [BG] [INFO]   @evan_669 [intro→CS] replied: "anggap aja lubang mulut ku lub"
+[2026-06-25T16:20:05.148Z] [BG] [INFO] [DOM] → @evan_669: "Maaf ya, aku Sukii AI Assistant-nya Baby..."
+[2026-06-25T16:20:05.518Z] [CS] [INFO] [CS] [DOM_SEND] target=@evan_669 current=evan_669 len=218
+[2026-06-25T16:20:05.533Z] [CS] [INFO] [CS] [DOM_SEND] Typing 218 chars...
+[2026-06-25T16:20:07.002Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:20:07.305Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:20:07.333Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:20:07.349Z] [BG] [INFO]   @evan_669 [intro→CS] replied: "anggap aja lubang mulut ku lub"
+[2026-06-25T16:20:07.365Z] [BG] [INFO] [DOM] → @evan_669: "Maaf ya, aku Sukii AI Assistant-nya Baby..."
+[2026-06-25T16:20:07.539Z] [CS] [INFO] [CS] [DOM_SEND] target=@evan_669 current=evan_669 len=218
+[2026-06-25T16:20:07.589Z] [CS] [INFO] [CS] [DOM_SEND] Typing 218 chars...
+[2026-06-25T16:20:34.732Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:20:34.832Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:20:34.841Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:20:34.852Z] [BG] [INFO]   @evan_669 [intro→CS] replied: "anggap aja lubang mulut ku lub"
+[2026-06-25T16:20:34.866Z] [BG] [INFO] [DOM] → @evan_669: "Maaf ya, aku Sukii AI Assistant-nya Baby..."
+[2026-06-25T16:20:34.889Z] [CS] [INFO] [CS] [DOM_SEND] target=@evan_669 current=evan_669 len=218
+[2026-06-25T16:20:34.897Z] [CS] [INFO] [CS] [DOM_SEND] Typing 218 chars...
+[2026-06-25T16:23:34.787Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:23:34.950Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:23:34.962Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:23:34.982Z] [BG] [INFO]   @evan_669 [intro→CS] replied: "kalau Deket kamu mau tidak pip"
+[2026-06-25T16:23:34.999Z] [BG] [INFO] [DOM] → @evan_669: "Maaf ya, aku Sukii AI Assistant-nya Baby..."
+[2026-06-25T16:25:11.053Z] [CS] [INFO] [CS] [DOM_SEND] target=@evan_669 current=evan_669 len=218
+[2026-06-25T16:25:11.120Z] [CS] [INFO] [CS] [DOM_SEND] Typing 218 chars...
+[2026-06-25T16:25:25.942Z] [BG] [ERROR] [DOM] Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T16:25:25.985Z] [BG] [ERROR] [DOM] Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T16:25:26.015Z] [BG] [ERROR] [DOM] Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T16:25:26.064Z] [BG] [ERROR] [DOM] Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T16:25:26.116Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (320997ms)
+[2026-06-25T16:25:26.189Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (111081ms)
+[2026-06-25T16:25:26.217Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (319027ms)
+[2026-06-25T16:25:26.234Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (291036ms)
+[2026-06-25T16:26:35.517Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.1.0 — config-driven
+[2026-06-25T16:26:35.548Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:26:35.567Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:26:35.584Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:26:35.619Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:26:35.630Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:26:35.643Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (150ms)
+[2026-06-25T16:26:37.481Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:26:37.589Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:26:37.598Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:26:37.605Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (110ms)
+[2026-06-25T16:27:05.488Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:27:05.640Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:27:05.647Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:27:05.656Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (161ms)
+[2026-06-25T16:30:06.274Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.1.0 — config-driven
+[2026-06-25T16:30:06.290Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:30:06.306Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:30:06.321Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:30:06.387Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:30:06.394Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:30:06.400Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (222ms)
+[2026-06-25T16:30:08.181Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:30:08.302Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:30:08.313Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:30:08.320Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (123ms)
+[2026-06-25T16:30:36.608Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:30:36.784Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:30:36.800Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:30:36.832Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (181ms)
+[2026-06-25T16:31:16.596Z] [CS] [INFO] [CS] [CS] v0.5.0.0 active — https://tevi.com/messages
+[2026-06-25T16:33:36.447Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.1.0 — config-driven
+[2026-06-25T16:33:36.470Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:33:36.476Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:33:36.491Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:33:36.536Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:33:36.544Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:33:36.557Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (195ms)
+[2026-06-25T16:33:38.344Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:33:38.444Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:33:38.452Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:33:38.459Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (101ms)
+[2026-06-25T16:34:06.358Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:34:06.474Z] [BG] [INFO] [API] ✅ 0 unread
+[2026-06-25T16:34:06.487Z] [BG] [INFO] [POLL] 0 unread — active=true
+[2026-06-25T16:34:06.497Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (121ms)

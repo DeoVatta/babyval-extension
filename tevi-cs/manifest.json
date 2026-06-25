@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.5.2.0",
-  "description": "Tevi CS Bot v0.5.2 — overlay restored, rules editor, DOM typing, AI Sukii",
+  "version": "0.5.4.0",
+  "description": "Tevi CS Bot v0.5.4 — loop-to-greeting, payment proof silent end, no max-reply disclosure",
   "author": "Devata",
   "permissions": [
     "alarms",

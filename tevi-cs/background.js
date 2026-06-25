@@ -1,7 +1,8 @@
 /**
- * BACKGROUND — Service Worker Tevi CS Bot v0.5.1.0
+ * BACKGROUND — Service Worker Tevi CS Bot v0.5.4.0
  * Config-driven: all behavior from tevi_cs_config
- * Flow: intro → CS turns → done (read-only)
+ * Flow: intro → CS turns → loop-to-greeting (annoying tactic)
+ * Payment proof → silent end (no reply, no read)
  * DOM typing for visible send
  */
 
@@ -327,7 +328,21 @@ async function poll() {
   const idleMs    = (cfg.behavior?.idleMinutes || 30) * 60 * 1000;
   const introWait = (cfg.behavior?.introWaitMinutes || 180) * 60 * 1000;
   const rules     = cfg.rules || [];
-  const greeting = `Perkenalkan 👋\nHalo aku Sukii, AI Assistant milik Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\n\nKalau mau VCS bisa bayar di babyval.com\nAku cuma bisa bantu 3-4 kalireply ya, fokus ke VCS & Membership~`;
+  const greeting = `Halo aku Sukii, AI Assistant-nya Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\n\nKalau mau VCS bisa bayar di babyval.com`;
+
+  // ── PAYMENT PROOF DETECTION ───────────────────────────────────────────
+  function isPaymentProof(msg) {
+    if (!msg) return false;
+    const t = msg.text || '';
+    const LOWER = t.toLowerCase();
+    // Check text keywords
+    const textKws = ['bukti', 'transfer', 'pembayaran', 'bayar', 'tf', 'receipt', 'lunas', 'sudah transfer', 'udah transfer', 'sdh transfer'];
+    const hasTextKw = textKws.some(k => LOWER.includes(k));
+    // Check for image attachment (has image_url or image data in the message object)
+    const hasImage = !!(msg.images?.length || msg.attachments?.some(a => a.type?.includes('image')) || t.includes('[image]') || t.includes('🖼') || t.includes('foto'));
+    // If user mentions payment proof in text AND/OR sends image → payment proof
+    return hasTextKw || hasImage;
+  }
 
   for (const conv of convs) {
     const convId    = conv.id;
@@ -369,6 +384,14 @@ async function poll() {
       const elapsed = Date.now() - (meta.introAt || 0);
       const waitExpired = elapsed >= introWait;
 
+      // Payment proof in intro_sent → silent end, no reply, no read
+      if (text && isPaymentProof(msg)) {
+        log(`  @${slug} [intro→done] payment proof detected — silent end`);
+        state.convMeta[convId] = { ...meta, done: true, lastText: text };
+        ignored++;
+        continue;
+      }
+
       if (text && text !== meta.lastText) {
         // User replied! → CS mode
         log(`  @${slug} [intro→CS] replied: "${text.substring(0,30)}"`);
@@ -394,17 +417,34 @@ async function poll() {
 
     // ── STAGE: cs (CS conversation) ────────────────────────────────────
     if (stage === 'cs') {
+      // Payment proof → silent end, do NOT reply, do NOT read
+      if (text && isPaymentProof(msg)) {
+        log(`  @${slug} [CS→done] payment proof detected — silent end`);
+        state.convMeta[convId] = { ...meta, done: true, lastText: text };
+        ignored++;
+        continue;
+      }
+
       if (text && text !== meta.lastText) {
         // New message → count as new turn
         const newTurns = (meta.turns || 0) + 1;
         log(`  @${slug} [CS turn ${newTurns}/${maxTurns}] "${text.substring(0,30)}"`);
 
         if (newTurns > maxTurns) {
-          // Max turns reached → done
-          log(`  @${slug} [CS→done] max turns reached`);
-          state.convMeta[convId] = { ...meta, turns: newTurns, lastText: text, done: true };
-          await markRead(convId);
-          ignored++;
+          // Max turns → LOOP back to greeting (annoying tactic)
+          log(`  @${slug} [CS→intro] max turns reached — looping to greeting`);
+          const sent = await domSend(greeting, slug);
+          if (sent) {
+            state.convMeta[convId] = {
+              ...meta,
+              stage: 'intro_sent',
+              introAt: Date.now(),
+              turns: 0,
+              lastText: text,
+              lastReply: greeting,
+            };
+            replied++;
+          } else { ignored++; }
           continue;
         }
 
@@ -548,7 +588,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
 // ── STARTUP ───────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.5.1.0 — config-driven');
+  log('[SW] Tevi CS Bot v0.5.4.0 — config-driven, loop greeting, payment proof silent');
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
