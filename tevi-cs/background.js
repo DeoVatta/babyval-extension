@@ -116,16 +116,47 @@ function getDefaultConfig() {
 
 function getDefaultRules() {
   return [
-    { id: 'vcs', priority: 10, type: 'keyword', active: true, match: 'vcs,videocall,video call,vc ,telfon,telpon,call,meet,zoom', reply: `VCS available 💕\nBisa payment ke https://babyval.com/\n➡️ Pilih Video Call\nJangan lupa kirim bukti TF ke DM\n\nAKU BALAS KHUSUS MEMBER ATAU SUDAH PAYMENT VCS` },
-    { id: 'payment', priority: 10, type: 'keyword', active: true, match: 'payment,bayar,tf,transfer,donasi,donate,harga,price,berapa,cost', reply: `Untuk payment VCS:\n1. Buka https://babyval.com/\n2. Pilih Video Call\n3. Transfer ke rekening yang tertera\n4. Kirim bukti TF ke DM\n\nAku balas setelah payment terkonfirmasi ✅` },
-    { id: 'join_member', priority: 10, type: 'keyword', active: true, match: 'join,member,membership,subscribe,langganan,premium', reply: `Mau jadi member Baby Val?\nKunjungi: tevi.com/@cutieval\nPilih membership yang tersedia.\nSetelah join, kamu bisa chat langsung dengan Baby Val! 💕` },
-    { id: 'order', priority: 10, type: 'keyword', active: true, match: 'jual,beli,jasa,order,pembelian,buy', reply: `Untuk order:\n1. Buka https://babyval.com/\n2. Pilih layanan yang diinginkan\n3. Lakukan payment\n4. Kirim bukti ke DM\n\nAku bantu proses setelah payment masuk ✅` },
-    { id: 'konten', priority: 10, type: 'keyword', active: true, match: 'foto,video,konten,pic,image,send,kirim,eksklusif', reply: `Konten eksklusif tersedia untuk member!\nJoin membership di tevi.com/@cutieval\natau cek di https://babyval.com/ untuk pilihan konten 💕` },
-    { id: 'bot_sukii', priority: 10, type: 'keyword', active: true, match: 'bot,sukii,siapa kamu,siapa ini,ai,assistant', reply: `Aku Sukii, AI Assistant-nya Baby Val 💕\nAku bantu menjawab pertanyaan dan mengarahkan kamu ke layanan yang tepat.\nAda yang bisa aku bantu?` },
-    { id: 'terima_kasih', priority: 10, type: 'keyword', active: true, match: 'terima kasih,thanks,thx,makasih,ok,oke,sip,sipp,bagus,nice', reply: `Sama-sama! 💕 Kalau ada pertanyaan lagi, jangan ragu chat ya~` },
-    { id: 'redirect_ig', priority: 5, type: 'redirect', active: true, match: 'instagram,ig,freshlive,fresh', reply: `Untuk info lebih lanjut, cek:\n📱 Instagram: @babyval_official\n🌐 babyval.com\n\nAtau tanya di sini, aku bantu! 💕` },
-    { id: 'block', priority: 1, type: 'block', active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot', reply: `Maaf ya, topik itu di luar layanan yang bisa aku bantu 💕\nCoba tanyakan soal VCS, membership, atau konten Baby Val ya~` },
-    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Maaf ya, aku Sukii AI Assistant-nya Baby Val 💕\nAku hanya bisa bantu untuk:\n• Info VCS / Video Call\n• Cara join membership\n• Payment & order\n• Info konten eksklusif\n\nCoba tanya yang berkaitan dengan layanan di atas ya~` },
+    // Priority 50: ABSOLUTE BLOCKS
+    { id: 'block_personal', priority: 50, type: 'keyword', active: true, match: 'alamat rumah,no hp,nomor hp,wa ,whatsapp,umur kamu,berapa umur,usia kamu,domisili,kota kamu,daerah kamu', reply: `Maaf ya, informasi pribadi tidak bisa aku berikan 💕\nUntuk layanan VCS bisa via babyval.com ya~` },
+
+    // Priority 40: VCS STEPS (specific, higher than generic VCS)
+    { id: 'vcs_cara', priority: 40, type: 'keyword', active: true, match: 'cara vcs,cara payment,cara bayarnya,cara order,bagaimn cara,gimana cara,cara nya', reply: `Cara VCS:\n1. Buka babyval.com\n2. Pilih Video Call\n3. Pilih Durasi\n4. Lanjutkan pembayaran\n\nUdah gitu aja! Mudah kan 💕` },
+
+    // Priority 35: DURASI 7 vs 10 MENIT
+    { id: 'durasi_7_10', priority: 35, type: 'keyword', active: true, match: 'beda 7 dan 10,beda 10 sama 7,7 menit 10 menit,10 menit 7 menit,bedanya apa 7,selisih 7 dan 10', reply: `Cuma beda durasi doang 💕\nTapi kalau mau squirt minimal 20 menit ya kak~` },
+
+    // Priority 35: MASKER
+    { id: 'masker', priority: 35, type: 'keyword', active: true, match: 'buka masker,lepas masker,pake masker,tanpa masker', reply: `Kalau mau buka masker kasih tip 250rb ke ganknow.com/babyval/tip\nNanti masker Baby Val diganti sama penutup mata jadi kamu bisa tetep lihat mulutnya 💕` },
+
+    // Priority 30: GENERIC VCS
+    { id: 'vcs', priority: 30, type: 'keyword', active: true, match: 'vcs,videocall,video call,vc ,telfon,telpon,call,meet,zoom', reply: `VCS available 💕\nBuka babyval.com → Video Call → Pilih Durasi → Bayar\nJangan lupa kirim bukti TF ke DM ya~` },
+
+    // Priority 25: MEMBERSHIP CTA
+    { id: 'chat_males', priority: 25, type: 'keyword', active: true, match: 'doang,aja sih,santai aja,cuma ngobrol,bsa ngobrol gk,sih gk,santai aja kak', reply: `Kalau mau chat sama Baby Val bisa membership di Tevi dulu ya 💕\nNanti Baby Val yang balas pesan kamu langsung~` },
+
+    // Priority 20: PAYMENT
+    { id: 'payment', priority: 20, type: 'keyword', active: true, match: 'payment,bayar,tf,transfer,donasi,donate,harga,price,berapa,cost', reply: `Payment VCS:\nbabyval.com → Video Call → Pilih Durasi → Bayar\nTransfer ke rekening yang tertera, kirim bukti ke DM 💕` },
+
+    // Priority 20: JOIN MEMBERSHIP
+    { id: 'join_member', priority: 20, type: 'keyword', active: true, match: 'join,member,membership,subscribe,langganan,premium', reply: `Mau jadi member Baby Val?\nKunjungi: tevi.com/@cutieval\nPilih membership yang tersedia.\nSetelah join, kamu bisa chat langsung dengan Baby Val! 💕` },
+
+    // Priority 15: ORDER / BUY
+    { id: 'order', priority: 15, type: 'keyword', active: true, match: 'jual,beli,jasa,order,pembelian,buy', reply: `Order di babyval.com aja ya kak 💕\nPilih layanan yang diinginkan, bayar, kirim bukti ke DM~` },
+
+    // Priority 15: KONTEN
+    { id: 'konten', priority: 15, type: 'keyword', active: true, match: 'foto,video,konten,pic,image,send,kirim,eksklusif', reply: `Konten eksklusif tersedia untuk member!\nJoin: tevi.com/@cutieval\nAtau cek di babyval.com 💕` },
+
+    // Priority 10: BOT IDENTITY
+    { id: 'bot_sukii', priority: 10, type: 'keyword', active: true, match: 'bot,sukii,siapa kamu,siapa ini,ai,assistant', reply: `Aku Sukii, AI Assistant-nya Baby Val 💕\nAku bantu informasi soal VCS dan membership aja ya kak~` },
+
+    // Priority 5: GREETINGS / CASUAL
+    { id: 'terima_kasih', priority: 5, type: 'keyword', active: true, match: 'terima kasih,thanks,thx,makasih,sip,sipp,bagus,nice', reply: `Sama-sama kak! 💕 Ada yang mau ditanyain soal VCS atau membership?` },
+
+    // Priority 1: BLOCK INAPPROPRIATE
+    { id: 'block_inap', priority: 1, type: 'block', active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot,lubang', reply: `Maaf ya, topik itu di luar layanan yang bisa aku bantu 💕\nAku fokus bantu info VCS dan membership aja~` },
+
+    // Priority 0: FALLBACK
+    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Maaf kak, aku Sukii AI Assistant-nya Baby Val 💕\nAku cuma bisa bantu soal:\n• VCS / Video Call\n• Membership Tevi\n• Payment babyval.com\n\nCoba tanya yang berkaitan dengan itu ya~` },
   ];
 }
 
@@ -296,7 +327,7 @@ async function poll() {
   const idleMs    = (cfg.behavior?.idleMinutes || 30) * 60 * 1000;
   const introWait = (cfg.behavior?.introWaitMinutes || 180) * 60 * 1000;
   const rules     = cfg.rules || [];
-  const greeting = cfg.persona?.greeting || 'Halo! Aku Sukii, AI Assistant-nya Baby Val 💕';
+  const greeting = `Perkenalkan 👋\nHalo aku Sukii, AI Assistant milik Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\n\nKalau mau VCS bisa bayar di babyval.com\nAku cuma bisa bantu 3-4 kalireply ya, fokus ke VCS & Membership~`;
 
   for (const conv of convs) {
     const convId    = conv.id;
