@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.9.10",
-  "description": "Tevi CS Bot v0.9.10 — Fix findConvItems priority (anchor href first), universal API domain capture",
+  "version": "0.9.11",
+  "description": "Tevi CS Bot v0.9.11 — Unified: sniffer merged into CS, findConvItems anchor-first, universal API capture",
   "author": "Devata",
   "permissions": [
     "alarms",
@@ -31,7 +31,7 @@
   "content_scripts": [
     {
       "matches": ["https://tevi.com/*"],
-      "js": ["content-script.js", "overlay.js", "api-discovery.js", "sniffer.js"],
+      "js": ["content-script.js", "overlay.js", "api-discovery.js"],
       "run_at": "document_idle"
     }
   ],

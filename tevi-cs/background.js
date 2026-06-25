@@ -1,5 +1,5 @@
 /**
- * BACKGROUND.JS — Tevi CS Bot v0.9.10
+ * BACKGROUND.JS — Tevi CS Bot v0.9.11
  *
  * GOALS:
  * - Balas pesan looping setiap 4 pesan
@@ -13,7 +13,7 @@
  * - chrome.alarms: 20s idle polling
  */
 
-const EXT = 'Tevi CS v0.9.10';
+const EXT = 'Tevi CS v0.9.11';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const SUPABASE_URL = 'https://qjemyvydivekolywleji.supabase.co';
@@ -471,7 +471,7 @@ chrome.tabs.onActivated.addListener(async activeInfo => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.10 starting...');
+  log('INFO', 'SW v0.9.11 starting...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
@@ -577,7 +577,7 @@ async function init() {
     if (tab) await runScan(tab.id);
   }
 
-  log('INFO', 'SW v0.9.10 ready - API auto-probe + Edge Function active');
+  log('INFO', 'SW v0.9.11 ready - API auto-probe + Edge Function active');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));

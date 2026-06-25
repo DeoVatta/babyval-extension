@@ -1,12 +1,13 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.9.10
+ * CONTENT SCRIPT — Tevi CS Bot v0.9.11
  *
- * Handles:
+ * Unified system handles:
  * - SCAN_CONVS: find all convs needing reply (no ✓/✓✓ icon = user last)
  * - CHECK_DM: check if last msg has check icon + extract timestamp
  * - GET_MSGS: read last N USER messages (not Sukii)
  * - IS_MEMBERSHIP: detect membership badge
  * - INTERCEPT_SEND: capture Tevi's send-message API call
+ * - SNIFFER: universal API discovery (all domains) at startup
  */
 
 (function() {
@@ -649,5 +650,180 @@
     }
   });
 
-  l('v0.9.10 active — ' + location.href);
+  l('v0.9.11 active — ' + location.href);
+
+  // ═══════════════════════════════════════════════════════════════
+  // SNIFFER — Universal API Discovery (all domains)
+  // Auto-runs at startup, captures every API call Tevi makes
+  // ═══════════════════════════════════════════════════════════════
+
+  (function() {
+    if (window.__TEVI_SNIFFER__) return;
+    window.__TEVI_SNIFFER__ = true;
+
+    const LOG = 'http://localhost:3131';
+    const SUPABASE_URL = 'https://qjemyvydivekolywleji.supabase.co';
+    const LOG_FUNC = SUPABASE_URL + '/functions/v1/cs-bot-logger';
+    const PROBE_FUNC = SUPABASE_URL + '/functions/v1/api-auto-probe';
+    const SKIP_DOMAINS = new Set([
+      'qjemyvydivekolywleji.supabase.co',
+      'localhost',
+    ]);
+
+    function log(level, msg, data) {
+      try {
+        fetch(LOG + '/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'SNIFFER',
+            level: level || 'INFO',
+            message: '[SNIFFER] ' + msg,
+            ts: new Date().toISOString(),
+            ...(data || {}),
+          }),
+        }).catch(() => {});
+      } catch {}
+    }
+
+    function extractUrlInfo(url) {
+      try {
+        if (url.startsWith('/')) url = location.origin + url;
+        const u = new URL(url);
+        return { domain: u.hostname, pathname: u.pathname, full: u.href };
+      } catch {
+        return { domain: 'unknown', pathname: url, full: url };
+      }
+    }
+
+    function getTeviAuth() {
+      const result = { tokens: {}, cookies: {}, localStorageKeys: [] };
+      try {
+        result.localStorageKeys = Object.keys(localStorage);
+        for (const k of result.localStorageKeys) {
+          if (k.includes('token') || k.includes('auth') || k.includes('user') || k === 'user_id') {
+            result.tokens[k] = String(localStorage.getItem(k)).substring(0, 100);
+          }
+        }
+      } catch {}
+      try {
+        for (const pair of document.cookie.split(';')) {
+          const [k, ...v] = pair.trim().split('=');
+          result.cookies[k] = v.join('=').substring(0, 100);
+        }
+      } catch {}
+      return result;
+    }
+
+    const auth = getTeviAuth();
+    log('INFO', 'Active on ' + auth.domain + location.pathname);
+    log('INFO', 'localStorage keys: ' + auth.localStorageKeys.length, auth.tokens);
+
+    const seenDomains = new Set();
+    const seenEndpoints = [];
+
+    function processApiCall(method, url, status, reqBody, resBody, latency) {
+      const info = extractUrlInfo(url);
+      if (SKIP_DOMAINS.has(info.domain)) return;
+      if (info.domain.includes('google') || info.domain.includes('facebook') ||
+          info.domain.includes('chrome-extension')) return;
+
+      const ext = info.pathname.split('.').pop().toLowerCase();
+      if (['jpg', 'png', 'gif', 'svg', 'css', 'js', 'woff'].includes(ext)) return;
+
+      const entry = {
+        domain: info.domain,
+        method,
+        path: info.pathname,
+        fullUrl: info.full,
+        status,
+        reqBody: reqBody ? String(reqBody).substring(0, 200) : null,
+        resBody: resBody ? String(resBody).substring(0, 300) : null,
+        latency,
+      };
+
+      seenDomains.add(info.domain);
+      seenEndpoints.push(entry);
+
+      if (info.pathname.includes('auth') || info.pathname.includes('login') ||
+          info.pathname.includes('token') || info.pathname.includes('conversations') ||
+          info.pathname.includes('messages') || info.pathname.includes('users')) {
+        log('INFO', 'KEY API: ' + info.domain + info.pathname + ' [' + status + ']', { latency });
+      }
+    }
+
+    const _fetch = window.fetch;
+    window.fetch = async function(input, init) {
+      const url = typeof input === 'string' ? input : input?.url || '';
+      const method = (init?.method || 'GET').toUpperCase();
+      const start = Date.now();
+      try {
+        const res = await _fetch.apply(this, arguments);
+        const latency = Date.now() - start;
+        const info = extractUrlInfo(url);
+        if (info.domain && !SKIP_DOMAINS.has(info.domain)) {
+          try {
+            const text = await res.clone().text().catch(() => '');
+            processApiCall(method, url, res.status, init?.body, text, latency);
+          } catch {}
+        }
+        return res;
+      } catch (e) {
+        processApiCall(method, url, 0, init?.body, 'ERROR: ' + e.message, Date.now() - start);
+        throw e;
+      }
+    };
+
+    const _xhrOpen = XMLHttpRequest.prototype.open;
+    const _xhrSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+      this.__xhr_url = url;
+      this.__xhr_method = method.toUpperCase();
+      this.__xhr_start = Date.now();
+      return _xhrOpen.call(this, method, url, ...rest);
+    };
+    XMLHttpRequest.prototype.send = function(body) {
+      const onLoad = () => {
+        const latency = Date.now() - (this.__xhr_start || Date.now());
+        try { processApiCall(this.__xhr_method || 'GET', this.__xhr_url, this.status || 200, body, this.responseText, latency); } catch {}
+      };
+      if (this.addEventListener) this.addEventListener('load', onLoad);
+      return _xhrSend.call(this, body);
+    };
+
+    function reportToSupabase(data) {
+      try {
+        fetch(LOG_FUNC, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer devata-token' },
+          body: JSON.stringify({ _type: 'api_discovery', event: 'sniffer_capture', ...data, ts: new Date().toISOString() }),
+        }).catch(() => {});
+        fetch(PROBE_FUNC, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer devata-token' },
+          body: JSON.stringify({ event: 'sniffer_capture', ...data }),
+        }).catch(() => {});
+      } catch {}
+    }
+
+    function reportSummary() {
+      if (!seenEndpoints.length) return;
+      log('INFO', '=== SNIFFER SUMMARY ===', {
+        domains: [...seenDomains],
+        totalCalls: seenEndpoints.length,
+      });
+      reportToSupabase({ event: 'sniffer_summary', domains: [...seenDomains], topEndpoints: seenEndpoints.slice(0, 20) });
+      seenEndpoints.length = 0;
+    }
+
+    setInterval(reportSummary, 30000);
+    setTimeout(() => {
+      const domains = [...seenDomains];
+      log('INFO', 'Sniffer active 5s — domains: ' + (domains.join(', ') || 'NONE'));
+      if (!domains.length) {
+        log('INFO', 'NO API CALLS — Tevi may use WebSocket');
+        reportToSupabase({ event: 'no_http_calls' });
+      }
+    }, 5000);
+  })();
 })();
