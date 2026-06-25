@@ -176,15 +176,23 @@ MY_CHANNEL_ID=a605781b-dc88-441d-a3d0-654b075ec...
 
 ## Changelog
 
+### v0.2.0.0 — 2026-06-25
+- **Fully automated**: No manual buttons. Toggle ON → everything runs automatically
+- **Auto poll on startup**: SW polls immediately when enabled, with 3-min alarm interval
+- **Token recovery**: Auto-clear expired token → re-capture from tab
+- **Retry logic**: 3 retries with exponential backoff on poll failure
+- **No manual buttons**: Removed Poll, Probe, Diagnose, Logs, Clear Token, Restart SW
+- **Fixed API endpoint**: `/messenger/v2/rpc/get_recent_conversations` (was `/conversation/`)
+- **Minimal UI**: Toggle + Stats (Processed/Replied/Ignored) + Last Poll + Token UID
+
 ### v0.1.0.3 — 2026-06-25
 - **FIX: API 404** — Endpoint path wrong: `/conversation/` → `/rpc/` (correct path: `/messenger/v2/rpc/get_recent_conversations`)
-- **Auto-discover interceptor**: interceptor.js monkey-patches fetch/XHR on tevi.com — auto-captures real endpoint when page loads conversations
+- **Auto-discover interceptor**: interceptor.js monkey-patches fetch/XHR on tevi.com — auto-captures real endpoint
 - **Dual fallback**: Uses discovered endpoint first, falls back to known correct path
 
 ### v0.1.0.2 — 2026-06-25
 - **Floating Overlay**: Right-bottom FAB button muncul otomatis di tevi.com, collapsible panel dengan toggle, stats, Poll button, Logs viewer
 - **Token Persistent**: Token disimpan ke `chrome.storage.local` — persist setelah SW restart, popup tidak lagi "No Token"
-- **Probe API**: Button di popup untuk test endpoint alternatives
 
 ### v0.1.0.1 — 2026-06-25
 - **Remote debugging system**: Extension POST logs ke localhost:3131 (log-server.js)

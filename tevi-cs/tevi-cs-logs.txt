@@ -207,3 +207,28 @@
 [2026-06-25T14:50:37.438Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
 [2026-06-25T14:50:37.516Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/@cutieval
 [2026-06-25T14:50:37.553Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:53:15.992Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:53:16.428Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T14:53:16.623Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:53:23.601Z] [OVERLAY] [ERROR] Storage save failed
+[2026-06-25T14:53:26.186Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:53:26.953Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T14:53:27.283Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:53:34.343Z] [OVERLAY] [INFO] [OVERLAY] Manual poll triggered
+[2026-06-25T14:55:07.330Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T14:55:07.680Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:55:07.834Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:55:19.522Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:55:19.553Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T14:55:19.562Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:55:32.607Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:55:33.227Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T14:55:33.816Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:55:45.955Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T14:55:46.219Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:55:46.282Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:55:50.199Z] [OVERLAY] [INFO] [OVERLAY] Manual poll triggered
+[2026-06-25T14:56:02.246Z] [CS] [DEBUG] [CS] DIAGNOSE request | {"pageUrl":"https://tevi.com/messages","hasRaw":true,"rawKeys":["392388705"],"rawLength":2297,"tokenFound":true,"tokenPrefix":"eyJhbGciOiJSUzI1NiIs","tokenLength":821,"payloadUid":392388705,"payloadAnonymous":null,"payloadExp":1782427607,"userDataKeys":null}
+[2026-06-25T15:02:18.531Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:02:18.732Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T15:02:18.812Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls

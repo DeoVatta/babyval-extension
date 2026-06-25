@@ -7,77 +7,73 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      width: 300px;
+      width: 280px;
       background: #0f0f1a;
       color: #e0e0e0;
-      padding: 0;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       font-size: 13px;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
     }
 
-    /* Floating card header */
-    .topbar {
+    /* Header */
+    .hd {
       background: linear-gradient(135deg, #00cc6a 0%, #00a855 100%);
-      padding: 12px 14px 10px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
       gap: 10px;
-      border-radius: 12px 12px 0 0;
+      border-radius: 16px 16px 0 0;
     }
-    .topbar .icon {
+    .hd .ic {
       width: 32px; height: 32px;
       background: rgba(255,255,255,0.2);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       font-size: 18px;
     }
-    .topbar .title { flex: 1; }
-    .topbar h1 { font-size: 14px; font-weight: 700; color: #fff; }
-    .topbar .ver { font-size: 10px; color: rgba(255,255,255,0.6); }
-    .topbar .status-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.2);
-      color: #fff;
+    .hd .ti { flex: 1; }
+    .hd .ti h1 { font-size: 14px; font-weight: 700; color: #fff; }
+    .hd .ti .v { font-size: 10px; color: rgba(255,255,255,0.6); }
+    .hd .bd {
+      font-size: 10px; font-weight: 700; padding: 3px 8px;
+      border-radius: 20px; background: rgba(255,255,255,0.2); color: #fff;
     }
 
-    /* Content area */
-    .body { padding: 12px 14px; }
+    /* Body */
+    .bd { padding: 12px 14px; }
 
-    /* Status card */
-    .status-card {
-      background: #1a1a2e;
-      border: 1px solid #2a2a4a;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    /* Status */
+    .sr {
+      display: flex; align-items: center; gap: 10px;
+      background: #1a1a2e; border: 1px solid #2a2a4a;
+      border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
     }
-    .sdot {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-    }
-    .sdot.green { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
-    .sdot.red { background: #ff4757; box-shadow: 0 0 8px #ff4757; }
-    .sdot.gray { background: #444; }
-    .sdot.orange { background: #ffa502; box-shadow: 0 0 8px #ffa502; }
-    .sinfo .sl { font-weight: 600; font-size: 13px; color: #fff; }
-    .sinfo .ss { font-size: 10px; color: #888; margin-top: 1px; }
+    .do { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .do.G { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+    .do.R { background: #ff4757; box-shadow: 0 0 8px #ff4757; }
+    .do.N { background: #444; }
+    .do.O { background: #ffa502; box-shadow: 0 0 8px #ffa502; }
+    .lb { font-weight: 600; font-size: 13px; color: #fff; }
+    .sb { font-size: 10px; color: #888; margin-top: 1px; }
 
-    /* Toggle row */
-    .toggle-row {
+    /* Error */
+    .er {
+      background: #2a1a1a; border: 1px solid #ff475744;
+      border-radius: 8px; padding: 7px 10px; margin-bottom: 8px;
+      font-size: 11px; color: #ff6b6b; display: none;
+    }
+    .er.sh { display: block; }
+
+    /* Toggle */
+    .tr {
       display: flex; align-items: center; justify-content: space-between;
       background: #1a1a2e; border: 1px solid #2a2a4a;
       border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
     }
     .tl { font-size: 13px; color: #ccc; }
-    .toggle { position: relative; width: 42px; height: 24px; }
-    .toggle input { opacity: 0; width: 0; height: 0; }
+    .tg { position: relative; width: 42px; height: 24px; }
+    .tg input { opacity: 0; width: 0; height: 0; }
     .ts {
       position: absolute; cursor: pointer; inset: 0;
       background: #333; border-radius: 24px; transition: 0.3s;
@@ -86,160 +82,169 @@
       content: ''; position: absolute; width: 18px; height: 18px;
       left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.3s;
     }
-    .toggle input:checked + .ts { background: #00cc6a; }
-    .toggle input:checked + .ts::before { transform: translateX(18px); }
+    .tg input:checked + .ts { background: #00cc6a; }
+    .tg input:checked + .ts::before { transform: translateX(18px); }
 
     /* Stats */
-    .stats {
+    .st {
       display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px;
     }
-    .stat {
+    .sk {
       background: #1a1a2e; border: 1px solid #2a2a4a;
       border-radius: 10px; padding: 8px 6px; text-align: center;
     }
     .sn { font-size: 18px; font-weight: 700; color: #fff; }
-    .sl { font-size: 9px; color: #555; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .sl { font-size: 9px; color: #555; margin-top: 2px; text-transform: uppercase; }
 
-    /* Info rows */
-    .info {
+    /* Info */
+    .if {
       background: #1a1a2e; border: 1px solid #2a2a4a;
       border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;
     }
-    .ir { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+    .ir { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
     .ir:last-child { margin-bottom: 0; }
     .ir span:first-child { color: #555; }
     .ir span:last-child { color: #aaa; font-family: 'Consolas', monospace; }
-    .badge { display: inline-block; padding: 1px 5px; border-radius: 4px; font-size: 10px; font-weight: 600; }
-    .badge.open { background: #00cc6a22; color: #00cc6a; }
-    .badge.closed { background: #ff475722; color: #ff4757; }
-
-    /* Buttons */
-    .btngrid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 5px; }
-    .btn {
-      padding: 8px 6px; border: none; border-radius: 8px;
-      font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center;
-    }
-    .btn-grn { background: #00cc6a; color: #000; }
-    .btn-grn:hover { background: #00e676; }
-    .btn-blu { background: #3742fa; color: #fff; }
-    .btn-blu:hover { background: #4a52ff; }
-    .btn-gry { background: #2a2a4a; color: #ccc; }
-    .btn-gry:hover { background: #3a3a5a; }
-    .btn-red { background: #ff4757; color: #fff; }
-    .btn-red:hover { background: #ff6b7a; }
-    .btn-org { background: #ffa502; color: #000; }
-    .btn-org:hover { background: #ffbe4d; }
-    .btn:disabled { opacity: 0.5; cursor: default; }
-
-    /* Log panel */
-    .log-panel {
-      background: #080810; border: 1px solid #2a2a4a;
-      border-radius: 8px; padding: 8px 10px; margin-top: 8px;
-      font-size: 10px; font-family: 'Consolas', 'Courier New', monospace;
-      color: #666; max-height: 150px; overflow-y: auto;
-      white-space: pre-wrap; word-break: break-all;
-      display: none;
-    }
-    .log-panel.show { display: block; }
 
     /* Footer */
-    .footer {
-      padding: 6px 14px 10px;
-      font-size: 10px; color: #333; text-align: center;
-    }
-    .log-status-bar {
-      display: flex; align-items: center; gap: 5px;
-      font-size: 10px; color: #444; margin-bottom: 8px; padding: 0 14px;
-    }
-    .ldot { width: 6px; height: 6px; border-radius: 50%; }
-    .ldot.ok { background: #00cc6a; }
-    .ldot.bad { background: #ff4757; }
-
-    .no-token {
-      background: #2a1a1a; border: 1px solid #ff475744;
-      border-radius: 8px; padding: 8px 10px; margin-bottom: 8px;
-      font-size: 11px; color: #ff6b6b; display: none;
-    }
-    .no-token.show { display: block; }
+    .ft { padding: 6px 14px 10px; font-size: 10px; color: #333; text-align: center; }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="topbar">
-    <div class="icon">🤖</div>
-    <div class="title">
-      <h1>Tevi CS Bot</h1>
-      <div class="ver">v0.1.0.3 — tevi-cs</div>
+<div class="hd">
+  <div class="ic">🤖</div>
+  <div class="ti">
+    <h1>Tevi CS Bot</h1>
+    <div class="v">v0.2.0.0 — tevi-cs</div>
+  </div>
+  <div class="bd" id="topBd">OFF</div>
+</div>
+
+<div class="bd">
+  <!-- Status -->
+  <div class="sr">
+    <div class="do N" id="dot"></div>
+    <div>
+      <div class="lb" id="label">Memuat...</div>
+      <div class="sb" id="sub">—</div>
     </div>
-    <div class="status-badge" id="topBadge">OFF</div>
   </div>
 
-  <!-- Body -->
-  <div class="body">
-    <div class="log-status-bar">
-      <div class="ldot bad" id="logDot"></div>
-      <span id="logStatus">Log server: —</span>
-    </div>
+  <!-- Error -->
+  <div class="er" id="errBanner"></div>
 
-    <!-- Status card -->
-    <div class="status-card">
-      <div class="sdot gray" id="sdot"></div>
-      <div class="sinfo">
-        <div class="sl" id="slabel">Memuat...</div>
-        <div class="ss" id="ssub">—</div>
-      </div>
-    </div>
-
-    <div class="no-token" id="noTokenBanner">⚠️ Buka tab Tevi &amp; login, lalu refresh</div>
-
-    <!-- Toggle -->
-    <div class="toggle-row">
-      <span class="tl">Aktifkan Bot</span>
-      <label class="toggle">
-        <input type="checkbox" id="botToggle">
-        <span class="ts"></span>
-      </label>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats">
-      <div class="stat"><div class="sn" id="sp">—</div><div class="sl">Processed</div></div>
-      <div class="stat"><div class="sn" id="sr">—</div><div class="sl">Replied</div></div>
-      <div class="stat"><div class="sn" id="si">—</div><div class="sl">Ignored</div></div>
-    </div>
-
-    <!-- Info -->
-    <div class="info">
-      <div class="ir"><span>Last Poll</span><span id="ilp">—</span></div>
-      <div class="ir"><span>Hours</span><span id="iah">—</span></div>
-      <div class="ir"><span>Token UID</span><span id="iuid">—</span></div>
-      <div class="ir"><span>Token</span><span id="itok">—</span></div>
-      <div class="ir"><span>Tevi Tab</span><span id="itab">—</span></div>
-    </div>
-
-    <!-- Buttons row 1 -->
-    <div class="btngrid">
-      <button class="btn btn-org" id="btnPoll">🔄 Poll</button>
-      <button class="btn btn-blu" id="btnProbe">🔎 Probe API</button>
-    </div>
-    <!-- Buttons row 2 -->
-    <div class="btngrid">
-      <button class="btn btn-gry" id="btnDiagnose">🔍 Diagnose</button>
-      <button class="btn btn-gry" id="btnViewLogs">📋 Logs</button>
-    </div>
-    <!-- Button row 3 -->
-    <div class="btngrid">
-      <button class="btn btn-red" id="btnClearToken">🗑 Clear Token</button>
-      <button class="btn btn-org" id="btnReload">🔁 Restart SW</button>
-    </div>
-
-    <!-- Log panel -->
-    <div class="log-panel" id="logPanel"></div>
+  <!-- Toggle -->
+  <div class="tr">
+    <span class="tl">Aktifkan Bot</span>
+    <label class="tg">
+      <input type="checkbox" id="toggle">
+      <span class="ts"></span>
+    </label>
   </div>
 
-  <div class="footer">Active 17:00–05:00 • 3 min interval</div>
+  <!-- Stats -->
+  <div class="st">
+    <div class="sk"><div class="sn" id="proc">—</div><div class="sl">Processed</div></div>
+    <div class="sk"><div class="sn" id="repl">—</div><div class="sl">Replied</div></div>
+    <div class="sk"><div class="sn" id="ign">—</div><div class="sl">Ignored</div></div>
+  </div>
 
-  <script src="popup.js"></script>
+  <!-- Info -->
+  <div class="if">
+    <div class="ir"><span>Last Poll</span><span id="lp">—</span></div>
+    <div class="ir"><span>Token UID</span><span id="uid">—</span></div>
+    <div class="ir"><span>Hours</span><span id="hrs">—</span></div>
+  </div>
+</div>
+
+<div class="ft">Active 17:00–05:00 • 3 min interval</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  const el = {
+    topBd: $('topBd'), dot: $('dot'), label: $('label'),
+    sub: $('sub'), errBanner: $('errBanner'),
+    toggle: $('toggle'), proc: $('proc'), repl: $('repl'),
+    ign: $('ign'), lp: $('lp'), uid: $('uid'), hrs: $('hrs'),
+  };
+
+  function fmt(iso) {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleString('id-ID', {
+        day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
+      });
+    } catch { return '—'; }
+  }
+
+  function render(state) {
+    const { enabled, hasToken, result, activeHours } = state;
+
+    if (!enabled) {
+      el.dot.className = 'do N'; el.label.textContent = 'Nonaktif';
+      el.sub.textContent = 'Toggle untuk aktifkan';
+      el.topBd.textContent = 'OFF'; el.topBd.style.background = 'rgba(255,255,255,0.2)';
+      el.errBanner.classList.remove('sh');
+      el.errBanner.textContent = '';
+    } else if (!hasToken) {
+      el.dot.className = 'do R'; el.label.textContent = 'No Token';
+      el.sub.textContent = 'Buka Tevi & login';
+      el.topBd.textContent = 'ERR'; el.topBd.style.background = 'rgba(255,71,87,0.4)';
+      el.errBanner.classList.add('sh');
+      el.errBanner.textContent = '⚠️ Login ke tevi.com, lalu refresh popup ini';
+    } else if (result?.error) {
+      el.dot.className = 'do O'; el.label.textContent = 'Error';
+      el.sub.textContent = result.error;
+      el.topBd.textContent = 'ERR'; el.topBd.style.background = 'rgba(255,71,87,0.4)';
+      el.errBanner.classList.add('sh');
+      el.errBanner.textContent = '⚠️ ' + result.error;
+    } else {
+      el.dot.className = 'do G'; el.label.textContent = 'Aktif';
+      el.sub.textContent = activeHours ? '🟢 Memantau' : '🟡 Closed (dry)';
+      el.topBd.textContent = 'ON'; el.topBd.style.background = 'rgba(0,0,0,0.2)';
+      el.errBanner.classList.remove('sh');
+    }
+
+    el.proc.textContent = result?.processed ?? '—';
+    el.repl.textContent = result?.replied ?? '—';
+    el.ign.textContent = result?.ignored ?? '—';
+    el.lp.textContent = fmt(result?.time);
+    el.uid.textContent = state.uid || '—';
+    el.hrs.innerHTML = activeHours
+      ? '<span style="color:#00cc6a;font-weight:700">BUKA</span>'
+      : '<span style="color:#ff4757;font-weight:700">TUTUP</span>';
+  }
+
+  async function load() {
+    // Sync: show last known state fast
+    try {
+      const ls = JSON.parse(localStorage.getItem('tevi_cs_popup') || '{}');
+      el.toggle.checked = ls.botEnabled ?? false;
+      render({ enabled: ls.botEnabled ?? false, hasToken: false, result: {}, activeHours: true });
+    } catch {}
+
+    // Async: get full state from SW
+    try {
+      const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' });
+      if (s) {
+        el.toggle.checked = s.enabled;
+        localStorage.setItem('tevi_cs_popup', JSON.stringify({ botEnabled: s.enabled }));
+        render(s);
+      }
+    } catch {}
+  }
+
+  el.toggle.addEventListener('change', async () => {
+    const enabled = el.toggle.checked;
+    localStorage.setItem('tevi_cs_popup', JSON.stringify({ botEnabled: enabled }));
+    render({ enabled, hasToken: true, result: {}, activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5 });
+    try { await chrome.runtime.sendMessage({ type: 'TOGGLE', enabled }); } catch {}
+  });
+
+  load();
+})();
+</script>
 </body>
 </html>
