@@ -181,8 +181,8 @@ function getDefaultRules() {
     // Priority 1: BLOCK INAPPROPRIATE
     { id: 'block_inap', priority: 1, type: 'block', active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot,lubang', reply: `Maaf ya, topik itu di luar layanan yang bisa aku bantu 💕\nAku fokus bantu info VCS dan membership aja~` },
 
-    // Priority 0: FALLBACK
-    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Maaf kak, aku Sukii AI Assistant-nya Baby Val 💕\nAku cuma bisa bantu soal:\n• VCS / Video Call\n• Membership Tevi\n• Payment babyval.com\n\nCoba tanya yang berkaitan dengan itu ya~` },
+    // Priority 0: FALLBACK — redirect to membership
+    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Kalau mau chat sama Baby Val langsung, membership dulu ya di Tevi 💕\nNanti Baby Val yang balas sendiri~` },
   ];
 }
 
