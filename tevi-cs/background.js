@@ -327,6 +327,24 @@ async function markRead(convId) {
   } catch {}
 }
 
+async function getMessages(convId) {
+  const t = await ensureToken();
+  if (!t) return null;
+  const path = `/messenger/v2/conversation/${convId}/messages`;
+  const verify = await hmac(path);
+  try {
+    const resp = await fetch(`https://wapi.flowstreamx.com${path}?limit=20&verify=${verify}`, {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${t}`, 'Origin': 'https://tevi.com', 'Accept': 'application/json' },
+    });
+    if (resp.ok) {
+      const json = await resp.json().catch(() => null);
+      return json?.data?.messages || json?.messages || [];
+    }
+  } catch {}
+  return null;
+}
+
 // ── STATE ────────────────────────────────────────────────────────────────
 const DEF = () => ({
   botEnabled: false,
@@ -437,6 +455,108 @@ async function poll() {
     }
 
     return false;
+  }
+
+  // ── CHECK TRACKED CONVS (after greeting sent, conv drops from unread list) ──
+  // Also check intro_sent/cs convs that are no longer in unread list
+  const tracked = Object.entries(state.convMeta)
+    .filter(([id, m]) => !m.done && (m.stage === 'intro_sent' || m.stage === 'cs'))
+    .map(([id, m]) => ({ convId: id, ...m }));
+
+  for (const tracked of tracked) {
+    const { convId, stage, lastText, lastReply } = tracked;
+    // Skip if already in this poll's unread convs
+    if (convs.find(c => c.id === convId)) continue;
+
+    // Fetch actual messages
+    const messages = await getMessages(convId);
+    if (!messages || messages.length === 0) continue;
+
+    const latest = messages[messages.length - 1];
+    const latestText = latest?.text || '';
+    const latestSenderUid = latest?.sender?.uid || '';
+    const latestTime = latest?.created_at ? Number(latest.created_at) * 1000 : Date.now();
+
+    // Skip if no new message
+    if (latestText === lastText || !latestText) continue;
+
+    // Check who sent it
+    if (latestSenderUid === MY_UID) {
+      // Sukii's own message — update timestamp
+      state.convMeta[convId] = { ...state.convMeta[convId], sukiiLastReplyAt: latestTime };
+      continue;
+    }
+
+    // New user message in tracked conv
+    log(`  [tracked @${convId}] user replied: "${latestText.substring(0,30)}"`);
+    const slug = latest?.sender?.username || latest?.sender?.slug || convId;
+    const msg = latest;
+
+    // Same processing as cs stage for this message
+    const newMeta = { ...state.convMeta[convId], userLastMsgAt: latestTime, lastText: latestText };
+    state.convMeta[convId] = newMeta;
+
+    if (shouldSkipReply(newMeta, latestTime)) {
+      log(`  @${slug} [skip] Sukii was last replier`);
+      continue;
+    }
+
+    if (stage === 'intro_sent') {
+      // 3h wait check
+      const introElapsed = Date.now() - (newMeta.introAt || 0);
+      if (introElapsed < introWait) continue; // Still waiting, ignore
+
+      // Time expired, user replied → go to CS
+      const rule = findReply(latestText, rules);
+      let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || '', slug);
+      replyText = await aiEnrich(replyText, latestText);
+      signalTyping(replyText, slug);
+      const sent = await domSend(replyText, slug);
+      clearOverlay();
+      if (sent) {
+        state.convMeta[convId] = {
+          ...newMeta,
+          stage: 'cs',
+          turns: 1,
+          lastReply: replyText,
+          sukiiLastReplyAt: Date.now(),
+        };
+        replied++;
+      }
+    } else if (stage === 'cs') {
+      // Normal CS processing
+      if (isPaymentProof(msg)) {
+        state.convMeta[convId] = { ...newMeta, done: true, paymentConfirmedAt: Date.now() };
+        continue;
+      }
+      const newTurns = (newMeta.turns || 0) + 1;
+      if (newTurns > maxTurns) {
+        const sent = await domSend(greeting, slug);
+        if (sent) {
+          state.convMeta[convId] = {
+            ...newMeta, stage: 'intro_sent', introAt: Date.now(),
+            turns: 0, lastReply: greeting, sukiiLastReplyAt: Date.now(),
+          };
+          replied++;
+        }
+        continue;
+      }
+      const rule = findReply(latestText, rules);
+      let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || '', slug);
+      replyText = await aiEnrich(replyText, latestText);
+      signalTyping(replyText, slug);
+      const sent = await domSend(replyText, slug);
+      clearOverlay();
+      if (sent) {
+        state.convMeta[convId] = {
+          ...newMeta,
+          turns: newTurns,
+          lastReply: replyText,
+          sukiiLastReplyAt: Date.now(),
+        };
+        replied++;
+      }
+    }
   }
 
   for (const conv of convs) {

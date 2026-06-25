@@ -1128,3 +1128,120 @@ Chat langsung:..."
 [2026-06-25T16:55:07.116Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
 [2026-06-25T16:55:07.122Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
 [2026-06-25T16:55:07.133Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (114ms)
+[2026-06-25T17:08:22.655Z] [CS] [INFO] [CS] [DOM_SEND] → @sugargula (74 chars) state=replying
+[2026-06-25T17:08:23.272Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T17:08:23.309Z] [BG] [ERROR] [DOM] ❌ All attempts failed for @sugargula
+[2026-06-25T17:08:23.325Z] [BG] [ERROR]   @sugargula [new] ❌ greeting failed
+[2026-06-25T17:08:23.372Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (11m/180m)
+[2026-06-25T17:08:23.424Z] [BG] [INFO] [POLL] Done p=2 r=0 i=2 (15779ms)
+[2026-06-25T17:08:23.566Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@sugargula/messages [state=idle]
+[2026-06-25T17:08:26.919Z] [CS] [INFO] [CS] [DOM_SEND] → @sugargula (74 chars) state=replying
+[2026-06-25T17:08:29.159Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @sugargula
+[2026-06-25T17:08:29.172Z] [CS] [INFO] [CS] [IDLE] Scheduling return to messages list in 60s
+[2026-06-25T17:08:29.221Z] [BG] [INFO] [DOM] ✅ Sent (after hard refresh)
+[2026-06-25T17:08:29.234Z] [BG] [INFO]   @sugargula [intro_sent] ✅ greeting sent
+[2026-06-25T17:08:29.253Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (11m/180m)
+[2026-06-25T17:08:29.265Z] [BG] [INFO] [POLL] Done p=2 r=1 i=1 (19732ms)
+[2026-06-25T17:08:37.944Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:08:38.039Z] [BG] [INFO] [API] ✅ 2 unread
+[2026-06-25T17:08:38.046Z] [BG] [INFO] [POLL] 2 unread — active=true
+[2026-06-25T17:08:38.053Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (0m/180m)
+[2026-06-25T17:08:38.060Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (11m/180m)
+[2026-06-25T17:08:38.065Z] [BG] [INFO] [POLL] Done p=2 r=0 i=2 (105ms)
+[2026-06-25T17:09:29.318Z] [CS] [INFO] [CS] [IDLE] → Returning to tevi.com/messages
+[2026-06-25T17:09:34.537Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:11:37.986Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:11:38.004Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:11:38.018Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:11:38.026Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:11:38.088Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:11:38.100Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:11:38.108Z] [BG] [INFO]   @rival964 [new→intro] "👋👋👋"
+[2026-06-25T17:11:38.115Z] [BG] [INFO] [DOM] → @rival964: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:11:38.202Z] [CS] [INFO] [CS] [DOM_SEND] → @rival964 (74 chars) state=replying
+[2026-06-25T17:11:38.443Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @rival964/messages...
+[2026-06-25T17:11:38.858Z] [BG] [DEBUG] [DOM] Port error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
+[2026-06-25T17:11:38.901Z] [BG] [DEBUG] [DOM] Retrying after 3s...
+[2026-06-25T17:11:39.968Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:11:40.087Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@rival964/messages [state=idle]
+[2026-06-25T17:11:40.203Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:11:40.219Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:11:40.338Z] [BG] [INFO]   @rival964 [new→intro] "👋👋👋"
+[2026-06-25T17:11:40.406Z] [BG] [INFO] [DOM] → @rival964: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:11:40.437Z] [CS] [INFO] [CS] [DOM_SEND] → @rival964 (74 chars) state=replying
+[2026-06-25T17:11:42.474Z] [CS] [INFO] [CS] [DOM_SEND] Duplicate ignored (busy with rival964)
+[2026-06-25T17:11:43.223Z] [BG] [DEBUG] [DOM] Send failed: duplicate
+[2026-06-25T17:11:43.312Z] [BG] [DEBUG] [DOM] Injecting CS + retry...
+[2026-06-25T17:11:44.213Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @rival964
+[2026-06-25T17:11:44.256Z] [CS] [INFO] [CS] [IDLE] Scheduling return to messages list in 60s
+[2026-06-25T17:11:44.271Z] [BG] [INFO] [DOM] ✅ Sent to @rival964
+[2026-06-25T17:11:44.288Z] [BG] [INFO]   @rival964 [intro_sent] ✅ greeting sent
+[2026-06-25T17:11:44.300Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (3m/180m)
+[2026-06-25T17:11:44.312Z] [BG] [INFO] [POLL] Done p=3 r=1 i=2 (4201ms)
+[2026-06-25T17:11:44.328Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (14m/180m)
+[2026-06-25T17:11:45.351Z] [CS] [INFO] [CS] [DOM_SEND] → @rival964 (74 chars) state=replying
+[2026-06-25T17:11:45.364Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @rival964/messages...
+[2026-06-25T17:11:46.286Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T17:11:46.303Z] [BG] [DEBUG] [DOM] Hard refreshing + navigating...
+[2026-06-25T17:11:47.334Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@rival964/messages [state=idle]
+[2026-06-25T17:11:51.632Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@rival964/messages [state=idle]
+[2026-06-25T17:11:54.441Z] [CS] [INFO] [CS] [DOM_SEND] → @rival964 (74 chars) state=replying
+[2026-06-25T17:11:56.927Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @rival964
+[2026-06-25T17:11:57.003Z] [CS] [INFO] [CS] [IDLE] Scheduling return to messages list in 60s
+[2026-06-25T17:11:57.050Z] [BG] [INFO] [DOM] ✅ Sent (after hard refresh)
+[2026-06-25T17:11:57.078Z] [BG] [INFO]   @rival964 [intro_sent] ✅ greeting sent
+[2026-06-25T17:11:57.101Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (3m/180m)
+[2026-06-25T17:11:57.113Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (14m/180m)
+[2026-06-25T17:11:57.144Z] [BG] [INFO] [POLL] Done p=3 r=1 i=2 (19062ms)
+[2026-06-25T17:12:07.977Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:12:13.605Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:12:13.612Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:12:13.621Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (5625ms)
+[2026-06-25T17:12:13.627Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (0m/180m)
+[2026-06-25T17:12:13.635Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (4m/180m)
+[2026-06-25T17:12:13.642Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (14m/180m)
+[2026-06-25T17:12:57.258Z] [CS] [INFO] [CS] [IDLE] → Returning to tevi.com/messages
+[2026-06-25T17:12:58.200Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:12:58.664Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:12:58.929Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:13:03.433Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:13:03.773Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:13:03.938Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:13:03.952Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:13:03.966Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (1m/180m)
+[2026-06-25T17:13:03.978Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (5m/180m)
+[2026-06-25T17:13:04.007Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (15m/180m)
+[2026-06-25T17:13:04.025Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (237ms)
+[2026-06-25T17:13:28.709Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:13:28.812Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:13:28.822Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:13:28.831Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (2m/180m)
+[2026-06-25T17:13:28.840Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (5m/180m)
+[2026-06-25T17:13:28.849Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (16m/180m)
+[2026-06-25T17:13:28.857Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (117ms)
+[2026-06-25T17:16:29.207Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:16:29.234Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:16:29.244Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:16:29.254Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:16:29.330Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:16:29.340Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:16:29.347Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (5m/180m)
+[2026-06-25T17:16:29.365Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (8m/180m)
+[2026-06-25T17:16:29.374Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (19m/180m)
+[2026-06-25T17:16:29.385Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (153ms)
+[2026-06-25T17:16:31.201Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:16:31.312Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:16:31.324Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:16:31.336Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (5m/180m)
+[2026-06-25T17:16:31.348Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (8m/180m)
+[2026-06-25T17:16:31.361Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (19m/180m)
+[2026-06-25T17:16:31.369Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (109ms)
+[2026-06-25T17:16:59.720Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:16:59.828Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:16:59.837Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:16:59.843Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (5m/180m)
+[2026-06-25T17:16:59.851Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (9m/180m)
+[2026-06-25T17:16:59.859Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (19m/180m)
+[2026-06-25T17:16:59.866Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (116ms)

@@ -21,6 +21,7 @@
   let _lastMsg  = null;
   let _state    = 'idle'; // 'idle' | 'replying'
   let _returnTimer = null;
+  let _idleRefreshTimer = null;
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -135,9 +136,35 @@
         window.location.href = IDLE_URL;
       } else {
         l(`[IDLE] → already on messages`);
+        startIdleRefresh();
       }
     }, RETRY_AFTER_SEND_MS);
   }
+
+  // ── IDLE PAGE REFRESH (detect new unread chats) ───────────────────────
+  function startIdleRefresh() {
+    if (_idleRefreshTimer) clearInterval(_idleRefreshTimer);
+    l(`[IDLE] Starting page refresh every 10s`);
+    _idleRefreshTimer = setInterval(() => {
+      if (_state === 'idle' && isIdle()) {
+        l(`[IDLE] Refreshing messages page...`);
+        window.location.reload();
+      } else {
+        stopIdleRefresh();
+      }
+    }, 10000);
+  }
+
+  function stopIdleRefresh() {
+    if (_idleRefreshTimer) {
+      clearInterval(_idleRefreshTimer);
+      _idleRefreshTimer = null;
+      l(`[IDLE] Stopped page refresh`);
+    }
+  }
+
+  // Start idle refresh immediately when on messages page
+  if (isIdle()) startIdleRefresh();
 
   // ── MESSAGE LISTENER ───────────────────────────────────────────────────
   chrome.runtime.onMessage.addListener((msg, _, sendResp) => {
