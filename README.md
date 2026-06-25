@@ -80,6 +80,20 @@ VCS: babyval.com
 3. CS injection + retry (2s wait)
 4. Hard refresh + navigate + retry
 
+## Auto-Reload (Development)
+
+File changes trigger automatic extension reload via CDP:
+
+```bash
+cd tevi-cs
+npm install        # install ws + chokidar
+node auto-reloader.js
+```
+
+`auto-reloader.js` watches all extension files. On change → CDP → `__TEVI_RELOAD__` → `chrome.runtime.reload()` → new code active. No manual reload needed.
+
+> Auto-reloader auto-launches Edge with `--remote-debugging-port=9222` if not already running.
+
 ## Setup
 
 ### 1. Start Log Server
@@ -109,6 +123,7 @@ Aktif: **17:00 - 05:00 WIB**
 - Fix: track intro_sent/cs convs via getMessages even after greeting drops them from UNREAD filter
 - Idle refresh every 10s on messages page for new chat detection
 - Poll loop checks tracked conversations for user replies
+- Auto-reloader: CDP-based extension reload on file changes — no manual reload needed
 
 ### v0.6.1 — 2026-06-25
 - Idle/Reply state machine: auto-return to messages after 60s
