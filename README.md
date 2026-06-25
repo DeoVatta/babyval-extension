@@ -6,12 +6,12 @@ Edge/Chrome MV3 extension untuk otomatisasi Tevi CS (Customer Service) bot @cuti
 
 ```
 tevi-cs/
-├── manifest.json       # MV3 manifest v0.6.1
+├── manifest.json      # MV3 manifest v0.6.2
 ├── background.js      # Service Worker: polling, HMAC, API, state machine
 ├── content-script.js  # DOM automation: idle/reply state machine
-├── overlay.js        # Cute cat overlay (sleep/alert/typing animation)
-├── popup/popup.html  # Rules editor UI
-├── log-server.js     # Local HTTP log receiver
+├── overlay.js         # Cute cat overlay (sleep/alert/typing animation)
+├── popup/popup.html   # Rules editor UI
+├── log-server.js      # Local HTTP log receiver
 └── icons/
 ```
 
@@ -105,13 +105,14 @@ Aktif: **17:00 - 05:00 WIB**
 
 ## Changelog
 
+### v0.6.2 — 2026-06-26
+- Fix: track intro_sent/cs convs via getMessages even after greeting drops them from UNREAD filter
+- Idle refresh every 10s on messages page for new chat detection
+- Poll loop checks tracked conversations for user replies
+
 ### v0.6.1 — 2026-06-25
 - Idle/Reply state machine: auto-return to messages after 60s
 - Cold tone: semua reply dingin, informatif
 - Sukii-last-replier: skip reply jika Sukii sudah terakhir balas
 - Payment proof silent end
 - Overlay kucing: CSS animated cat
-
-### v0.6.0 — 2026-06-25
-- Cute cat overlay: sleep/alert/typing
-- Payment delay 6h, 24h rule
