@@ -186,3 +186,17 @@
 [2026-06-25T14:37:54.763Z] [BG] [DEBUG] [CONVS] Response body (first 200): {"success":false,"message":"Not Found","code":"","data":null}
 [2026-06-25T14:37:54.768Z] [BG] [ERROR] [CONVS] API returned error | {"status":404,"data":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
 [2026-06-25T14:37:54.773Z] [BG] [INFO] [POLL] No conversations data
+[2026-06-25T14:38:26.034Z] [BG] [INFO] [SW] Tevi CS Bot v0.1.0.1 started — logging to localhost:3131
+[2026-06-25T14:38:26.042Z] [BG] [INFO] [POLL] Start — dry=false activeHours=true
+[2026-06-25T14:38:26.051Z] [BG] [INFO] [TOKEN] Injecting into tab: https://tevi.com/messages
+[2026-06-25T14:38:26.061Z] [BG] [INFO] [SW] Bot was enabled — alarm rescheduled
+[2026-06-25T14:38:26.073Z] [BG] [INFO] [TOKEN] OK — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:38:26.080Z] [BG] [DEBUG] [CONVS] Token: eyJhbGciOiJSUzI...
+[2026-06-25T14:38:26.088Z] [BG] [DEBUG] [CONVS] GET https://wapi.flowstreamx.com/messenger/v2/conversation/get_recent_conversations/?filter=UNREAD&limit=20&verify=1782398306-0xsCWyQp9EN2Hcoj8qsFpPK0uJ71RU19DsQi7+4Pwzk=
+[2026-06-25T14:38:26.125Z] [BG] [DEBUG] [CONVS] Response status: 404
+[2026-06-25T14:38:26.132Z] [BG] [DEBUG] [CONVS] Response body (first 200): {"success":false,"message":"Not Found","code":"","data":null}
+[2026-06-25T14:38:26.141Z] [BG] [ERROR] [CONVS] API returned error | {"status":404,"data":"{\"success\":false,\"message\":\"Not Found\",\"code\":\"\",\"data\":null}"}
+[2026-06-25T14:38:26.147Z] [BG] [INFO] [POLL] No conversations data
+[2026-06-25T14:38:41.662Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:38:41.688Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.2 on https://tevi.com/messages
+[2026-06-25T14:38:50.866Z] [OVERLAY] [INFO] [OVERLAY] Manual poll triggered

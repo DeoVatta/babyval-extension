@@ -197,10 +197,21 @@ const TEMPLATES = {
 };
 
 // ── API: Conversations ──────────────────────────────────────────────────────
+const DISCOVERED_ENDPOINT_KEY = 'tevi_cs_api_state';
+
+async function getDiscoveredEndpoint() {
+  try {
+    const data = await chrome.storage.local.get(DISCOVERED_ENDPOINT_KEY);
+    return data[DISCOVERED_ENDPOINT_KEY]?.discoveredEndpoint || null;
+  } catch { return null; }
+}
+
 async function getUnreadConversations(token) {
-  const pathname = '/messenger/v2/conversation/get_recent_conversations/';
-  const verify = await hmac(pathname);
-  const url = `https://wapi.flowstreamx.com${pathname}?filter=UNREAD&limit=20&verify=${verify}`;
+  // Auto-discovered endpoint first, fallback to known working path
+  const discovered = await getDiscoveredEndpoint();
+  const basePath = discovered || '/messenger/v2/rpc/get_recent_conversations';
+  const verify = await hmac(basePath);
+  const url = `https://wapi.flowstreamx.com${basePath}${basePath.includes('?') ? '&' : '?'}limit=20&filter=UNREAD&verify=${verify}`;
 
   logDebug(`[CONVS] GET ${url}`);
   logDebug(`[CONVS] Token: ${token?.substring(0, 15)}...`);
@@ -433,7 +444,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 // ── Startup ─────────────────────────────────────────────────────────────────
-log('[SW] Tevi CS Bot v0.1.0.2 started — logging to localhost:3131');
+log('[SW] Tevi CS Bot v0.1.0.3 started — logging to localhost:3131');
 
 isBotEnabled().then(async (enabled) => {
   if (enabled) {

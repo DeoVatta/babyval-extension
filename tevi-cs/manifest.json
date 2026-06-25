@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.1.0.2",
+  "version": "0.1.0.3",
   "description": "Auto-reply DM bot for Tevi (Cutieval account) — browser extension version",
   "author": "Devata",
   "permissions": [
@@ -30,7 +30,7 @@
   "content_scripts": [
     {
       "matches": ["https://tevi.com/*"],
-      "js": ["content-script.js", "overlay.js"],
+      "js": ["content-script.js", "overlay.js", "interceptor.js"],
       "run_at": "document_idle"
     }
   ],

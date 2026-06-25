@@ -1,5 +1,5 @@
 /**
- * FLOATING OVERLAY — Tevi CS Bot (v0.1.0.2)
+ * FLOATING OVERLAY — Tevi CS Bot (v0.1.0.3)
  * Injected via content-script into tevi.com
  * Appears automatically on page load — right side, non-intrusive
  * Inspired by updog.marketing floating widget style
@@ -12,7 +12,7 @@
   if (window.__TEVI_CS_OVERLAY__) return;
   window.__TEVI_CS_OVERLAY__ = true;
 
-  const VER = '0.1.0.2';
+  const VER = '0.1.0.3';
   const LOG_SERVER = 'http://localhost:3131';
 
   // ── Inject styles ────────────────────────────────────────────────────────

@@ -176,14 +176,15 @@ MY_CHANNEL_ID=a605781b-dc88-441d-a3d0-654b075ec...
 
 ## Changelog
 
+### v0.1.0.3 — 2026-06-25
+- **FIX: API 404** — Endpoint path wrong: `/conversation/` → `/rpc/` (correct path: `/messenger/v2/rpc/get_recent_conversations`)
+- **Auto-discover interceptor**: interceptor.js monkey-patches fetch/XHR on tevi.com — auto-captures real endpoint when page loads conversations
+- **Dual fallback**: Uses discovered endpoint first, falls back to known correct path
+
 ### v0.1.0.2 — 2026-06-25
 - **Floating Overlay**: Right-bottom FAB button muncul otomatis di tevi.com, collapsible panel dengan toggle, stats, Poll button, Logs viewer
 - **Token Persistent**: Token disimpan ke `chrome.storage.local` — persist setelah SW restart, popup tidak lagi "No Token"
-- **Probe API**: Button di popup untuk test multiple endpoint alternatives
+- **Probe API**: Button di popup untuk test endpoint alternatives
 
-### v0.1.1 — 2026-06-25
+### v0.1.0.1 — 2026-06-25
 - **Remote debugging system**: Extension POST logs ke localhost:3131 (log-server.js)
-- Popup: Diagnostic button, View Logs button, Log server status indicator
-- Content script: Full DIAGNOSE message handler
-- Background: Enhanced logging dengan ERROR/DEBUG levels
-- Log server: Node.js HTTP server → writes ke tevi-cs-logs.txt

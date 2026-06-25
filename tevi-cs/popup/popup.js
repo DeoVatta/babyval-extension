@@ -1,8 +1,8 @@
 /**
- * POPUP — Tevi CS Bot UI v0.1.0.2
+ * POPUP — Tevi CS Bot UI v0.1.0.3
  * Floating card layout, localStorage toggle persist, remote logging
  */
-const VER = '0.1.0.2';
+const VER = '0.1.0.3';
 
 const $ = id => document.getElementById(id);
 const LOG_SERVER = 'http://localhost:3131';
