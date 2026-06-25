@@ -15,18 +15,49 @@ tevi-cs/
 └── icons/
 ```
 
-## State Machine
+## State Machine — v0.8
 
 ```
-IDLE (tevi.com/messages)
-  ↓ poll detects new conv → add to queue
-QUEUE MODE: process ONE conv at a time
-  → navigate to DM
-  → waitForPageReady (PING until CS responds)
-  → type + send + wait 1.5s confirm
-  → 8-12s delay before next task
-  → loop until queue empty
+TOGGLE ON → navigate to messages page
+  ↓ every 20s alarm
+SCAN → find all convs with no ✓/✓✓ icon on last msg
+  ↓ filter: membership (skip) + image-cooldown users (skip 6h)
+PROCESS ONE AT A TIME:
+  → navigate to @slug/messages
+  → GET_MSGS: read 4 latest USER messages
+  → SLOT DECISION:
+      no prior chat → greeting (slot=1)
+      last msg >3h ago → greeting (slot=1)
+      has prior chat → reply (slot++)
+      slot >= 4 → greeting (slot=1)
+  → generate reply via AI or fallback
+  → DOM_SEND: type + send + verify
+  → update conv meta (slot, greetingCooldownTs)
+  → return to messages page
+  ↓ idle 20s → repeat
 ```
+
+## DOM Detection (v0.8)
+
+```
+icon-check-double / ✓✓ on last msg in conv list → Sukii replied → SKIP
+icon-check / ✓ on last msg → Sukii replied → SKIP
+no icon / other icon → USER last message → NEEDS REPLY
+```
+
+**Cooldown:**
+- Image sender: 6h cooldown tracked by username in `chrome.storage.local`
+- Greeting: 3h cooldown per conversation before new greeting
+
+## Slot System (v0.8)
+
+| Slot | Type | Description |
+|------|------|-------------|
+| 1 | Greeting | `Halo aku Sukii, AI Assistant-nya Baby Val...` |
+| 2 | Reply | AI-generated reply with 4-msg context |
+| 3 | Reply | AI-generated reply with 4-msg context |
+| 4 | Reply | AI-generated reply with 4-msg context |
+| 5+ | Greeting | After slot 4, resets to slot 1 |
 
 ## Flow Bot
 
@@ -44,22 +75,20 @@ CS mode → reply sesuai keyword rules
 2. Payment confirmed — 6 jam delay
 3. User diam >24 jam — boleh balas
 
-## Queue Mode (v0.7.0)
+## Queue Mode (v0.8 — ONE conv at a time)
 
 ```
-Poll → discover new convs → add to queue
-Process ONE at a time:
-  1. Navigate to @slug/messages
-  2. waitForPageReady (PING until CS responds, max 20s)
-  3. domSendWithConfirm: type → click send → wait 1.5s → confirm
-  4. Dynamic delay before next:
-     - Greeting sent: 12s
-     - Reply sent: 8s
-     - Failed/deferred: 15s
-     - Ignored: 5s
-  5. Release queue → next conv
+Alarm fires every 20s
+  → Refresh messages page
+  → SCAN_CONVS: query DOM for all convs with no ✓/✓✓ icon
+  → Filter: skip processing convs, skip image-cooldown users
+  → Pick first remaining conv
+  → navigateToConv → GET_MSGS → decideSlot → DOM_SEND
+  → navigate back to messages
+  → Alarm fires again in ~20s
 ```
-**Problem solved**: v0.6.x — 100 convs processed simultaneously → tab collision → "No tevi tab open"
+
+**Navigate recovery:** If tab not responding, recreate tab + inject CS. After 3 fails, skip that conv.
 
 ## Keyword Rules (Cold/Informant Tone)
 
@@ -142,6 +171,16 @@ Pilih: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
 Aktif: **24/7** — no active hours restriction, user controls ON/OFF via extension toggle.
 
 ## Changelog
+
+### v0.8.0 — 2026-06-26
+- **Complete rewrite** of content-script.js + background.js
+- **DOM-based conv detection**: scan for ✓/✓✓ icons instead of message polling — no more wapi.flowstreamx.com dependency
+- **4-message context window**: reads 4 latest USER messages before each reply
+- **Slot system**: greeting (slot=1) → 3 AI replies (slot 2-4) → greeting loop
+- **Image sender cooldown**: 6h cooldown tracked by username in chrome.storage
+- **Greeting cooldown**: 3h per conversation before new greeting fires
+- **Idle 20s refresh**: chrome.alarms fires every 20s, scans messages page, processes one conv
+- **Simplified flow**: scan → filter → navigate → read → decide → send → return → idle
 
 ### v0.7.3 — 2026-06-26
 - **Fixed overlay sync**: `botEnabled` now written to overlay storage on every poll/toggle — cat panel always shows correct ON/OFF

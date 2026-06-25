@@ -1,628 +1,3 @@
-[2026-06-25T17:51:09.322Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @evan_669/messages...
-[2026-06-25T17:51:10.119Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-[2026-06-25T17:51:10.139Z] [BG] [DEBUG] [DOM] Retrying after 3s...
-[2026-06-25T17:51:10.701Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:51:11.052Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/evan_669/messages [state=idle]
-[2026-06-25T17:51:14.290Z] [CS] [INFO] [CS] [DOM_SEND] → @evan_669 (47 chars) state=replying
-[2026-06-25T17:51:15.079Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:51:15.548Z] [BG] [INFO] [API] ✅ 100 total convs
-[2026-06-25T17:51:15.561Z] [BG] [DEBUG] [API] first conv: ["id","type","deleted","last_activity_at","created_at","updated_at","is_thread_conversation","menu","me","my_settings","recipient","latest_message","stats"]
-[2026-06-25T17:51:15.593Z] [BG] [DEBUG] [API] first conv.last_msg.sender: {"id":"5313d718-58ec-475c-a8db-2d3d7540d36e","alias":"2057110230","name":"Kmp_enterpise","avatar":{"cover":"https://storage.googleapis.com/static.tevi.app/Channel/Images/android/26/06/25/e867b60c536b459fbcfaeceb475d5527.jpg","thumb":"https://storage.googleapis.com/static.tevi.app/Channel/Images/android/26/06/25/294dd8877aa448c790191658ca6fdad0.jpg"},"channel_slug":"kempong88","slug":"kempong88"}
-[2026-06-25T17:51:15.626Z] [BG] [INFO] [POLL] 100 unread — active=true
-[2026-06-25T17:51:15.649Z] [BG] [INFO]   @kempong88 [new→intro] "ntar kalo naek lg tinggal penasaranya aj"
-[2026-06-25T17:51:15.667Z] [BG] [INFO] [DOM] → @kempong88: "Sukii. Informan Baby Val.
-Chat langsung:..."
-[2026-06-25T17:51:15.726Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars) state=replying
-[2026-06-25T17:51:15.792Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @kempong88/messages...
-[2026-06-25T17:51:15.950Z] [BG] [INFO] [DOM] ✅ Sent to @evan_669 (retry)
-[2026-06-25T17:51:15.995Z] [BG] [INFO]   @Qaz20 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:16.030Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @evan_669
-[2026-06-25T17:51:16.050Z] [CS] [INFO] [CS] [IDLE] Return to messages in 60s
-[2026-06-25T17:51:16.083Z] [BG] [INFO] [DOM] → @Qaz20: "Sukii. Informan Baby Val.
-Chat langsung:..."
-[2026-06-25T17:51:16.133Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-[2026-06-25T17:51:16.159Z] [BG] [DEBUG] [DOM] Retrying after 3s...
-[2026-06-25T17:51:16.359Z] [BG] [DEBUG] [DOM] Port error: Could not establish connection. Receiving end does not exist.
-[2026-06-25T17:51:16.643Z] [BG] [DEBUG] [DOM] Retrying after 3s...
-[2026-06-25T17:51:17.197Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:51:17.233Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/kempong88/messages [state=idle]
-[2026-06-25T17:51:20.928Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars) state=replying
-[2026-06-25T17:51:21.152Z] [CS] [INFO] [CS] [DOM_SEND] → @Qaz20 (74 chars) state=replying
-[2026-06-25T17:51:21.224Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @Qaz20/messages...
-[2026-06-25T17:51:22.084Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-[2026-06-25T17:51:22.108Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-[2026-06-25T17:51:22.122Z] [BG] [DEBUG] [DOM] Injecting CS + retry...
-[2026-06-25T17:51:22.154Z] [BG] [DEBUG] [DOM] Injecting CS + retry...
-[2026-06-25T17:51:23.122Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:51:23.143Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/Qaz20/messages [state=idle]
-[2026-06-25T17:51:24.945Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars) state=replying
-[2026-06-25T17:51:25.052Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @kempong88/messages...
-[2026-06-25T17:51:25.320Z] [CS] [INFO] [CS] [DOM_SEND] → @Qaz20 (74 chars) state=replying
-[2026-06-25T17:51:25.396Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @Qaz20/messages...
-[2026-06-25T17:51:25.700Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-[2026-06-25T17:51:26.328Z] [BG] [DEBUG] [DOM] Hard refreshing + navigating...
-[2026-06-25T17:51:26.809Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-[2026-06-25T17:51:27.008Z] [BG] [DEBUG] [DOM] Hard refreshing + navigating...
-[2026-06-25T17:51:27.209Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:51:27.274Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/Qaz20/messages [state=idle]
-[2026-06-25T17:51:29.882Z] [BG] [DEBUG] [DOM] Hard refresh failed: No tab with id: 1455759354.
-[2026-06-25T17:51:29.929Z] [BG] [ERROR] [DOM] ❌ All attempts failed for @Qaz20
-[2026-06-25T17:51:30.040Z] [BG] [ERROR]   @Qaz20 [new] ❌ greeting failed
-[2026-06-25T17:51:30.101Z] [BG] [INFO]   @guines484 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:30.144Z] [BG] [DEBUG] [DOM] Hard refresh failed: No tab with id: 1455759354.
-[2026-06-25T17:51:30.202Z] [BG] [ERROR] [DOM] ❌ All attempts failed for @kempong88
-[2026-06-25T17:51:30.285Z] [BG] [ERROR]   @kempong88 [new] ❌ greeting failed
-[2026-06-25T17:51:30.321Z] [BG] [INFO]   @civic_putih [intro→done] payment proof — silent end
-[2026-06-25T17:51:30.354Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting for reply...
-[2026-06-25T17:51:30.398Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting for reply...
-[2026-06-25T17:51:30.469Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting for reply...
-[2026-06-25T17:51:30.597Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:30.690Z] [BG] [INFO]   @evan_669 [intro→CS] replied: "kalau Deket kamu mau tidak pip"
-[2026-06-25T17:51:30.783Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:30.876Z] [BG] [ERROR]   @guines484 [new] ❌ greeting failed
-[2026-06-25T17:51:31.037Z] [BG] [INFO]   @teknik_bu [new→intro] "cara yg simple2 aja"
-[2026-06-25T17:51:31.120Z] [BG] [ERROR]   @teknik_bu [new] ❌ greeting failed
-[2026-06-25T17:51:31.288Z] [BG] [INFO]   @user6032682438248 [new→intro] ""
-[2026-06-25T17:51:31.376Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:31.468Z] [BG] [ERROR]   @user6032682438248 [new] ❌ greeting failed
-[2026-06-25T17:51:31.548Z] [BG] [INFO]   @4279725502 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:31.639Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:31.693Z] [BG] [INFO]   @Qaz20 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:31.791Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.070Z] [BG] [ERROR]   @4279725502 [new] ❌ greeting failed
-[2026-06-25T17:51:32.097Z] [BG] [INFO]   @miracleboyyzz [new→intro] ""
-[2026-06-25T17:51:32.133Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.245Z] [BG] [INFO]   @guines484 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:32.289Z] [BG] [ERROR]   @Qaz20 [new] ❌ greeting failed
-[2026-06-25T17:51:32.378Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.549Z] [BG] [ERROR]   @miracleboyyzz [new] ❌ greeting failed
-[2026-06-25T17:51:32.633Z] [BG] [INFO]   @bidinisreal [new→intro] ""
-[2026-06-25T17:51:32.671Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.726Z] [BG] [ERROR]   @guines484 [new] ❌ greeting failed
-[2026-06-25T17:51:32.735Z] [BG] [INFO]   @teknik_bu [new→intro] "cara yg simple2 aja"
-[2026-06-25T17:51:32.743Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.753Z] [BG] [ERROR]   @bidinisreal [new] ❌ greeting failed
-[2026-06-25T17:51:32.762Z] [BG] [INFO]   @suzeep [new→intro] ""
-[2026-06-25T17:51:32.793Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.802Z] [BG] [ERROR]   @teknik_bu [new] ❌ greeting failed
-[2026-06-25T17:51:32.816Z] [BG] [INFO]   @user6032682438248 [new→intro] ""
-[2026-06-25T17:51:32.838Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.854Z] [BG] [ERROR]   @suzeep [new] ❌ greeting failed
-[2026-06-25T17:51:32.879Z] [BG] [INFO]   @MEKOOMCN [new→intro] ""
-[2026-06-25T17:51:32.934Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:32.950Z] [BG] [ERROR]   @user6032682438248 [new] ❌ greeting failed
-[2026-06-25T17:51:33.001Z] [BG] [INFO]   @4279725502 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:33.147Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:33.354Z] [BG] [ERROR]   @MEKOOMCN [new] ❌ greeting failed
-[2026-06-25T17:51:33.400Z] [BG] [INFO]   @alann17529 [new→intro] ""
-[2026-06-25T17:51:33.460Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:33.524Z] [BG] [ERROR]   @4279725502 [new] ❌ greeting failed
-[2026-06-25T17:51:33.604Z] [BG] [INFO]   @miracleboyyzz [new→intro] ""
-[2026-06-25T17:51:33.635Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:33.665Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:33.686Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:33.702Z] [BG] [ERROR]   @alann17529 [new] ❌ greeting failed
-[2026-06-25T17:51:33.737Z] [BG] [INFO]   @radar_86 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:33.760Z] [BG] [ERROR]   @miracleboyyzz [new] ❌ greeting failed
-[2026-06-25T17:51:33.779Z] [BG] [INFO]   @bidinisreal [new→intro] ""
-[2026-06-25T17:51:33.795Z] [BG] [ERROR]   @radar_86 [new] ❌ greeting failed
-[2026-06-25T17:51:33.813Z] [BG] [INFO]   @aa_andi_a.s [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:33.832Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:33.846Z] [BG] [ERROR]   @bidinisreal [new] ❌ greeting failed
-[2026-06-25T17:51:33.893Z] [BG] [INFO]   @suzeep [new→intro] ""
-[2026-06-25T17:51:33.914Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:33.957Z] [BG] [ERROR]   @aa_andi_a.s [new] ❌ greeting failed
-[2026-06-25T17:51:33.986Z] [BG] [INFO]   @mister_up [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:34.017Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.067Z] [BG] [ERROR]   @suzeep [new] ❌ greeting failed
-[2026-06-25T17:51:34.118Z] [BG] [INFO]   @MEKOOMCN [new→intro] ""
-[2026-06-25T17:51:34.146Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.165Z] [BG] [ERROR]   @mister_up [new] ❌ greeting failed
-[2026-06-25T17:51:34.185Z] [BG] [DEBUG]   @3981415084 [member] skipped
-[2026-06-25T17:51:34.210Z] [BG] [INFO]   @aditya_pratama5 [new→intro] "Beli star di https://babyval.com"
-[2026-06-25T17:51:34.217Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.230Z] [BG] [ERROR]   @MEKOOMCN [new] ❌ greeting failed
-[2026-06-25T17:51:34.283Z] [BG] [INFO]   @alann17529 [new→intro] ""
-[2026-06-25T17:51:34.306Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.333Z] [BG] [ERROR]   @aditya_pratama5 [new] ❌ greeting failed
-[2026-06-25T17:51:34.359Z] [BG] [DEBUG]   @pencariandiri [member] skipped
-[2026-06-25T17:51:34.386Z] [BG] [INFO]   @senasen232 [new→intro] "brp kak? "
-[2026-06-25T17:51:34.458Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.486Z] [BG] [ERROR]   @alann17529 [new] ❌ greeting failed
-[2026-06-25T17:51:34.530Z] [BG] [INFO]   @radar_86 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:34.553Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.570Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.605Z] [BG] [ERROR]   @senasen232 [new] ❌ greeting failed
-[2026-06-25T17:51:34.635Z] [BG] [INFO]   @zubair_anwar [new→intro] "emang kakanya tinggal di mana"
-[2026-06-25T17:51:34.661Z] [BG] [ERROR]   @radar_86 [new] ❌ greeting failed
-[2026-06-25T17:51:34.693Z] [BG] [INFO]   @aa_andi_a.s [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:34.725Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.736Z] [BG] [ERROR]   @zubair_anwar [new] ❌ greeting failed
-[2026-06-25T17:51:34.777Z] [BG] [INFO]   @grogen [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:34.918Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:34.939Z] [BG] [ERROR]   @aa_andi_a.s [new] ❌ greeting failed
-[2026-06-25T17:51:34.958Z] [BG] [INFO]   @mister_up [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:34.974Z] [BG] [INFO]   @malik_asyrof [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:34.997Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:35.016Z] [BG] [ERROR]   @grogen [new] ❌ greeting failed
-[2026-06-25T17:51:35.042Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:35.107Z] [BG] [ERROR]   @mister_up [new] ❌ greeting failed
-[2026-06-25T17:51:35.163Z] [BG] [DEBUG]   @3981415084 [member] skipped
-[2026-06-25T17:51:35.190Z] [BG] [INFO]   @aditya_pratama5 [new→intro] "Beli star di https://babyval.com"
-[2026-06-25T17:51:35.216Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:35.374Z] [BG] [ERROR]   @malik_asyrof [new] ❌ greeting failed
-[2026-06-25T17:51:35.447Z] [BG] [INFO]   @cak_nancak929 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:35.513Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:35.564Z] [BG] [ERROR]   @aditya_pratama5 [new] ❌ greeting failed
-[2026-06-25T17:51:35.643Z] [BG] [DEBUG]   @pencariandiri [member] skipped
-[2026-06-25T17:51:35.676Z] [BG] [INFO]   @senasen232 [new→intro] "brp kak? "
-[2026-06-25T17:51:35.814Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:35.947Z] [BG] [ERROR]   @cak_nancak929 [new] ❌ greeting failed
-[2026-06-25T17:51:35.981Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.010Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.065Z] [BG] [ERROR]   @KMP12 [new] ❌ greeting failed
-[2026-06-25T17:51:36.150Z] [BG] [ERROR]   @zubair_anwar [new] ❌ greeting failed
-[2026-06-25T17:51:36.184Z] [BG] [INFO]   @grogen [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:36.227Z] [BG] [INFO]   @KMP12 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:36.247Z] [BG] [ERROR]   @senasen232 [new] ❌ greeting failed
-[2026-06-25T17:51:36.314Z] [BG] [INFO]   @zubair_anwar [new→intro] "emang kakanya tinggal di mana"
-[2026-06-25T17:51:36.398Z] [BG] [INFO]   @gery_marley [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:36.497Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.602Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.623Z] [BG] [ERROR]   @grogen [new] ❌ greeting failed
-[2026-06-25T17:51:36.644Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.679Z] [BG] [ERROR]   @gery_marley [new] ❌ greeting failed
-[2026-06-25T17:51:36.699Z] [BG] [INFO]   @black20103 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:36.760Z] [BG] [INFO]   @malik_asyrof [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:36.785Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.808Z] [BG] [ERROR]   @black20103 [new] ❌ greeting failed
-[2026-06-25T17:51:36.822Z] [BG] [INFO]   @gento_rt_3 [new→intro] "Topup star ke website yaa"
-[2026-06-25T17:51:36.833Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.849Z] [BG] [ERROR]   @malik_asyrof [new] ❌ greeting failed
-[2026-06-25T17:51:36.862Z] [BG] [INFO]   @cak_nancak929 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:36.875Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.894Z] [BG] [ERROR]   @gento_rt_3 [new] ❌ greeting failed
-[2026-06-25T17:51:36.950Z] [BG] [INFO]   @zul_fikri15 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:36.981Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:36.998Z] [BG] [ERROR]   @cak_nancak929 [new] ❌ greeting failed
-[2026-06-25T17:51:37.014Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.028Z] [BG] [INFO]   @KMP12 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:37.044Z] [BG] [ERROR]   @zul_fikri15 [new] ❌ greeting failed
-[2026-06-25T17:51:37.060Z] [BG] [INFO]   @3294185049 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:37.125Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.176Z] [BG] [ERROR]   @KMP12 [new] ❌ greeting failed
-[2026-06-25T17:51:37.200Z] [BG] [INFO]   @dotco_dong [new→intro] "ow ga bisa ywdh"
-[2026-06-25T17:51:37.225Z] [BG] [INFO]   @gery_marley [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:37.274Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.289Z] [BG] [ERROR]   @3294185049 [new] ❌ greeting failed
-[2026-06-25T17:51:37.308Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.323Z] [BG] [ERROR]   @gery_marley [new] ❌ greeting failed
-[2026-06-25T17:51:37.334Z] [BG] [INFO]   @black20103 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:37.349Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.359Z] [BG] [ERROR]   @dotco_dong [new] ❌ greeting failed
-[2026-06-25T17:51:37.375Z] [BG] [INFO]   @1522652717 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:37.413Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.475Z] [BG] [ERROR]   @black20103 [new] ❌ greeting failed
-[2026-06-25T17:51:37.579Z] [BG] [INFO]   @gento_rt_3 [new→intro] "Topup star ke website yaa"
-[2026-06-25T17:51:37.679Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.779Z] [BG] [ERROR]   @1522652717 [new] ❌ greeting failed
-[2026-06-25T17:51:37.840Z] [BG] [INFO]   @byu_vibo [new→intro] "mau nonton Kk clmk ,aku yg biasa tep""
-[2026-06-25T17:51:37.859Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:37.962Z] [BG] [ERROR]   @gento_rt_3 [new] ❌ greeting failed
-[2026-06-25T17:51:38.050Z] [BG] [INFO]   @zul_fikri15 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:38.150Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:38.250Z] [BG] [ERROR]   @byu_vibo [new] ❌ greeting failed
-[2026-06-25T17:51:38.305Z] [BG] [ERROR]   @zul_fikri15 [new] ❌ greeting failed
-[2026-06-25T17:51:38.349Z] [BG] [INFO]   @dhaka [new→intro] "Udah saya cek"
-[2026-06-25T17:51:38.377Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:38.421Z] [BG] [INFO]   @3294185049 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:38.447Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:38.524Z] [BG] [ERROR]   @dhaka [new] ❌ greeting failed
-[2026-06-25T17:51:38.563Z] [BG] [INFO]   @hmz_sr [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:38.693Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:38.758Z] [BG] [ERROR]   @3294185049 [new] ❌ greeting failed
-[2026-06-25T17:51:38.793Z] [BG] [INFO]   @dotco_dong [new→intro] "ow ga bisa ywdh"
-[2026-06-25T17:51:38.833Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.055Z] [BG] [ERROR]   @hmz_sr [new] ❌ greeting failed
-[2026-06-25T17:51:39.076Z] [BG] [INFO]   @jefry_alexander_wuner [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:39.092Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.113Z] [BG] [ERROR]   @dotco_dong [new] ❌ greeting failed
-[2026-06-25T17:51:39.129Z] [BG] [INFO]   @1522652717 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:39.141Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.150Z] [BG] [ERROR]   @jefry_alexander_wuner [new] ❌ greeting failed
-[2026-06-25T17:51:39.206Z] [BG] [INFO]   @kuda_cukimay [new→intro] "p"
-[2026-06-25T17:51:39.245Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.259Z] [BG] [ERROR]   @1522652717 [new] ❌ greeting failed
-[2026-06-25T17:51:39.297Z] [BG] [INFO]   @byu_vibo [new→intro] "mau nonton Kk clmk ,aku yg biasa tep""
-[2026-06-25T17:51:39.320Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.345Z] [BG] [ERROR]   @kuda_cukimay [new] ❌ greeting failed
-[2026-06-25T17:51:39.370Z] [BG] [INFO]   @1248316268 [new→intro] "Lha trus lawat ap callnya?"
-[2026-06-25T17:51:39.441Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.466Z] [BG] [ERROR]   @byu_vibo [new] ❌ greeting failed
-[2026-06-25T17:51:39.495Z] [BG] [INFO]   @dhaka [new→intro] "Udah saya cek"
-[2026-06-25T17:51:39.512Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.533Z] [BG] [ERROR]   @1248316268 [new] ❌ greeting failed
-[2026-06-25T17:51:39.623Z] [BG] [INFO]   @gyf2026 [new→intro] "🎉 Kami telah memberikan Anda $25.0 dari"
-[2026-06-25T17:51:39.649Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.674Z] [BG] [ERROR]   @dhaka [new] ❌ greeting failed
-[2026-06-25T17:51:39.696Z] [BG] [INFO]   @hmz_sr [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:39.716Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.745Z] [BG] [ERROR]   @gyf2026 [new] ❌ greeting failed
-[2026-06-25T17:51:39.863Z] [BG] [INFO]   @Maharaniputri [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:39.889Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:39.925Z] [BG] [ERROR]   @hmz_sr [new] ❌ greeting failed
-[2026-06-25T17:51:39.948Z] [BG] [INFO]   @jefry_alexander_wuner [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:39.964Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:40.126Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:40.530Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:40.559Z] [BG] [ERROR]   @felix_n [new] ❌ greeting failed
-[2026-06-25T17:51:40.590Z] [BG] [ERROR]   @Maharaniputri [new] ❌ greeting failed
-[2026-06-25T17:51:40.632Z] [BG] [INFO]   @felix_n [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:40.685Z] [BG] [ERROR]   @jefry_alexander_wuner [new] ❌ greeting failed
-[2026-06-25T17:51:40.715Z] [BG] [INFO]   @kuda_cukimay [new→intro] "p"
-[2026-06-25T17:51:40.747Z] [BG] [INFO]   @Zuone [new→intro] "Payment website only"
-[2026-06-25T17:51:40.776Z] [BG] [ERROR]   @kuda_cukimay [new] ❌ greeting failed
-[2026-06-25T17:51:40.812Z] [BG] [INFO]   @satrioalexander [new→intro] "Oh okeeeee"
-[2026-06-25T17:51:40.830Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:40.853Z] [BG] [INFO]   @1248316268 [new→intro] "Lha trus lawat ap callnya?"
-[2026-06-25T17:51:40.876Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:40.906Z] [BG] [ERROR]   @Zuone [new] ❌ greeting failed
-[2026-06-25T17:51:40.945Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:40.965Z] [BG] [ERROR]   @1248316268 [new] ❌ greeting failed
-[2026-06-25T17:51:40.995Z] [BG] [INFO]   @gyf2026 [new→intro] "🎉 Kami telah memberikan Anda $25.0 dari"
-[2026-06-25T17:51:41.022Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:41.044Z] [BG] [ERROR]   @satrioalexander [new] ❌ greeting failed
-[2026-06-25T17:51:41.074Z] [BG] [INFO]   @gathan-rajh-kamals-space [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:41.124Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:41.156Z] [BG] [ERROR]   @gyf2026 [new] ❌ greeting failed
-[2026-06-25T17:51:41.215Z] [BG] [INFO]   @Maharaniputri [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:41.258Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:41.363Z] [BG] [ERROR]   @gathan-rajh-kamals-space [new] ❌ greeting failed
-[2026-06-25T17:51:41.406Z] [BG] [INFO]   @Ongoingg [new→intro] "udaa kaa"
-[2026-06-25T17:51:41.443Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:41.494Z] [BG] [ERROR]   @Maharaniputri [new] ❌ greeting failed
-[2026-06-25T17:51:41.560Z] [BG] [INFO]   @felix_n [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:41.652Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:41.727Z] [BG] [ERROR]   @Ongoingg [new] ❌ greeting failed
-[2026-06-25T17:51:41.845Z] [BG] [INFO]   @2991263316 [new→intro] "❤️"
-[2026-06-25T17:51:41.943Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:42.053Z] [BG] [ERROR]   @felix_n [new] ❌ greeting failed
-[2026-06-25T17:51:42.161Z] [BG] [INFO]   @Zuone [new→intro] "Payment website only"
-[2026-06-25T17:51:42.248Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:42.325Z] [BG] [ERROR]   @Zuone [new] ❌ greeting failed
-[2026-06-25T17:51:42.364Z] [BG] [INFO]   @satrioalexander [new→intro] "Oh okeeeee"
-[2026-06-25T17:51:42.444Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:42.562Z] [BG] [ERROR]   @2991263316 [new] ❌ greeting failed
-[2026-06-25T17:51:42.619Z] [BG] [INFO]   @mr_topar [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:42.860Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:43.099Z] [BG] [ERROR]   @mr_topar [new] ❌ greeting failed
-[2026-06-25T17:51:43.172Z] [BG] [INFO]   @2895392402 [new→intro] "iya"
-[2026-06-25T17:51:43.256Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:43.424Z] [BG] [ERROR]   @satrioalexander [new] ❌ greeting failed
-[2026-06-25T17:51:43.501Z] [BG] [INFO]   @gathan-rajh-kamals-space [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:43.897Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:44.259Z] [BG] [INFO]   @muhammad_nawir885 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:44.378Z] [BG] [ERROR]   @2895392402 [new] ❌ greeting failed
-[2026-06-25T17:51:44.560Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:44.822Z] [BG] [ERROR]   @gathan-rajh-kamals-space [new] ❌ greeting failed
-[2026-06-25T17:51:44.933Z] [BG] [INFO]   @Ongoingg [new→intro] "udaa kaa"
-[2026-06-25T17:51:44.953Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:45.026Z] [BG] [INFO]   @angga_syahputra87 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:45.124Z] [BG] [ERROR]   @muhammad_nawir885 [new] ❌ greeting failed
-[2026-06-25T17:51:45.493Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:45.864Z] [BG] [ERROR]   @Ongoingg [new] ❌ greeting failed
-[2026-06-25T17:51:45.889Z] [BG] [INFO]   @2991263316 [new→intro] "❤️"
-[2026-06-25T17:51:45.920Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:45.960Z] [BG] [ERROR]   @angga_syahputra87 [new] ❌ greeting failed
-[2026-06-25T17:51:46.034Z] [BG] [INFO]   @awwww69 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:46.055Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:46.086Z] [BG] [ERROR]   @2991263316 [new] ❌ greeting failed
-[2026-06-25T17:51:46.109Z] [BG] [INFO]   @mr_topar [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:46.139Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:46.158Z] [BG] [ERROR]   @awwww69 [new] ❌ greeting failed
-[2026-06-25T17:51:46.184Z] [BG] [INFO]   @168709373 [new→intro] "kasih tip ke aku 350k yaa"
-[2026-06-25T17:51:46.212Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:46.255Z] [BG] [ERROR]   @mr_topar [new] ❌ greeting failed
-[2026-06-25T17:51:46.370Z] [BG] [INFO]   @2895392402 [new→intro] "iya"
-[2026-06-25T17:51:46.394Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:46.439Z] [BG] [ERROR]   @168709373 [new] ❌ greeting failed
-[2026-06-25T17:51:46.470Z] [BG] [INFO]   @198988200 [new→intro] "mau berapa menit?"
-[2026-06-25T17:51:46.488Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:46.510Z] [BG] [ERROR]   @2895392402 [new] ❌ greeting failed
-[2026-06-25T17:51:46.539Z] [BG] [INFO]   @muhammad_nawir885 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:46.556Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:46.589Z] [BG] [ERROR]   @198988200 [new] ❌ greeting failed
-[2026-06-25T17:51:46.882Z] [BG] [INFO]   @goro897 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:47.090Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:47.196Z] [BG] [ERROR]   @muhammad_nawir885 [new] ❌ greeting failed
-[2026-06-25T17:51:47.538Z] [BG] [INFO]   @angga_syahputra87 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:47.665Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:47.918Z] [BG] [ERROR]   @goro897 [new] ❌ greeting failed
-[2026-06-25T17:51:48.046Z] [BG] [INFO]   @2356449495 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:48.220Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:48.372Z] [BG] [ERROR]   @angga_syahputra87 [new] ❌ greeting failed
-[2026-06-25T17:51:48.545Z] [BG] [INFO]   @awwww69 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:48.704Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:48.809Z] [BG] [ERROR]   @2356449495 [new] ❌ greeting failed
-[2026-06-25T17:51:48.852Z] [BG] [INFO]   @janto367 [new→intro] "Kamu donate ya?  Soalnya kamu paymentnya"
-[2026-06-25T17:51:48.882Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:48.942Z] [BG] [ERROR]   @awwww69 [new] ❌ greeting failed
-[2026-06-25T17:51:48.993Z] [BG] [INFO]   @168709373 [new→intro] "kasih tip ke aku 350k yaa"
-[2026-06-25T17:51:49.089Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:49.248Z] [BG] [ERROR]   @janto367 [new] ❌ greeting failed
-[2026-06-25T17:51:49.372Z] [BG] [INFO]   @268610535 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:49.432Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:49.484Z] [BG] [ERROR]   @168709373 [new] ❌ greeting failed
-[2026-06-25T17:51:49.508Z] [BG] [INFO]   @198988200 [new→intro] "mau berapa menit?"
-[2026-06-25T17:51:49.537Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:49.561Z] [BG] [ERROR]   @268610535 [new] ❌ greeting failed
-[2026-06-25T17:51:49.589Z] [BG] [INFO]   @sangpejantan69 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:49.631Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:49.658Z] [BG] [ERROR]   @198988200 [new] ❌ greeting failed
-[2026-06-25T17:51:49.699Z] [BG] [INFO]   @goro897 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:49.737Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:49.784Z] [BG] [ERROR]   @sangpejantan69 [new] ❌ greeting failed
-[2026-06-25T17:51:49.832Z] [BG] [INFO]   @black_black_ [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:49.881Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:49.909Z] [BG] [ERROR]   @goro897 [new] ❌ greeting failed
-[2026-06-25T17:51:49.963Z] [BG] [INFO]   @2356449495 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:50.025Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:50.089Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:50.130Z] [BG] [ERROR]   @black_black_ [new] ❌ greeting failed
-[2026-06-25T17:51:50.156Z] [BG] [INFO]   @gemini-14s-space [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:50.196Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:50.221Z] [BG] [ERROR]   @2356449495 [new] ❌ greeting failed
-[2026-06-25T17:51:50.289Z] [BG] [INFO]   @janto367 [new→intro] "Kamu donate ya?  Soalnya kamu paymentnya"
-[2026-06-25T17:51:50.358Z] [BG] [ERROR]   @gemini-14s-space [new] ❌ greeting failed
-[2026-06-25T17:51:50.418Z] [BG] [INFO]   @dinosor706 [new→intro] "Malem ini ya"
-[2026-06-25T17:51:50.458Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:50.483Z] [BG] [ERROR]   @janto367 [new] ❌ greeting failed
-[2026-06-25T17:51:50.523Z] [BG] [INFO]   @268610535 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:50.551Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:50.587Z] [BG] [INFO]   @sangpejantan69 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:50.673Z] [BG] [ERROR]   @dinosor706 [new] ❌ greeting failed
-[2026-06-25T17:51:50.748Z] [BG] [INFO]   @dodi-ty [new→intro] "gratis maunya"
-[2026-06-25T17:51:50.807Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:50.869Z] [BG] [ERROR]   @268610535 [new] ❌ greeting failed
-[2026-06-25T17:51:50.897Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:50.917Z] [BG] [INFO]   @dualipalupa [new→intro] "vcs CLOSED🚫Open lagi tgl 23 juni💕bisa "
-[2026-06-25T17:51:50.944Z] [BG] [INFO]   @black_black_ [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:50.966Z] [BG] [ERROR]   @dualipalupa [new] ❌ greeting failed
-[2026-06-25T17:51:50.986Z] [BG] [ERROR]   @dodi-ty [new] ❌ greeting failed
-[2026-06-25T17:51:51.008Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.034Z] [BG] [ERROR]   @sangpejantan69 [new] ❌ greeting failed
-[2026-06-25T17:51:51.107Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.151Z] [BG] [INFO]   @adinata509 [new→intro] "vcs open tgl 23 juni💕bisa payment ke we"
-[2026-06-25T17:51:51.190Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.264Z] [BG] [ERROR]   @black_black_ [new] ❌ greeting failed
-[2026-06-25T17:51:51.390Z] [BG] [INFO]   @gemini-14s-space [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:51.430Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.445Z] [BG] [ERROR]   @adinata509 [new] ❌ greeting failed
-[2026-06-25T17:51:51.519Z] [BG] [INFO]   @ERLANGGG02 [new→intro] "vcs tgl 23 juni💕bisa payment ke web htt"
-[2026-06-25T17:51:51.580Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.593Z] [BG] [ERROR]   @gemini-14s-space [new] ❌ greeting failed
-[2026-06-25T17:51:51.637Z] [BG] [INFO]   @dinosor706 [new→intro] "Malem ini ya"
-[2026-06-25T17:51:51.666Z] [BG] [ERROR]   @ERLANGGG02 [new] ❌ greeting failed
-[2026-06-25T17:51:51.698Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.766Z] [BG] [INFO]   @muhammad-farhan844 [new→intro] "vcs tgl 23 juni💕bisa payment ke web htt"
-[2026-06-25T17:51:51.834Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.885Z] [BG] [ERROR]   @dinosor706 [new] ❌ greeting failed
-[2026-06-25T17:51:51.922Z] [BG] [INFO]   @dodi-ty [new→intro] "gratis maunya"
-[2026-06-25T17:51:51.957Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:51.985Z] [BG] [ERROR]   @muhammad-farhan844 [new] ❌ greeting failed
-[2026-06-25T17:51:52.014Z] [BG] [INFO]   @nadhera [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:52.034Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:52.053Z] [BG] [ERROR]   @dodi-ty [new] ❌ greeting failed
-[2026-06-25T17:51:52.098Z] [BG] [INFO]   @dualipalupa [new→intro] "vcs CLOSED🚫Open lagi tgl 23 juni💕bisa "
-[2026-06-25T17:51:52.120Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:52.136Z] [BG] [ERROR]   @nadhera [new] ❌ greeting failed
-[2026-06-25T17:51:52.155Z] [BG] [INFO]   @ikbal_crashco [new→intro] "oh 7menit 127k"
-[2026-06-25T17:51:52.196Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:52.232Z] [BG] [ERROR]   @dualipalupa [new] ❌ greeting failed
-[2026-06-25T17:51:52.293Z] [BG] [INFO]   @adinata509 [new→intro] "vcs open tgl 23 juni💕bisa payment ke we"
-[2026-06-25T17:51:52.349Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:52.400Z] [BG] [ERROR]   @ikbal_crashco [new] ❌ greeting failed
-[2026-06-25T17:51:52.468Z] [BG] [INFO]   @alfi_annor473 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:52.517Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:52.562Z] [BG] [ERROR]   @adinata509 [new] ❌ greeting failed
-[2026-06-25T17:51:52.616Z] [BG] [INFO]   @ERLANGGG02 [new→intro] "vcs tgl 23 juni💕bisa payment ke web htt"
-[2026-06-25T17:51:52.650Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:52.720Z] [BG] [ERROR]   @ERLANGGG02 [new] ❌ greeting failed
-[2026-06-25T17:51:52.777Z] [BG] [ERROR]   @alfi_annor473 [new] ❌ greeting failed
-[2026-06-25T17:51:52.855Z] [BG] [INFO]   @banana400 [new→intro] "discord mana"
-[2026-06-25T17:51:52.881Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:52.906Z] [BG] [INFO]   @muhammad-farhan844 [new→intro] "vcs tgl 23 juni💕bisa payment ke web htt"
-[2026-06-25T17:51:52.955Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.004Z] [BG] [ERROR]   @banana400 [new] ❌ greeting failed
-[2026-06-25T17:51:53.028Z] [BG] [INFO]   @soala_gogo915 [new→intro] "hay"
-[2026-06-25T17:51:53.053Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.100Z] [BG] [ERROR]   @muhammad-farhan844 [new] ❌ greeting failed
-[2026-06-25T17:51:53.135Z] [BG] [INFO]   @nadhera [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:53.171Z] [BG] [ERROR]   @soala_gogo915 [new] ❌ greeting failed
-[2026-06-25T17:51:53.194Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.213Z] [BG] [INFO]   @adamm-r [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:53.232Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.255Z] [BG] [ERROR]   @nadhera [new] ❌ greeting failed
-[2026-06-25T17:51:53.286Z] [BG] [INFO]   @ikbal_crashco [new→intro] "oh 7menit 127k"
-[2026-06-25T17:51:53.303Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.332Z] [BG] [ERROR]   @adamm-r [new] ❌ greeting failed
-[2026-06-25T17:51:53.413Z] [BG] [INFO]   @one_piece7878 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:53.476Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.501Z] [BG] [ERROR]   @ikbal_crashco [new] ❌ greeting failed
-[2026-06-25T17:51:53.524Z] [BG] [INFO]   @alfi_annor473 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:53.553Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.569Z] [BG] [ERROR]   @one_piece7878 [new] ❌ greeting failed
-[2026-06-25T17:51:53.596Z] [BG] [INFO]   @2178665717s-space [new→intro] "https://babyval.com/"
-[2026-06-25T17:51:53.616Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.633Z] [BG] [ERROR]   @alfi_annor473 [new] ❌ greeting failed
-[2026-06-25T17:51:53.659Z] [BG] [INFO]   @banana400 [new→intro] "discord mana"
-[2026-06-25T17:51:53.678Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.697Z] [BG] [ERROR]   @2178665717s-space [new] ❌ greeting failed
-[2026-06-25T17:51:53.722Z] [BG] [INFO]   @djembootttt [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:53.752Z] [BG] [ERROR]   @banana400 [new] ❌ greeting failed
-[2026-06-25T17:51:53.773Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.805Z] [BG] [INFO]   @soala_gogo915 [new→intro] "hay"
-[2026-06-25T17:51:53.826Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.853Z] [BG] [ERROR]   @djembootttt [new] ❌ greeting failed
-[2026-06-25T17:51:53.873Z] [BG] [INFO]   @santuy02-santuy [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:53.900Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:53.918Z] [BG] [ERROR]   @soala_gogo915 [new] ❌ greeting failed
-[2026-06-25T17:51:53.953Z] [BG] [INFO]   @adamm-r [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:53.991Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.033Z] [BG] [ERROR]   @santuy02-santuy [new] ❌ greeting failed
-[2026-06-25T17:51:54.088Z] [BG] [INFO]   @ethan_benjamin [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:54.133Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.172Z] [BG] [ERROR]   @adamm-r [new] ❌ greeting failed
-[2026-06-25T17:51:54.214Z] [BG] [INFO]   @one_piece7878 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:54.237Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.252Z] [BG] [ERROR]   @ethan_benjamin [new] ❌ greeting failed
-[2026-06-25T17:51:54.279Z] [BG] [INFO]   @heruu56 [new→intro] "Eh kamu udah membership belum sih?"
-[2026-06-25T17:51:54.311Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.336Z] [BG] [ERROR]   @one_piece7878 [new] ❌ greeting failed
-[2026-06-25T17:51:54.397Z] [BG] [INFO]   @2178665717s-space [new→intro] "https://babyval.com/"
-[2026-06-25T17:51:54.434Z] [BG] [INFO]   @djembootttt [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:54.461Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.500Z] [BG] [ERROR]   @heruu56 [new] ❌ greeting failed
-[2026-06-25T17:51:54.533Z] [BG] [INFO]   @ramdhy-setiaji [new→intro] "Siap beb"
-[2026-06-25T17:51:54.569Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.588Z] [BG] [ERROR]   @2178665717s-space [new] ❌ greeting failed
-[2026-06-25T17:51:54.651Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.667Z] [BG] [ERROR]   @ramdhy-setiaji [new] ❌ greeting failed
-[2026-06-25T17:51:54.680Z] [BG] [INFO]   @marfosa123 [new→intro] "slow j"
-[2026-06-25T17:51:54.701Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.721Z] [BG] [ERROR]   @djembootttt [new] ❌ greeting failed
-[2026-06-25T17:51:54.752Z] [BG] [INFO]   @santuy02-santuy [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:54.777Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.805Z] [BG] [ERROR]   @marfosa123 [new] ❌ greeting failed
-[2026-06-25T17:51:54.838Z] [BG] [INFO]   @sempak1678 [new→intro] "Coba kirim screenshoot"
-[2026-06-25T17:51:54.869Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:54.887Z] [BG] [INFO]   @red-devil365 [new→intro] "Engga"
-[2026-06-25T17:51:54.915Z] [BG] [ERROR]   @santuy02-santuy [new] ❌ greeting failed
-[2026-06-25T17:51:54.947Z] [BG] [INFO]   @ethan_benjamin [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:54.984Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.001Z] [BG] [ERROR]   @sempak1678 [new] ❌ greeting failed
-[2026-06-25T17:51:55.046Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.069Z] [BG] [INFO]   @genos-x-garou [new→intro] "Langsung sekalian aja"
-[2026-06-25T17:51:55.087Z] [BG] [ERROR]   @ethan_benjamin [new] ❌ greeting failed
-[2026-06-25T17:51:55.113Z] [BG] [INFO]   @heruu56 [new→intro] "Eh kamu udah membership belum sih?"
-[2026-06-25T17:51:55.150Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.187Z] [BG] [ERROR]   @red-devil365 [new] ❌ greeting failed
-[2026-06-25T17:51:55.581Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.597Z] [BG] [ERROR]   @heruu56 [new] ❌ greeting failed
-[2026-06-25T17:51:55.617Z] [BG] [INFO]   @ramdhy-setiaji [new→intro] "Siap beb"
-[2026-06-25T17:51:55.635Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.660Z] [BG] [ERROR]   @genos-x-garou [new] ❌ greeting failed
-[2026-06-25T17:51:55.686Z] [BG] [INFO]   @dood_stres [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:55.736Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.751Z] [BG] [ERROR]   @ramdhy-setiaji [new] ❌ greeting failed
-[2026-06-25T17:51:55.768Z] [BG] [INFO]   @marfosa123 [new→intro] "slow j"
-[2026-06-25T17:51:55.796Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.815Z] [BG] [ERROR]   @dood_stres [new] ❌ greeting failed
-[2026-06-25T17:51:55.843Z] [BG] [INFO]   @TeviCoin [new→intro] "🎉 Kami telah memberikan Anda 1.0 bintan"
-[2026-06-25T17:51:55.863Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.911Z] [BG] [ERROR]   @marfosa123 [new] ❌ greeting failed
-[2026-06-25T17:51:55.927Z] [BG] [INFO]   @sempak1678 [new→intro] "Coba kirim screenshoot"
-[2026-06-25T17:51:55.942Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:55.961Z] [BG] [ERROR]   @TeviCoin [new] ❌ greeting failed
-[2026-06-25T17:51:55.983Z] [BG] [INFO]   @2338562072 [new→intro] "https://tevi.com/@2338562072"
-[2026-06-25T17:51:56.009Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.027Z] [BG] [ERROR]   @sempak1678 [new] ❌ greeting failed
-[2026-06-25T17:51:56.052Z] [BG] [INFO]   @red-devil365 [new→intro] "Engga"
-[2026-06-25T17:51:56.083Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.103Z] [BG] [ERROR]   @2338562072 [new] ❌ greeting failed
-[2026-06-25T17:51:56.120Z] [BG] [INFO]   @vercaa [new→intro] "oke kak sorry kemaren ke skip"
-[2026-06-25T17:51:56.144Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.161Z] [BG] [ERROR]   @red-devil365 [new] ❌ greeting failed
-[2026-06-25T17:51:56.182Z] [BG] [INFO]   @genos-x-garou [new→intro] "Langsung sekalian aja"
-[2026-06-25T17:51:56.198Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.219Z] [BG] [ERROR]   @vercaa [new] ❌ greeting failed
-[2026-06-25T17:51:56.247Z] [BG] [INFO]   @gel351 [new→intro] "emng vcs via apa"
-[2026-06-25T17:51:56.267Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.310Z] [BG] [ERROR]   @genos-x-garou [new] ❌ greeting failed
-[2026-06-25T17:51:56.332Z] [BG] [INFO]   @dood_stres [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:51:56.351Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.394Z] [BG] [ERROR]   @gel351 [new] ❌ greeting failed
-[2026-06-25T17:51:56.430Z] [BG] [INFO]   @jacki20 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:56.453Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.479Z] [BG] [ERROR]   @dood_stres [new] ❌ greeting failed
-[2026-06-25T17:51:56.499Z] [BG] [INFO]   @TeviCoin [new→intro] "🎉 Kami telah memberikan Anda 1.0 bintan"
-[2026-06-25T17:51:56.515Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.537Z] [BG] [ERROR]   @jacki20 [new] ❌ greeting failed
-[2026-06-25T17:51:56.570Z] [BG] [INFO]   @saifur_rizal508 [new→intro] "baru aja masuk live nya kakak"
-[2026-06-25T17:51:56.599Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.614Z] [BG] [ERROR]   @TeviCoin [new] ❌ greeting failed
-[2026-06-25T17:51:56.632Z] [BG] [INFO]   @2338562072 [new→intro] "https://tevi.com/@2338562072"
-[2026-06-25T17:51:56.646Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.660Z] [BG] [ERROR]   @saifur_rizal508 [new] ❌ greeting failed
-[2026-06-25T17:51:56.680Z] [BG] [INFO]   @mencari_harta_karun [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:56.698Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.713Z] [BG] [ERROR]   @2338562072 [new] ❌ greeting failed
-[2026-06-25T17:51:56.728Z] [BG] [INFO]   @vercaa [new→intro] "oke kak sorry kemaren ke skip"
-[2026-06-25T17:51:56.744Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.758Z] [BG] [ERROR]   @mencari_harta_karun [new] ❌ greeting failed
-[2026-06-25T17:51:56.775Z] [BG] [INFO]   @muhammad-ridwan599 [new→intro] "Kakk"
-[2026-06-25T17:51:56.797Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.813Z] [BG] [ERROR]   @vercaa [new] ❌ greeting failed
-[2026-06-25T17:51:56.834Z] [BG] [ERROR]   @muhammad-ridwan599 [new] ❌ greeting failed
-[2026-06-25T17:51:56.849Z] [BG] [INFO]   @gel351 [new→intro] "emng vcs via apa"
-[2026-06-25T17:51:56.865Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.890Z] [BG] [INFO]   @cinta_zaen [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:56.903Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:56.923Z] [BG] [ERROR]   @gel351 [new] ❌ greeting failed
-[2026-06-25T17:51:56.958Z] [BG] [INFO]   @jacki20 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:57.013Z] [BG] [ERROR] [DOM] No tevi tab open
 [2026-06-25T17:51:57.053Z] [BG] [ERROR]   @cinta_zaen [new] ❌ greeting failed
 [2026-06-25T17:51:57.085Z] [BG] [INFO]   @239537708 [new→intro] "vcs available💕
 bisa payment ke web http"
@@ -1998,3 +1373,628 @@ Chat langsung:..."
 [2026-06-25T18:51:15.010Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
 [2026-06-25T18:51:15.038Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring (attempt 2/3)
 [2026-06-25T18:51:15.110Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:51:21.299Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:51:21.313Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring (attempt 2/3)
+[2026-06-25T18:51:21.330Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:51:30.014Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:51:30.030Z] [BG] [ERROR] [QUEUE] @kempong88 skipped — failed 3x to navigate
+[2026-06-25T18:51:30.046Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:51:35.035Z] [BG] [INFO] [QUEUE] Processing @civic_putih (99 remaining)
+[2026-06-25T18:51:35.047Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:51:35.060Z] [BG] [ERROR] [QUEUE] Could not ready @civic_putih — deferring (attempt 1/3)
+[2026-06-25T18:51:36.301Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:51:36.314Z] [BG] [ERROR] [QUEUE] @kempong88 skipped — failed 3x to navigate
+[2026-06-25T18:51:36.329Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:51:41.322Z] [BG] [INFO] [QUEUE] Processing @civic_putih (99 remaining)
+[2026-06-25T18:51:41.332Z] [BG] [ERROR] [QUEUE] Could not ready @civic_putih — deferring (attempt 1/3)
+[2026-06-25T18:51:41.344Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:51:50.039Z] [BG] [INFO] [QUEUE] Processing @civic_putih (99 remaining)
+[2026-06-25T18:51:50.050Z] [BG] [ERROR] [QUEUE] Could not ready @civic_putih — deferring (attempt 2/3)
+[2026-06-25T18:51:50.059Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:51:56.347Z] [BG] [INFO] [QUEUE] Processing @civic_putih (99 remaining)
+[2026-06-25T18:51:56.359Z] [BG] [ERROR] [QUEUE] Could not ready @civic_putih — deferring (attempt 2/3)
+[2026-06-25T18:51:56.372Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:52:05.059Z] [BG] [INFO] [QUEUE] Processing @civic_putih (99 remaining)
+[2026-06-25T18:52:05.072Z] [BG] [ERROR] [QUEUE] @civic_putih skipped — failed 3x to navigate
+[2026-06-25T18:52:05.086Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:52:10.057Z] [BG] [INFO] [QUEUE] Processing @rival964 (98 remaining)
+[2026-06-25T18:52:10.070Z] [BG] [ERROR] [QUEUE] Could not ready @rival964 — deferring (attempt 1/3)
+[2026-06-25T18:52:10.088Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:52:11.353Z] [BG] [INFO] [QUEUE] Processing @civic_putih (99 remaining)
+[2026-06-25T18:52:11.368Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:52:11.381Z] [BG] [ERROR] [QUEUE] @civic_putih skipped — failed 3x to navigate
+[2026-06-25T18:52:16.363Z] [BG] [INFO] [QUEUE] Processing @rival964 (98 remaining)
+[2026-06-25T18:52:16.374Z] [BG] [ERROR] [QUEUE] Could not ready @rival964 — deferring (attempt 1/3)
+[2026-06-25T18:52:16.385Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:52:25.079Z] [BG] [INFO] [QUEUE] Processing @rival964 (98 remaining)
+[2026-06-25T18:52:25.091Z] [BG] [ERROR] [QUEUE] Could not ready @rival964 — deferring (attempt 2/3)
+[2026-06-25T18:52:25.103Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:52:31.385Z] [BG] [INFO] [QUEUE] Processing @rival964 (98 remaining)
+[2026-06-25T18:52:31.394Z] [BG] [ERROR] [QUEUE] Could not ready @rival964 — deferring (attempt 2/3)
+[2026-06-25T18:52:31.405Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:52:40.096Z] [BG] [INFO] [QUEUE] Processing @rival964 (98 remaining)
+[2026-06-25T18:52:40.106Z] [BG] [ERROR] [QUEUE] @rival964 skipped — failed 3x to navigate
+[2026-06-25T18:52:40.117Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:52:45.107Z] [BG] [INFO] [QUEUE] Processing @sugargula (97 remaining)
+[2026-06-25T18:52:45.117Z] [BG] [ERROR] [QUEUE] Could not ready @sugargula — deferring (attempt 1/3)
+[2026-06-25T18:52:45.127Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:52:46.381Z] [BG] [INFO] [QUEUE] Processing @rival964 (98 remaining)
+[2026-06-25T18:52:46.399Z] [BG] [ERROR] [QUEUE] @rival964 skipped — failed 3x to navigate
+[2026-06-25T18:52:46.423Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:52:51.398Z] [BG] [INFO] [QUEUE] Processing @sugargula (97 remaining)
+[2026-06-25T18:52:51.408Z] [BG] [ERROR] [QUEUE] Could not ready @sugargula — deferring (attempt 1/3)
+[2026-06-25T18:52:51.422Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:00.114Z] [BG] [INFO] [QUEUE] Processing @sugargula (97 remaining)
+[2026-06-25T18:53:00.126Z] [BG] [ERROR] [QUEUE] Could not ready @sugargula — deferring (attempt 2/3)
+[2026-06-25T18:53:00.138Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:05.848Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:53:05.863Z] [BG] [INFO] [POLL] 100 total convs, queue=0, busy=false
+[2026-06-25T18:53:05.879Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:53:05.894Z] [BG] [INFO] [QUEUE] Added 100 new convs → 100 total pending
+[2026-06-25T18:53:06.400Z] [BG] [INFO] [QUEUE] Processing @sugargula (97 remaining)
+[2026-06-25T18:53:06.413Z] [BG] [ERROR] [QUEUE] Could not ready @sugargula — deferring (attempt 2/3)
+[2026-06-25T18:53:06.425Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:15.118Z] [BG] [INFO] [QUEUE] Processing @sugargula (97 remaining)
+[2026-06-25T18:53:15.130Z] [BG] [ERROR] [QUEUE] @sugargula skipped — failed 3x to navigate
+[2026-06-25T18:53:15.143Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:53:20.129Z] [BG] [INFO] [QUEUE] Processing @jjjikj (96 remaining)
+[2026-06-25T18:53:20.139Z] [BG] [ERROR] [QUEUE] Could not ready @jjjikj — deferring (attempt 1/3)
+[2026-06-25T18:53:20.149Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:21.415Z] [BG] [INFO] [QUEUE] Processing @sugargula (97 remaining)
+[2026-06-25T18:53:21.426Z] [BG] [ERROR] [QUEUE] @sugargula skipped — failed 3x to navigate
+[2026-06-25T18:53:21.436Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:53:26.436Z] [BG] [INFO] [QUEUE] Processing @jjjikj (96 remaining)
+[2026-06-25T18:53:26.446Z] [BG] [ERROR] [QUEUE] Could not ready @jjjikj — deferring (attempt 1/3)
+[2026-06-25T18:53:26.457Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:35.146Z] [BG] [INFO] [QUEUE] Processing @jjjikj (96 remaining)
+[2026-06-25T18:53:35.157Z] [BG] [ERROR] [QUEUE] Could not ready @jjjikj — deferring (attempt 2/3)
+[2026-06-25T18:53:35.172Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:41.456Z] [BG] [INFO] [QUEUE] Processing @jjjikj (96 remaining)
+[2026-06-25T18:53:41.468Z] [BG] [ERROR] [QUEUE] Could not ready @jjjikj — deferring (attempt 2/3)
+[2026-06-25T18:53:41.485Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:50.881Z] [BG] [INFO] [QUEUE] Processing @jjjikj (96 remaining)
+[2026-06-25T18:53:51.168Z] [BG] [ERROR] [QUEUE] @jjjikj skipped — failed 3x to navigate
+[2026-06-25T18:53:51.224Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:53:56.012Z] [BG] [INFO] [QUEUE] Processing @evan_669 (95 remaining)
+[2026-06-25T18:53:56.670Z] [BG] [ERROR] [QUEUE] Could not ready @evan_669 — deferring (attempt 1/3)
+[2026-06-25T18:53:56.704Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:53:56.744Z] [BG] [INFO] [QUEUE] Processing @jjjikj (96 remaining)
+[2026-06-25T18:53:56.790Z] [BG] [ERROR] [QUEUE] @jjjikj skipped — failed 3x to navigate
+[2026-06-25T18:53:56.827Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:54:01.841Z] [BG] [INFO] [QUEUE] Processing @evan_669 (95 remaining)
+[2026-06-25T18:54:01.892Z] [BG] [ERROR] [QUEUE] Could not ready @evan_669 — deferring (attempt 1/3)
+[2026-06-25T18:54:01.992Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:54:11.070Z] [BG] [INFO] [QUEUE] Processing @evan_669 (95 remaining)
+[2026-06-25T18:54:11.081Z] [BG] [ERROR] [QUEUE] Could not ready @evan_669 — deferring (attempt 2/3)
+[2026-06-25T18:54:11.095Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:54:16.939Z] [BG] [INFO] [QUEUE] Processing @evan_669 (95 remaining)
+[2026-06-25T18:54:16.948Z] [BG] [ERROR] [QUEUE] Could not ready @evan_669 — deferring (attempt 2/3)
+[2026-06-25T18:54:16.959Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:54:26.087Z] [BG] [INFO] [QUEUE] Processing @evan_669 (95 remaining)
+[2026-06-25T18:54:26.101Z] [BG] [ERROR] [QUEUE] @evan_669 skipped — failed 3x to navigate
+[2026-06-25T18:54:26.115Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:54:34.389Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (94 remaining)
+[2026-06-25T18:54:34.461Z] [BG] [INFO] [QUEUE] Processing @evan_669 (95 remaining)
+[2026-06-25T18:54:34.542Z] [BG] [ERROR] [QUEUE] Could not ready @Qaz20 — deferring (attempt 1/3)
+[2026-06-25T18:54:34.596Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:54:34.781Z] [BG] [ERROR] [QUEUE] @evan_669 skipped — failed 3x to navigate
+[2026-06-25T18:54:35.558Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:54:40.004Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (94 remaining)
+[2026-06-25T18:54:40.034Z] [BG] [ERROR] [QUEUE] Could not ready @Qaz20 — deferring (attempt 1/3)
+[2026-06-25T18:54:40.052Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:54:49.555Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (94 remaining)
+[2026-06-25T18:54:49.570Z] [BG] [ERROR] [QUEUE] Could not ready @Qaz20 — deferring (attempt 2/3)
+[2026-06-25T18:54:49.584Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:54:55.050Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (94 remaining)
+[2026-06-25T18:54:55.061Z] [BG] [ERROR] [QUEUE] Could not ready @Qaz20 — deferring (attempt 2/3)
+[2026-06-25T18:54:55.075Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:55:04.565Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (94 remaining)
+[2026-06-25T18:55:04.577Z] [BG] [ERROR] [QUEUE] @Qaz20 skipped — failed 3x to navigate
+[2026-06-25T18:55:04.589Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:55:09.579Z] [BG] [INFO] [QUEUE] Processing @guines484 (93 remaining)
+[2026-06-25T18:55:09.590Z] [BG] [ERROR] [QUEUE] Could not ready @guines484 — deferring (attempt 1/3)
+[2026-06-25T18:55:09.602Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:55:10.069Z] [BG] [INFO] [QUEUE] Processing @Qaz20 (94 remaining)
+[2026-06-25T18:55:10.085Z] [BG] [ERROR] [QUEUE] @Qaz20 skipped — failed 3x to navigate
+[2026-06-25T18:55:10.099Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:55:15.080Z] [BG] [INFO] [QUEUE] Processing @guines484 (93 remaining)
+[2026-06-25T18:55:15.089Z] [BG] [ERROR] [QUEUE] Could not ready @guines484 — deferring (attempt 1/3)
+[2026-06-25T18:55:15.097Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:55:24.592Z] [BG] [INFO] [QUEUE] Processing @guines484 (93 remaining)
+[2026-06-25T18:55:24.604Z] [BG] [ERROR] [QUEUE] Could not ready @guines484 — deferring (attempt 2/3)
+[2026-06-25T18:55:24.617Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:55:30.095Z] [BG] [INFO] [QUEUE] Processing @guines484 (93 remaining)
+[2026-06-25T18:55:30.105Z] [BG] [ERROR] [QUEUE] Could not ready @guines484 — deferring (attempt 2/3)
+[2026-06-25T18:55:30.116Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:55:39.608Z] [BG] [INFO] [QUEUE] Processing @guines484 (93 remaining)
+[2026-06-25T18:55:39.618Z] [BG] [ERROR] [QUEUE] @guines484 skipped — failed 3x to navigate
+[2026-06-25T18:55:39.632Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:55:44.607Z] [BG] [INFO] [QUEUE] Processing @teknik_bu (92 remaining)
+[2026-06-25T18:55:44.618Z] [BG] [ERROR] [QUEUE] Could not ready @teknik_bu — deferring (attempt 1/3)
+[2026-06-25T18:55:44.628Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:55:45.100Z] [BG] [INFO] [QUEUE] Processing @guines484 (93 remaining)
+[2026-06-25T18:55:45.111Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:55:45.122Z] [BG] [ERROR] [QUEUE] @guines484 skipped — failed 3x to navigate
+[2026-06-25T18:55:50.118Z] [BG] [INFO] [QUEUE] Processing @teknik_bu (92 remaining)
+[2026-06-25T18:55:50.132Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:55:50.143Z] [BG] [ERROR] [QUEUE] Could not ready @teknik_bu — deferring (attempt 1/3)
+[2026-06-25T18:55:59.618Z] [BG] [INFO] [QUEUE] Processing @teknik_bu (92 remaining)
+[2026-06-25T18:55:59.631Z] [BG] [ERROR] [QUEUE] Could not ready @teknik_bu — deferring (attempt 2/3)
+[2026-06-25T18:55:59.644Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:56:05.133Z] [BG] [INFO] [QUEUE] Processing @teknik_bu (92 remaining)
+[2026-06-25T18:56:05.166Z] [BG] [ERROR] [QUEUE] Could not ready @teknik_bu — deferring (attempt 2/3)
+[2026-06-25T18:56:05.213Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:56:05.907Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:56:05.924Z] [BG] [INFO] [POLL] 100 total convs, queue=100, busy=false
+[2026-06-25T18:56:05.937Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:56:14.637Z] [BG] [INFO] [QUEUE] Processing @teknik_bu (92 remaining)
+[2026-06-25T18:56:14.659Z] [BG] [ERROR] [QUEUE] @teknik_bu skipped — failed 3x to navigate
+[2026-06-25T18:56:14.698Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:56:19.654Z] [BG] [INFO] [QUEUE] Processing @user6032682438248 (91 remaining)
+[2026-06-25T18:56:19.665Z] [BG] [ERROR] [QUEUE] Could not ready @user6032682438248 — deferring (attempt 1/3)
+[2026-06-25T18:56:19.677Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:56:20.159Z] [BG] [INFO] [QUEUE] Processing @teknik_bu (92 remaining)
+[2026-06-25T18:56:20.173Z] [BG] [ERROR] [QUEUE] @teknik_bu skipped — failed 3x to navigate
+[2026-06-25T18:56:20.184Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:56:25.173Z] [BG] [INFO] [QUEUE] Processing @user6032682438248 (91 remaining)
+[2026-06-25T18:56:25.190Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:56:25.203Z] [BG] [ERROR] [QUEUE] Could not ready @user6032682438248 — deferring (attempt 1/3)
+[2026-06-25T18:56:34.661Z] [BG] [INFO] [QUEUE] Processing @user6032682438248 (91 remaining)
+[2026-06-25T18:56:34.674Z] [BG] [ERROR] [QUEUE] Could not ready @user6032682438248 — deferring (attempt 2/3)
+[2026-06-25T18:56:34.685Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:56:40.195Z] [BG] [INFO] [QUEUE] Processing @user6032682438248 (91 remaining)
+[2026-06-25T18:56:40.224Z] [BG] [ERROR] [QUEUE] Could not ready @user6032682438248 — deferring (attempt 2/3)
+[2026-06-25T18:56:40.253Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:56:49.731Z] [BG] [INFO] [QUEUE] Processing @user6032682438248 (91 remaining)
+[2026-06-25T18:56:49.760Z] [BG] [ERROR] [QUEUE] @user6032682438248 skipped — failed 3x to navigate
+[2026-06-25T18:56:49.779Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:56:56.312Z] [BG] [INFO] [QUEUE] Processing @4279725502 (90 remaining)
+[2026-06-25T18:56:56.480Z] [BG] [INFO] [QUEUE] Processing @user6032682438248 (91 remaining)
+[2026-06-25T18:56:56.582Z] [BG] [ERROR] [QUEUE] Could not ready @4279725502 — deferring (attempt 1/3)
+[2026-06-25T18:56:57.525Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:56:57.590Z] [BG] [ERROR] [QUEUE] @user6032682438248 skipped — failed 3x to navigate
+[2026-06-25T18:56:57.616Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:57:02.610Z] [BG] [INFO] [QUEUE] Processing @4279725502 (90 remaining)
+[2026-06-25T18:57:02.648Z] [BG] [ERROR] [QUEUE] Could not ready @4279725502 — deferring (attempt 1/3)
+[2026-06-25T18:57:02.682Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:57:11.707Z] [BG] [INFO] [QUEUE] Processing @4279725502 (90 remaining)
+[2026-06-25T18:57:11.880Z] [BG] [ERROR] [QUEUE] Could not ready @4279725502 — deferring (attempt 2/3)
+[2026-06-25T18:57:11.987Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:57:17.774Z] [BG] [INFO] [QUEUE] Processing @4279725502 (90 remaining)
+[2026-06-25T18:57:17.954Z] [BG] [ERROR] [QUEUE] Could not ready @4279725502 — deferring (attempt 2/3)
+[2026-06-25T18:57:17.990Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:57:26.877Z] [BG] [INFO] [QUEUE] Processing @4279725502 (90 remaining)
+[2026-06-25T18:57:26.930Z] [BG] [ERROR] [QUEUE] @4279725502 skipped — failed 3x to navigate
+[2026-06-25T18:57:26.964Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:57:31.971Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (89 remaining)
+[2026-06-25T18:57:32.310Z] [BG] [ERROR] [QUEUE] Could not ready @miracleboyyzz — deferring (attempt 1/3)
+[2026-06-25T18:57:32.369Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:57:33.037Z] [BG] [INFO] [QUEUE] Processing @4279725502 (90 remaining)
+[2026-06-25T18:57:33.110Z] [BG] [ERROR] [QUEUE] @4279725502 skipped — failed 3x to navigate
+[2026-06-25T18:57:33.142Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:57:38.081Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (89 remaining)
+[2026-06-25T18:57:38.106Z] [BG] [ERROR] [QUEUE] Could not ready @miracleboyyzz — deferring (attempt 1/3)
+[2026-06-25T18:57:38.134Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:57:47.018Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (89 remaining)
+[2026-06-25T18:57:47.054Z] [BG] [ERROR] [QUEUE] Could not ready @miracleboyyzz — deferring (attempt 2/3)
+[2026-06-25T18:57:47.082Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:57:53.079Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (89 remaining)
+[2026-06-25T18:57:53.091Z] [BG] [ERROR] [QUEUE] Could not ready @miracleboyyzz — deferring (attempt 2/3)
+[2026-06-25T18:57:53.105Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:58:02.022Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (89 remaining)
+[2026-06-25T18:58:02.035Z] [BG] [ERROR] [QUEUE] @miracleboyyzz skipped — failed 3x to navigate
+[2026-06-25T18:58:02.050Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:58:07.042Z] [BG] [INFO] [QUEUE] Processing @bidinisreal (88 remaining)
+[2026-06-25T18:58:07.057Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:58:07.068Z] [BG] [ERROR] [QUEUE] Could not ready @bidinisreal — deferring (attempt 1/3)
+[2026-06-25T18:58:08.090Z] [BG] [INFO] [QUEUE] Processing @miracleboyyzz (89 remaining)
+[2026-06-25T18:58:08.103Z] [BG] [ERROR] [QUEUE] @miracleboyyzz skipped — failed 3x to navigate
+[2026-06-25T18:58:08.115Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:58:13.120Z] [BG] [INFO] [QUEUE] Processing @bidinisreal (88 remaining)
+[2026-06-25T18:58:13.131Z] [BG] [ERROR] [QUEUE] Could not ready @bidinisreal — deferring (attempt 1/3)
+[2026-06-25T18:58:13.143Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:58:22.647Z] [BG] [INFO] [QUEUE] Processing @bidinisreal (88 remaining)
+[2026-06-25T18:58:22.705Z] [BG] [ERROR] [QUEUE] Could not ready @bidinisreal — deferring (attempt 2/3)
+[2026-06-25T18:58:23.670Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:58:28.440Z] [BG] [INFO] [QUEUE] Processing @bidinisreal (88 remaining)
+[2026-06-25T18:58:28.517Z] [BG] [ERROR] [QUEUE] Could not ready @bidinisreal — deferring (attempt 2/3)
+[2026-06-25T18:58:28.551Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:58:39.252Z] [BG] [INFO] [QUEUE] Processing @bidinisreal (88 remaining)
+[2026-06-25T18:58:39.288Z] [BG] [ERROR] [QUEUE] @bidinisreal skipped — failed 3x to navigate
+[2026-06-25T18:58:39.347Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:58:43.542Z] [BG] [INFO] [QUEUE] Processing @bidinisreal (88 remaining)
+[2026-06-25T18:58:43.585Z] [BG] [ERROR] [QUEUE] @bidinisreal skipped — failed 3x to navigate
+[2026-06-25T18:58:43.611Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:58:44.318Z] [BG] [INFO] [QUEUE] Processing @suzeep (87 remaining)
+[2026-06-25T18:58:44.334Z] [BG] [ERROR] [QUEUE] Could not ready @suzeep — deferring (attempt 1/3)
+[2026-06-25T18:58:44.372Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:58:48.587Z] [BG] [INFO] [QUEUE] Processing @suzeep (87 remaining)
+[2026-06-25T18:58:48.601Z] [BG] [ERROR] [QUEUE] Could not ready @suzeep — deferring (attempt 1/3)
+[2026-06-25T18:58:48.615Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:58:59.620Z] [BG] [INFO] [QUEUE] Processing @suzeep (87 remaining)
+[2026-06-25T18:58:59.811Z] [BG] [ERROR] [QUEUE] Could not ready @suzeep — deferring (attempt 2/3)
+[2026-06-25T18:58:59.859Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:59:03.609Z] [BG] [INFO] [QUEUE] Processing @suzeep (87 remaining)
+[2026-06-25T18:59:03.641Z] [BG] [ERROR] [QUEUE] Could not ready @suzeep — deferring (attempt 2/3)
+[2026-06-25T18:59:03.687Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:59:06.017Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:59:06.029Z] [BG] [INFO] [POLL] 100 total convs, queue=100, busy=false
+[2026-06-25T18:59:06.045Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:59:14.508Z] [BG] [INFO] [QUEUE] Processing @suzeep (87 remaining)
+[2026-06-25T18:59:14.616Z] [BG] [ERROR] [QUEUE] @suzeep skipped — failed 3x to navigate
+[2026-06-25T18:59:14.697Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:59:18.644Z] [BG] [INFO] [QUEUE] Processing @suzeep (87 remaining)
+[2026-06-25T18:59:18.654Z] [BG] [ERROR] [QUEUE] @suzeep skipped — failed 3x to navigate
+[2026-06-25T18:59:18.664Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:59:19.563Z] [BG] [INFO] [QUEUE] Processing @MEKOOMCN (86 remaining)
+[2026-06-25T18:59:19.654Z] [BG] [ERROR] [QUEUE] Could not ready @MEKOOMCN — deferring (attempt 1/3)
+[2026-06-25T18:59:19.779Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:59:23.657Z] [BG] [INFO] [QUEUE] Processing @MEKOOMCN (86 remaining)
+[2026-06-25T18:59:23.676Z] [BG] [ERROR] [QUEUE] Could not ready @MEKOOMCN — deferring (attempt 1/3)
+[2026-06-25T18:59:23.693Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:59:34.841Z] [BG] [INFO] [QUEUE] Processing @MEKOOMCN (86 remaining)
+[2026-06-25T18:59:34.921Z] [BG] [ERROR] [QUEUE] Could not ready @MEKOOMCN — deferring (attempt 2/3)
+[2026-06-25T18:59:34.950Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:59:38.698Z] [BG] [INFO] [QUEUE] Processing @MEKOOMCN (86 remaining)
+[2026-06-25T18:59:38.870Z] [BG] [ERROR] [QUEUE] Could not ready @MEKOOMCN — deferring (attempt 2/3)
+[2026-06-25T18:59:38.957Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:59:49.992Z] [BG] [INFO] [QUEUE] Processing @MEKOOMCN (86 remaining)
+[2026-06-25T18:59:50.151Z] [BG] [ERROR] [QUEUE] @MEKOOMCN skipped — failed 3x to navigate
+[2026-06-25T18:59:50.276Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:59:53.801Z] [BG] [INFO] [QUEUE] Processing @MEKOOMCN (86 remaining)
+[2026-06-25T18:59:53.818Z] [BG] [ERROR] [QUEUE] @MEKOOMCN skipped — failed 3x to navigate
+[2026-06-25T18:59:53.835Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T18:59:55.003Z] [BG] [INFO] [QUEUE] Processing @alann17529 (85 remaining)
+[2026-06-25T18:59:55.049Z] [BG] [ERROR] [QUEUE] Could not ready @alann17529 — deferring (attempt 1/3)
+[2026-06-25T18:59:55.081Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:59:58.823Z] [BG] [INFO] [QUEUE] Processing @alann17529 (85 remaining)
+[2026-06-25T18:59:58.847Z] [BG] [ERROR] [QUEUE] Could not ready @alann17529 — deferring (attempt 1/3)
+[2026-06-25T18:59:58.887Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:00:10.075Z] [BG] [INFO] [QUEUE] Processing @alann17529 (85 remaining)
+[2026-06-25T19:00:10.183Z] [BG] [ERROR] [QUEUE] Could not ready @alann17529 — deferring (attempt 2/3)
+[2026-06-25T19:00:10.319Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:00:13.874Z] [BG] [INFO] [QUEUE] Processing @alann17529 (85 remaining)
+[2026-06-25T19:00:13.948Z] [BG] [ERROR] [QUEUE] Could not ready @alann17529 — deferring (attempt 2/3)
+[2026-06-25T19:00:13.970Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:00:25.096Z] [BG] [INFO] [QUEUE] Processing @alann17529 (85 remaining)
+[2026-06-25T19:00:25.109Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:00:25.120Z] [BG] [ERROR] [QUEUE] @alann17529 skipped — failed 3x to navigate
+[2026-06-25T19:00:28.917Z] [BG] [INFO] [QUEUE] Processing @alann17529 (85 remaining)
+[2026-06-25T19:00:28.936Z] [BG] [ERROR] [QUEUE] @alann17529 skipped — failed 3x to navigate
+[2026-06-25T19:00:28.952Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:00:30.112Z] [BG] [INFO] [QUEUE] Processing @radar_86 (84 remaining)
+[2026-06-25T19:00:30.132Z] [BG] [ERROR] [QUEUE] Could not ready @radar_86 — deferring (attempt 1/3)
+[2026-06-25T19:00:30.145Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:00:33.938Z] [BG] [INFO] [QUEUE] Processing @radar_86 (84 remaining)
+[2026-06-25T19:00:33.952Z] [BG] [ERROR] [QUEUE] Could not ready @radar_86 — deferring (attempt 1/3)
+[2026-06-25T19:00:33.968Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:00:45.138Z] [BG] [INFO] [QUEUE] Processing @radar_86 (84 remaining)
+[2026-06-25T19:00:45.157Z] [BG] [ERROR] [QUEUE] Could not ready @radar_86 — deferring (attempt 2/3)
+[2026-06-25T19:00:45.176Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:00:48.961Z] [BG] [INFO] [QUEUE] Processing @radar_86 (84 remaining)
+[2026-06-25T19:00:49.079Z] [BG] [ERROR] [QUEUE] Could not ready @radar_86 — deferring (attempt 2/3)
+[2026-06-25T19:00:49.106Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:00.152Z] [BG] [INFO] [QUEUE] Processing @radar_86 (84 remaining)
+[2026-06-25T19:01:00.167Z] [BG] [ERROR] [QUEUE] @radar_86 skipped — failed 3x to navigate
+[2026-06-25T19:01:00.179Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:01:04.002Z] [BG] [INFO] [QUEUE] Processing @radar_86 (84 remaining)
+[2026-06-25T19:01:04.015Z] [BG] [ERROR] [QUEUE] @radar_86 skipped — failed 3x to navigate
+[2026-06-25T19:01:04.034Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:01:05.167Z] [BG] [INFO] [QUEUE] Processing @aa_andi_a.s (83 remaining)
+[2026-06-25T19:01:05.182Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:05.194Z] [BG] [ERROR] [QUEUE] Could not ready @aa_andi_a.s — deferring (attempt 1/3)
+[2026-06-25T19:01:09.012Z] [BG] [INFO] [QUEUE] Processing @aa_andi_a.s (83 remaining)
+[2026-06-25T19:01:09.028Z] [BG] [ERROR] [QUEUE] Could not ready @aa_andi_a.s — deferring (attempt 1/3)
+[2026-06-25T19:01:09.042Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:20.229Z] [BG] [INFO] [QUEUE] Processing @aa_andi_a.s (83 remaining)
+[2026-06-25T19:01:20.279Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:20.331Z] [BG] [ERROR] [QUEUE] Could not ready @aa_andi_a.s — deferring (attempt 2/3)
+[2026-06-25T19:01:24.028Z] [BG] [INFO] [QUEUE] Processing @aa_andi_a.s (83 remaining)
+[2026-06-25T19:01:24.040Z] [BG] [ERROR] [QUEUE] Could not ready @aa_andi_a.s — deferring (attempt 2/3)
+[2026-06-25T19:01:24.050Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:35.269Z] [BG] [INFO] [QUEUE] Processing @aa_andi_a.s (83 remaining)
+[2026-06-25T19:01:35.290Z] [BG] [ERROR] [QUEUE] @aa_andi_a.s skipped — failed 3x to navigate
+[2026-06-25T19:01:35.310Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:01:39.050Z] [BG] [INFO] [QUEUE] Processing @aa_andi_a.s (83 remaining)
+[2026-06-25T19:01:39.065Z] [BG] [ERROR] [QUEUE] @aa_andi_a.s skipped — failed 3x to navigate
+[2026-06-25T19:01:39.076Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:01:40.294Z] [BG] [INFO] [QUEUE] Processing @mister_up (82 remaining)
+[2026-06-25T19:01:40.304Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:40.315Z] [BG] [ERROR] [QUEUE] Could not ready @mister_up — deferring (attempt 1/3)
+[2026-06-25T19:01:44.082Z] [BG] [INFO] [QUEUE] Processing @mister_up (82 remaining)
+[2026-06-25T19:01:44.243Z] [BG] [ERROR] [QUEUE] Could not ready @mister_up — deferring (attempt 1/3)
+[2026-06-25T19:01:44.260Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:55.370Z] [BG] [INFO] [QUEUE] Processing @mister_up (82 remaining)
+[2026-06-25T19:01:55.487Z] [BG] [ERROR] [QUEUE] Could not ready @mister_up — deferring (attempt 2/3)
+[2026-06-25T19:01:55.744Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:01:59.278Z] [BG] [INFO] [QUEUE] Processing @mister_up (82 remaining)
+[2026-06-25T19:01:59.337Z] [BG] [ERROR] [QUEUE] Could not ready @mister_up — deferring (attempt 2/3)
+[2026-06-25T19:01:59.361Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:02:10.362Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T19:02:10.412Z] [BG] [INFO] [POLL] 100 total convs, queue=100, busy=false
+[2026-06-25T19:02:10.436Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T19:02:10.453Z] [BG] [INFO] [QUEUE] Processing @mister_up (82 remaining)
+[2026-06-25T19:02:10.484Z] [BG] [ERROR] [QUEUE] @mister_up skipped — failed 3x to navigate
+[2026-06-25T19:02:10.516Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:02:22.081Z] [BG] [INFO] [QUEUE] Processing @mister_up (82 remaining)
+[2026-06-25T19:02:23.234Z] [BG] [INFO] [QUEUE] Processing @aditya_pratama5 (80 remaining)
+[2026-06-25T19:02:23.639Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:02:23.689Z] [BG] [DEBUG]   @3981415084 [member] skipped
+[2026-06-25T19:02:23.777Z] [BG] [INFO] [QUEUE] Processing @3981415084 (81 remaining)
+[2026-06-25T19:02:23.788Z] [BG] [ERROR] [QUEUE] @mister_up skipped — failed 3x to navigate
+[2026-06-25T19:02:23.963Z] [BG] [ERROR] [QUEUE] Could not ready @aditya_pratama5 — deferring (attempt 1/3)
+[2026-06-25T19:02:23.994Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:02:24.290Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:02:28.653Z] [BG] [INFO] [QUEUE] Processing @3981415084 (81 remaining)
+[2026-06-25T19:02:28.678Z] [BG] [DEBUG]   @3981415084 [member] skipped
+[2026-06-25T19:02:28.717Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:02:33.679Z] [BG] [INFO] [QUEUE] Processing @aditya_pratama5 (80 remaining)
+[2026-06-25T19:02:33.845Z] [BG] [ERROR] [QUEUE] Could not ready @aditya_pratama5 — deferring (attempt 1/3)
+[2026-06-25T19:02:34.013Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:02:39.074Z] [BG] [INFO] [QUEUE] Processing @aditya_pratama5 (80 remaining)
+[2026-06-25T19:02:39.239Z] [BG] [ERROR] [QUEUE] Could not ready @aditya_pratama5 — deferring (attempt 2/3)
+[2026-06-25T19:02:39.340Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:02:48.770Z] [BG] [INFO] [QUEUE] Processing @aditya_pratama5 (80 remaining)
+[2026-06-25T19:02:48.795Z] [BG] [ERROR] [QUEUE] Could not ready @aditya_pratama5 — deferring (attempt 2/3)
+[2026-06-25T19:02:48.821Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:02:54.241Z] [BG] [INFO] [QUEUE] Processing @aditya_pratama5 (80 remaining)
+[2026-06-25T19:02:54.305Z] [BG] [ERROR] [QUEUE] @aditya_pratama5 skipped — failed 3x to navigate
+[2026-06-25T19:02:54.330Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:02:59.446Z] [BG] [INFO] [QUEUE] Processing @pencariandiri (79 remaining)
+[2026-06-25T19:02:59.465Z] [BG] [DEBUG]   @pencariandiri [member] skipped
+[2026-06-25T19:02:59.483Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:03:03.749Z] [BG] [INFO] [QUEUE] Processing @aditya_pratama5 (80 remaining)
+[2026-06-25T19:03:03.766Z] [BG] [ERROR] [QUEUE] @aditya_pratama5 skipped — failed 3x to navigate
+[2026-06-25T19:03:03.780Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:03:04.465Z] [BG] [INFO] [QUEUE] Processing @senasen232 (78 remaining)
+[2026-06-25T19:03:04.480Z] [BG] [ERROR] [QUEUE] Could not ready @senasen232 — deferring (attempt 1/3)
+[2026-06-25T19:03:04.491Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:03:08.784Z] [BG] [INFO] [QUEUE] Processing @pencariandiri (79 remaining)
+[2026-06-25T19:03:08.795Z] [BG] [DEBUG]   @pencariandiri [member] skipped
+[2026-06-25T19:03:08.803Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:03:13.776Z] [BG] [INFO] [QUEUE] Processing @senasen232 (78 remaining)
+[2026-06-25T19:03:13.788Z] [BG] [ERROR] [QUEUE] Could not ready @senasen232 — deferring (attempt 1/3)
+[2026-06-25T19:03:13.800Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:03:19.488Z] [BG] [INFO] [QUEUE] Processing @senasen232 (78 remaining)
+[2026-06-25T19:03:19.498Z] [BG] [ERROR] [QUEUE] Could not ready @senasen232 — deferring (attempt 2/3)
+[2026-06-25T19:03:19.515Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:03:28.919Z] [BG] [INFO] [QUEUE] Processing @senasen232 (78 remaining)
+[2026-06-25T19:03:28.938Z] [BG] [ERROR] [QUEUE] Could not ready @senasen232 — deferring (attempt 2/3)
+[2026-06-25T19:03:28.955Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:03:34.528Z] [BG] [INFO] [QUEUE] Processing @senasen232 (78 remaining)
+[2026-06-25T19:03:34.549Z] [BG] [ERROR] [QUEUE] @senasen232 skipped — failed 3x to navigate
+[2026-06-25T19:03:34.564Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:03:39.579Z] [BG] [INFO] [QUEUE] Processing @zubair_anwar (77 remaining)
+[2026-06-25T19:03:39.629Z] [BG] [ERROR] [QUEUE] Could not ready @zubair_anwar — deferring (attempt 1/3)
+[2026-06-25T19:03:39.758Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:03:44.011Z] [BG] [INFO] [QUEUE] Processing @senasen232 (78 remaining)
+[2026-06-25T19:03:44.394Z] [BG] [ERROR] [QUEUE] @senasen232 skipped — failed 3x to navigate
+[2026-06-25T19:03:44.420Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:03:49.415Z] [BG] [INFO] [QUEUE] Processing @zubair_anwar (77 remaining)
+[2026-06-25T19:03:49.436Z] [BG] [ERROR] [QUEUE] Could not ready @zubair_anwar — deferring (attempt 1/3)
+[2026-06-25T19:03:49.456Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:03:54.646Z] [BG] [INFO] [QUEUE] Processing @zubair_anwar (77 remaining)
+[2026-06-25T19:03:54.665Z] [BG] [ERROR] [QUEUE] Could not ready @zubair_anwar — deferring (attempt 2/3)
+[2026-06-25T19:03:54.681Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:04:04.446Z] [BG] [INFO] [QUEUE] Processing @zubair_anwar (77 remaining)
+[2026-06-25T19:04:04.476Z] [BG] [ERROR] [QUEUE] Could not ready @zubair_anwar — deferring (attempt 2/3)
+[2026-06-25T19:04:04.504Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:04:09.670Z] [BG] [INFO] [QUEUE] Processing @zubair_anwar (77 remaining)
+[2026-06-25T19:04:09.720Z] [BG] [ERROR] [QUEUE] @zubair_anwar skipped — failed 3x to navigate
+[2026-06-25T19:04:09.740Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:04:14.719Z] [BG] [INFO] [QUEUE] Processing @grogen (76 remaining)
+[2026-06-25T19:04:14.733Z] [BG] [ERROR] [QUEUE] Could not ready @grogen — deferring (attempt 1/3)
+[2026-06-25T19:04:14.750Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:04:19.957Z] [BG] [INFO] [QUEUE] Processing @zubair_anwar (77 remaining)
+[2026-06-25T19:04:20.013Z] [BG] [ERROR] [QUEUE] @zubair_anwar skipped — failed 3x to navigate
+[2026-06-25T19:04:20.297Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:04:24.964Z] [BG] [INFO] [QUEUE] Processing @grogen (76 remaining)
+[2026-06-25T19:04:24.989Z] [BG] [ERROR] [QUEUE] Could not ready @grogen — deferring (attempt 1/3)
+[2026-06-25T19:04:25.006Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:04:29.724Z] [BG] [INFO] [QUEUE] Processing @grogen (76 remaining)
+[2026-06-25T19:04:29.738Z] [BG] [ERROR] [QUEUE] Could not ready @grogen — deferring (attempt 2/3)
+[2026-06-25T19:04:29.751Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:04:40.716Z] [BG] [INFO] [QUEUE] Processing @grogen (76 remaining)
+[2026-06-25T19:04:40.858Z] [BG] [ERROR] [QUEUE] Could not ready @grogen — deferring (attempt 2/3)
+[2026-06-25T19:04:40.907Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:04:44.764Z] [BG] [INFO] [QUEUE] Processing @grogen (76 remaining)
+[2026-06-25T19:04:44.811Z] [BG] [ERROR] [QUEUE] @grogen skipped — failed 3x to navigate
+[2026-06-25T19:04:44.832Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:04:50.193Z] [BG] [INFO] [QUEUE] Processing @malik_asyrof (75 remaining)
+[2026-06-25T19:04:50.613Z] [BG] [ERROR] [QUEUE] Could not ready @malik_asyrof — deferring (attempt 1/3)
+[2026-06-25T19:04:50.655Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:04:59.071Z] [BG] [INFO] [QUEUE] Processing @grogen (76 remaining)
+[2026-06-25T19:04:59.447Z] [BG] [ERROR] [QUEUE] @grogen skipped — failed 3x to navigate
+[2026-06-25T19:04:59.649Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:05:04.107Z] [BG] [INFO] [QUEUE] Processing @malik_asyrof (75 remaining)
+[2026-06-25T19:05:04.121Z] [BG] [ERROR] [QUEUE] Could not ready @malik_asyrof — deferring (attempt 1/3)
+[2026-06-25T19:05:04.134Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:05:05.810Z] [BG] [INFO] [QUEUE] Processing @malik_asyrof (75 remaining)
+[2026-06-25T19:05:05.833Z] [BG] [ERROR] [QUEUE] Could not ready @malik_asyrof — deferring (attempt 2/3)
+[2026-06-25T19:05:05.893Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:05:08.079Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T19:05:08.519Z] [BG] [INFO] [POLL] 100 total convs, queue=100, busy=false
+[2026-06-25T19:05:11.176Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T19:05:20.246Z] [BG] [INFO] [QUEUE] Processing @malik_asyrof (75 remaining)
+[2026-06-25T19:05:21.015Z] [BG] [ERROR] [QUEUE] Could not ready @malik_asyrof — deferring (attempt 2/3)
+[2026-06-25T19:05:21.480Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:05:21.690Z] [BG] [INFO] [QUEUE] Processing @malik_asyrof (75 remaining)
+[2026-06-25T19:05:26.521Z] [BG] [ERROR] [QUEUE] @malik_asyrof skipped — failed 3x to navigate
+[2026-06-25T19:05:26.965Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:05:28.079Z] [BG] [INFO] [QUEUE] Processing @cak_nancak929 (74 remaining)
+[2026-06-25T19:05:28.225Z] [BG] [ERROR] [QUEUE] Could not ready @cak_nancak929 — deferring (attempt 1/3)
+[2026-06-25T19:05:28.309Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:05:35.406Z] [BG] [INFO] [QUEUE] Processing @malik_asyrof (75 remaining)
+[2026-06-25T19:05:35.956Z] [BG] [ERROR] [QUEUE] @malik_asyrof skipped — failed 3x to navigate
+[2026-06-25T19:05:36.019Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:05:40.984Z] [BG] [INFO] [QUEUE] Processing @cak_nancak929 (74 remaining)
+[2026-06-25T19:05:41.002Z] [BG] [ERROR] [QUEUE] Could not ready @cak_nancak929 — deferring (attempt 1/3)
+[2026-06-25T19:05:41.019Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:05:43.180Z] [BG] [INFO] [QUEUE] Processing @cak_nancak929 (74 remaining)
+[2026-06-25T19:05:43.196Z] [BG] [ERROR] [QUEUE] Could not ready @cak_nancak929 — deferring (attempt 2/3)
+[2026-06-25T19:05:43.209Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:05:56.304Z] [BG] [INFO] [QUEUE] Processing @cak_nancak929 (74 remaining)
+[2026-06-25T19:05:56.331Z] [BG] [ERROR] [QUEUE] Could not ready @cak_nancak929 — deferring (attempt 2/3)
+[2026-06-25T19:05:56.348Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:05:58.613Z] [BG] [INFO] [QUEUE] Processing @cak_nancak929 (74 remaining)
+[2026-06-25T19:05:58.674Z] [BG] [ERROR] [QUEUE] @cak_nancak929 skipped — failed 3x to navigate
+[2026-06-25T19:05:58.738Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:06:03.687Z] [BG] [INFO] [QUEUE] Processing @KMP12 (73 remaining)
+[2026-06-25T19:06:03.706Z] [BG] [ERROR] [QUEUE] Could not ready @KMP12 — deferring (attempt 1/3)
+[2026-06-25T19:06:03.720Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:06:11.499Z] [BG] [INFO] [QUEUE] Processing @cak_nancak929 (74 remaining)
+[2026-06-25T19:06:12.103Z] [BG] [ERROR] [QUEUE] @cak_nancak929 skipped — failed 3x to navigate
+[2026-06-25T19:06:12.421Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:06:17.425Z] [BG] [INFO] [QUEUE] Processing @KMP12 (73 remaining)
+[2026-06-25T19:06:17.445Z] [BG] [ERROR] [QUEUE] Could not ready @KMP12 — deferring (attempt 1/3)
+[2026-06-25T19:06:17.465Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:06:18.707Z] [BG] [INFO] [QUEUE] Processing @KMP12 (73 remaining)
+[2026-06-25T19:06:18.898Z] [BG] [ERROR] [QUEUE] Could not ready @KMP12 — deferring (attempt 2/3)
+[2026-06-25T19:06:19.282Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:06:34.755Z] [BG] [INFO] [QUEUE] Processing @KMP12 (73 remaining)
+[2026-06-25T19:06:34.855Z] [BG] [INFO] [QUEUE] Processing @KMP12 (73 remaining)
+[2026-06-25T19:06:34.968Z] [BG] [ERROR] [QUEUE] Could not ready @KMP12 — deferring (attempt 2/3)
+[2026-06-25T19:06:35.082Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:06:35.124Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:06:35.856Z] [BG] [ERROR] [QUEUE] @KMP12 skipped — failed 3x to navigate
+[2026-06-25T19:06:41.068Z] [BG] [INFO] [QUEUE] Processing @gery_marley (72 remaining)
+[2026-06-25T19:06:41.407Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:06:41.430Z] [BG] [ERROR] [QUEUE] Could not ready @gery_marley — deferring (attempt 1/3)
+[2026-06-25T19:06:50.042Z] [BG] [INFO] [QUEUE] Processing @KMP12 (73 remaining)
+[2026-06-25T19:06:50.416Z] [BG] [ERROR] [QUEUE] @KMP12 skipped — failed 3x to navigate
+[2026-06-25T19:06:51.277Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:06:55.074Z] [BG] [INFO] [QUEUE] Processing @gery_marley (72 remaining)
+[2026-06-25T19:06:55.114Z] [BG] [ERROR] [QUEUE] Could not ready @gery_marley — deferring (attempt 1/3)
+[2026-06-25T19:06:55.292Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:06:56.625Z] [BG] [INFO] [QUEUE] Processing @gery_marley (72 remaining)
+[2026-06-25T19:06:57.562Z] [BG] [ERROR] [QUEUE] Could not ready @gery_marley — deferring (attempt 2/3)
+[2026-06-25T19:06:57.713Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:07:10.128Z] [BG] [INFO] [QUEUE] Processing @gery_marley (72 remaining)
+[2026-06-25T19:07:10.147Z] [BG] [ERROR] [QUEUE] Could not ready @gery_marley — deferring (attempt 2/3)
+[2026-06-25T19:07:10.166Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:07:12.625Z] [BG] [INFO] [QUEUE] Processing @gery_marley (72 remaining)
+[2026-06-25T19:07:12.834Z] [BG] [ERROR] [QUEUE] @gery_marley skipped — failed 3x to navigate
+[2026-06-25T19:07:12.882Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:07:17.702Z] [BG] [INFO] [QUEUE] Processing @black20103 (71 remaining)
+[2026-06-25T19:07:17.780Z] [BG] [ERROR] [QUEUE] Could not ready @black20103 — deferring (attempt 1/3)
+[2026-06-25T19:07:17.829Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:07:25.291Z] [BG] [INFO] [QUEUE] Processing @gery_marley (72 remaining)
+[2026-06-25T19:07:25.342Z] [BG] [ERROR] [QUEUE] @gery_marley skipped — failed 3x to navigate
+[2026-06-25T19:07:25.381Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:07:30.443Z] [BG] [INFO] [QUEUE] Processing @black20103 (71 remaining)
+[2026-06-25T19:07:30.513Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:07:30.621Z] [BG] [ERROR] [QUEUE] Could not ready @black20103 — deferring (attempt 1/3)
+[2026-06-25T19:07:32.838Z] [BG] [INFO] [QUEUE] Processing @black20103 (71 remaining)
+[2026-06-25T19:07:33.516Z] [BG] [ERROR] [QUEUE] Could not ready @black20103 — deferring (attempt 2/3)
+[2026-06-25T19:07:33.614Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:07:45.402Z] [BG] [INFO] [QUEUE] Processing @black20103 (71 remaining)
+[2026-06-25T19:07:45.419Z] [BG] [ERROR] [QUEUE] Could not ready @black20103 — deferring (attempt 2/3)
+[2026-06-25T19:07:45.443Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:07:48.369Z] [BG] [INFO] [QUEUE] Processing @black20103 (71 remaining)
+[2026-06-25T19:07:48.383Z] [BG] [ERROR] [QUEUE] @black20103 skipped — failed 3x to navigate
+[2026-06-25T19:07:48.396Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:07:53.387Z] [BG] [INFO] [QUEUE] Processing @gento_rt_3 (70 remaining)
+[2026-06-25T19:07:53.400Z] [BG] [ERROR] [QUEUE] Could not ready @gento_rt_3 — deferring (attempt 1/3)
+[2026-06-25T19:07:53.412Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:00.423Z] [BG] [INFO] [QUEUE] Processing @black20103 (71 remaining)
+[2026-06-25T19:08:00.438Z] [BG] [ERROR] [QUEUE] @black20103 skipped — failed 3x to navigate
+[2026-06-25T19:08:00.452Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:08:05.420Z] [BG] [INFO] [QUEUE] Processing @gento_rt_3 (70 remaining)
+[2026-06-25T19:08:05.434Z] [BG] [ERROR] [QUEUE] Could not ready @gento_rt_3 — deferring (attempt 1/3)
+[2026-06-25T19:08:05.445Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:05.470Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T19:08:05.487Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T19:08:05.500Z] [BG] [INFO] [POLL] 100 total convs, queue=100, busy=false
+[2026-06-25T19:08:08.392Z] [BG] [INFO] [QUEUE] Processing @gento_rt_3 (70 remaining)
+[2026-06-25T19:08:08.403Z] [BG] [ERROR] [QUEUE] Could not ready @gento_rt_3 — deferring (attempt 2/3)
+[2026-06-25T19:08:08.415Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:20.446Z] [BG] [INFO] [QUEUE] Processing @gento_rt_3 (70 remaining)
+[2026-06-25T19:08:20.459Z] [BG] [ERROR] [QUEUE] Could not ready @gento_rt_3 — deferring (attempt 2/3)
+[2026-06-25T19:08:20.475Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:23.404Z] [BG] [INFO] [QUEUE] Processing @gento_rt_3 (70 remaining)
+[2026-06-25T19:08:23.416Z] [BG] [ERROR] [QUEUE] @gento_rt_3 skipped — failed 3x to navigate
+[2026-06-25T19:08:23.428Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:08:28.420Z] [BG] [INFO] [QUEUE] Processing @zul_fikri15 (69 remaining)
+[2026-06-25T19:08:28.433Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:28.444Z] [BG] [ERROR] [QUEUE] Could not ready @zul_fikri15 — deferring (attempt 1/3)
+[2026-06-25T19:08:35.471Z] [BG] [INFO] [QUEUE] Processing @gento_rt_3 (70 remaining)
+[2026-06-25T19:08:35.499Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:08:35.515Z] [BG] [ERROR] [QUEUE] @gento_rt_3 skipped — failed 3x to navigate
+[2026-06-25T19:08:40.467Z] [BG] [INFO] [QUEUE] Processing @zul_fikri15 (69 remaining)
+[2026-06-25T19:08:40.492Z] [BG] [ERROR] [QUEUE] Could not ready @zul_fikri15 — deferring (attempt 1/3)
+[2026-06-25T19:08:40.522Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:43.512Z] [BG] [INFO] [QUEUE] Processing @zul_fikri15 (69 remaining)
+[2026-06-25T19:08:43.550Z] [BG] [ERROR] [QUEUE] Could not ready @zul_fikri15 — deferring (attempt 2/3)
+[2026-06-25T19:08:43.582Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:55.495Z] [BG] [INFO] [QUEUE] Processing @zul_fikri15 (69 remaining)
+[2026-06-25T19:08:55.512Z] [BG] [ERROR] [QUEUE] Could not ready @zul_fikri15 — deferring (attempt 2/3)
+[2026-06-25T19:08:55.528Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:08:58.578Z] [BG] [INFO] [QUEUE] Processing @zul_fikri15 (69 remaining)
+[2026-06-25T19:08:58.589Z] [BG] [ERROR] [QUEUE] @zul_fikri15 skipped — failed 3x to navigate
+[2026-06-25T19:08:58.601Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:09:03.590Z] [BG] [INFO] [QUEUE] Processing @3294185049 (68 remaining)
+[2026-06-25T19:09:03.600Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:09:03.613Z] [BG] [ERROR] [QUEUE] Could not ready @3294185049 — deferring (attempt 1/3)
+[2026-06-25T19:09:10.504Z] [BG] [INFO] [QUEUE] Processing @zul_fikri15 (69 remaining)
+[2026-06-25T19:09:10.515Z] [BG] [ERROR] [QUEUE] @zul_fikri15 skipped — failed 3x to navigate
+[2026-06-25T19:09:10.532Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:09:15.499Z] [BG] [INFO] [QUEUE] Processing @3294185049 (68 remaining)
+[2026-06-25T19:09:15.511Z] [BG] [ERROR] [QUEUE] Could not ready @3294185049 — deferring (attempt 1/3)
+[2026-06-25T19:09:15.522Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:09:18.600Z] [BG] [INFO] [QUEUE] Processing @3294185049 (68 remaining)
+[2026-06-25T19:09:18.613Z] [BG] [ERROR] [QUEUE] Could not ready @3294185049 — deferring (attempt 2/3)
+[2026-06-25T19:09:18.628Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:09:30.514Z] [BG] [INFO] [QUEUE] Processing @3294185049 (68 remaining)
+[2026-06-25T19:09:30.529Z] [BG] [ERROR] [QUEUE] Could not ready @3294185049 — deferring (attempt 2/3)
+[2026-06-25T19:09:30.549Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:09:33.609Z] [BG] [INFO] [QUEUE] Processing @3294185049 (68 remaining)
+[2026-06-25T19:09:33.620Z] [BG] [ERROR] [QUEUE] @3294185049 skipped — failed 3x to navigate
+[2026-06-25T19:09:33.639Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:09:38.622Z] [BG] [INFO] [QUEUE] Processing @dotco_dong (67 remaining)
+[2026-06-25T19:09:38.634Z] [BG] [ERROR] [QUEUE] Could not ready @dotco_dong — deferring (attempt 1/3)
+[2026-06-25T19:09:38.647Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:09:45.520Z] [BG] [INFO] [QUEUE] Processing @3294185049 (68 remaining)
+[2026-06-25T19:09:45.535Z] [BG] [ERROR] [QUEUE] @3294185049 skipped — failed 3x to navigate
+[2026-06-25T19:09:45.549Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:09:50.542Z] [BG] [INFO] [QUEUE] Processing @dotco_dong (67 remaining)
+[2026-06-25T19:09:50.575Z] [BG] [ERROR] [QUEUE] Could not ready @dotco_dong — deferring (attempt 1/3)
+[2026-06-25T19:09:50.601Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:09:53.622Z] [BG] [INFO] [QUEUE] Processing @dotco_dong (67 remaining)
+[2026-06-25T19:09:53.636Z] [BG] [ERROR] [QUEUE] Could not ready @dotco_dong — deferring (attempt 2/3)
+[2026-06-25T19:09:53.648Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:10:05.565Z] [BG] [INFO] [QUEUE] Processing @dotco_dong (67 remaining)
+[2026-06-25T19:10:05.581Z] [BG] [ERROR] [QUEUE] Could not ready @dotco_dong — deferring (attempt 2/3)
+[2026-06-25T19:10:05.594Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:10:08.635Z] [BG] [INFO] [QUEUE] Processing @dotco_dong (67 remaining)
+[2026-06-25T19:10:08.647Z] [BG] [ERROR] [QUEUE] @dotco_dong skipped — failed 3x to navigate
+[2026-06-25T19:10:08.659Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:10:13.682Z] [BG] [INFO] [QUEUE] Processing @1522652717 (66 remaining)
+[2026-06-25T19:10:13.692Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:10:13.710Z] [BG] [ERROR] [QUEUE] Could not ready @1522652717 — deferring (attempt 1/3)
+[2026-06-25T19:10:20.598Z] [BG] [INFO] [QUEUE] Processing @dotco_dong (67 remaining)
+[2026-06-25T19:10:20.618Z] [BG] [ERROR] [QUEUE] @dotco_dong skipped — failed 3x to navigate
+[2026-06-25T19:10:20.640Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:10:25.621Z] [BG] [INFO] [QUEUE] Processing @1522652717 (66 remaining)
+[2026-06-25T19:10:25.635Z] [BG] [ERROR] [QUEUE] Could not ready @1522652717 — deferring (attempt 1/3)
+[2026-06-25T19:10:25.646Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:10:28.687Z] [BG] [INFO] [QUEUE] Processing @1522652717 (66 remaining)
+[2026-06-25T19:10:28.708Z] [BG] [ERROR] [QUEUE] Could not ready @1522652717 — deferring (attempt 2/3)
+[2026-06-25T19:10:28.723Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:10:40.646Z] [BG] [INFO] [QUEUE] Processing @1522652717 (66 remaining)
+[2026-06-25T19:10:40.672Z] [BG] [ERROR] [QUEUE] Could not ready @1522652717 — deferring (attempt 2/3)
+[2026-06-25T19:10:40.725Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:10:43.700Z] [BG] [INFO] [QUEUE] Processing @1522652717 (66 remaining)
+[2026-06-25T19:10:43.720Z] [BG] [ERROR] [QUEUE] @1522652717 skipped — failed 3x to navigate
+[2026-06-25T19:10:43.737Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:10:48.718Z] [BG] [INFO] [QUEUE] Processing @byu_vibo (65 remaining)
+[2026-06-25T19:10:48.730Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:10:48.743Z] [BG] [ERROR] [QUEUE] Could not ready @byu_vibo — deferring (attempt 1/3)
+[2026-06-25T19:10:55.666Z] [BG] [INFO] [QUEUE] Processing @1522652717 (66 remaining)
+[2026-06-25T19:10:55.687Z] [BG] [ERROR] [QUEUE] @1522652717 skipped — failed 3x to navigate
+[2026-06-25T19:10:55.708Z] [BG] [DEBUG] [QUEUE] Waiting 5000ms before next task...
+[2026-06-25T19:11:00.679Z] [BG] [INFO] [QUEUE] Processing @byu_vibo (65 remaining)
+[2026-06-25T19:11:00.692Z] [BG] [ERROR] [QUEUE] Could not ready @byu_vibo — deferring (attempt 1/3)
+[2026-06-25T19:11:00.706Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:11:03.740Z] [BG] [INFO] [QUEUE] Processing @byu_vibo (65 remaining)
+[2026-06-25T19:11:03.773Z] [BG] [ERROR] [QUEUE] Could not ready @byu_vibo — deferring (attempt 2/3)
+[2026-06-25T19:11:03.808Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...

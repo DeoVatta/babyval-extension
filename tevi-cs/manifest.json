@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.7.3",
-  "description": "Tevi CS Bot v0.7.3 — overlay sync fix, queueBusy reset, 24/7 mode (no active hours)",
+  "version": "0.8.0",
+  "description": "Tevi CS Bot v0.8.0 — DOM-based conv scan (✓/✓✓ icons), 4-msg context, slot system, image cooldown, idle 20s refresh",
   "author": "Devata",
   "permissions": [
     "alarms",
