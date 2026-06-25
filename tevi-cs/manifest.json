@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Tevi CS Bot",
+  "version": "0.1.0.2",
+  "description": "Auto-reply DM bot for Tevi (Cutieval account) — browser extension version",
+  "author": "Devata",
+  "permissions": [
+    "alarms",
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://tevi.com/*",
+    "https://wapi.flowstreamx.com/*"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.svg",
+      "48": "icons/icon48.svg",
+      "128": "icons/icon128.svg"
+    },
+    "default_title": "Tevi CS Bot"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://tevi.com/*"],
+      "js": ["content-script.js", "overlay.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.svg",
+    "48": "icons/icon48.svg",
+    "128": "icons/icon128.svg"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["https://tevi.com/*"]
+    }
+  ]
+}

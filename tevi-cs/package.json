@@ -1,0 +1,10 @@
+{
+  "name": "tevi-cs-log-server",
+  "version": "0.1.0",
+  "description": "Local log server for Tevi CS extension diagnostic",
+  "main": "log-server.js",
+  "scripts": {
+    "start": "node log-server.js",
+    "dev": "node log-server.js"
+  }
+}
