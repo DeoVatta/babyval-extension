@@ -200,3 +200,10 @@
 [2026-06-25T14:38:41.662Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
 [2026-06-25T14:38:41.688Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.2 on https://tevi.com/messages
 [2026-06-25T14:38:50.866Z] [OVERLAY] [INFO] [OVERLAY] Manual poll triggered
+[2026-06-25T14:46:53.091Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:46:53.146Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
+[2026-06-25T14:46:53.205Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T14:47:01.084Z] [OVERLAY] [INFO] [OVERLAY] Manual poll triggered
+[2026-06-25T14:50:37.438Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T14:50:37.516Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/@cutieval
+[2026-06-25T14:50:37.553Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls

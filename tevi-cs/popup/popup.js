@@ -31,7 +31,7 @@ const el = {
   btnDiagnose:  $('btnDiagnose'),
   btnViewLogs:  $('btnViewLogs'),
   btnClearToken:$('btnClearToken'),
-  btnRefresh:   $('btnRefresh'),
+  btnReload:    $('btnReload'),
 };
 
 function fmtTime(iso) {
@@ -297,7 +297,12 @@ el.btnProbe.addEventListener('click', doProbe);
 el.btnDiagnose.addEventListener('click', doDiagnose);
 el.btnViewLogs.addEventListener('click', doViewLogs);
 el.btnClearToken.addEventListener('click', doClearToken);
-el.btnRefresh.addEventListener('click', () => { hideLog(); loadStatus(); });
+el.btnReload.addEventListener('click', () => {
+  el.btnReload.textContent = '⏳...'; el.btnReload.disabled = true;
+  el.ssub.textContent = 'Restarting SW...';
+  el.sdot.className = 'sdot orange';
+  chrome.runtime.reload();
+});
 
 // ── Init ────────────────────────────────────────────────────────────────────
 checkLogServer();
