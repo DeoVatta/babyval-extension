@@ -1,153 +1,275 @@
 /**
- * BACKGROUND — Service Worker Tevi CS Bot v0.2.0.0
- * Fully automated: token capture, poll, retry, recovery
- * NO manual buttons needed — runs 100% autonomous
+ * BACKGROUND — Service Worker Tevi CS Bot v0.3.0.0
+ * Fully automated: auto-discover endpoints, auto-probe, retry, no manual buttons
  */
 
 const MY_UID = '392388705';
-const MY_SLUG = 'cutieval';
 const POLL_INTERVAL_MIN = 3;
 const ALARM_NAME = 'tevi-poll';
-const LOG_SERVER = 'http://localhost:3131';
-const STORAGE_KEY = 'tevi_cs_state';
+const LOG = 'http://localhost:3131';
+const STATE_KEY = 'tevi_cs_state';
 const TOKEN_KEY = 'tevi_cs_token';
-const MAX_RETRIES = 3;
-const RETRY_BASE_DELAY_MS = 2000;
+const EP_KEY = 'tevi_endpoints';
+const SN_KEY = 'tevi_sniff';
+const MAX_RETRIES = 2;
 
-// ── LOGGING ──────────────────────────────────────────────────────────────────
-async function sendLog(message, level = 'INFO', data = null) {
+// ── LOGGING ──────────────────────────────────────────────────────────────
+async function sendLog(msg, level = 'INFO') {
   try {
-    await fetch(`${LOG_SERVER}/log`, {
+    await fetch(`${LOG}/log`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source: 'BG', level, message, data }),
+      body: JSON.stringify({ source: 'BG', level, message: msg, ts: new Date().toISOString() }),
     }).catch(() => {});
   } catch {}
 }
-const log = (msg) => sendLog(msg, 'INFO');
-const logE = (msg, data) => sendLog(msg, 'ERROR', data);
-const logD = (msg) => sendLog(msg, 'DEBUG');
+const log = m => sendLog(m, 'INFO');
+const logE = m => sendLog(m, 'ERROR');
+const logD = m => sendLog(m, 'DEBUG');
 
-// ── HMAC ─────────────────────────────────────────────────────────────────────
+// ── HMAC ─────────────────────────────────────────────────────────────────
 async function hmac(pathname) {
-  const HMAC_SECRET = 'PRDKqnSNCKrMDF9hAt0PSJ6';
+  const SECRET = 'PRDKqnSNCKrMDF9hAt0PSJ6';
   const ts = Math.floor(Date.now() / 1000);
   const data = new TextEncoder().encode(pathname + ts);
-  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(HMAC_SECRET),
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(SECRET),
     { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', key, data);
-  return ts + '-' + btoa(String.fromCharCode(...new Uint8Array(sig)));
+  const sig = btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.sign('HMAC', key, data))));
+  return `${ts}-${sig}`;
 }
 
-// ── TOKEN ────────────────────────────────────────────────────────────────────
-let cachedToken = null;
-let cachedPayload = null;
+// ── TOKEN ────────────────────────────────────────────────────────────────
+let token = null;
+let uid = null;
 
-async function loadPersistedToken() {
+function parseToken(t) {
+  try {
+    const p = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(p + '=='.slice(0, (4 - p.length % 4) % 4)));
+  } catch { return null; }
+}
+
+async function loadToken() {
   try {
     const d = await chrome.storage.local.get([TOKEN_KEY, 'tevi_cs_uid']);
     if (d[TOKEN_KEY]) {
-      cachedToken = d[TOKEN_KEY];
-      cachedPayload = parseToken(d[TOKEN_KEY]);
-      log(`[TOKEN] Loaded from storage — UID=${cachedPayload?.uid}`);
-      return d[TOKEN_KEY];
+      token = d[TOKEN_KEY];
+      uid = d.tevi_cs_uid || parseToken(token)?.uid || null;
+      log(`[TOKEN] Loaded — UID=${uid}`);
+      return token;
     }
   } catch {}
   return null;
 }
 
-function parseToken(token) {
-  try {
-    const parts = token.split('.');
-    if (parts.length < 2) return null;
-    let str = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-    while (str.length % 4) str += '=';
-    return JSON.parse(atob(str));
-  } catch { return null; }
+async function saveToken(t) {
+  token = t;
+  uid = parseToken(t)?.uid || null;
+  try { await chrome.storage.local.set({ [TOKEN_KEY]: t, tevi_cs_uid: uid }); } catch {}
 }
 
-async function persistToken(token) {
-  cachedToken = token;
-  cachedPayload = parseToken(token);
-  try {
-    await chrome.storage.local.set({ [TOKEN_KEY]: token, tevi_cs_uid: cachedPayload?.uid || null });
-  } catch {}
+async function clearToken() {
+  token = null; uid = null;
+  try { await chrome.storage.local.remove([TOKEN_KEY, 'tevi_cs_uid']); } catch {}
+  log('[TOKEN] Cleared');
 }
 
-async function captureTokenFromTab() {
+async function captureToken() {
   try {
     const tabs = await chrome.tabs.query({ url: '*://tevi.com/*' });
-    const target = tabs.find(t => !t.url.includes('/settings')) || tabs[0];
-    if (!target) { logE('[TOKEN] No Tevi tab'); return null; }
-
-    const results = await chrome.scripting.executeScript({
-      target: { tabId: target.id },
+    const tab = tabs.find(t => !t.url.includes('/settings')) || tabs[0];
+    if (!tab) return null;
+    const r = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
       func: () => {
         try {
           const raw = localStorage.getItem('user_logged_list');
           if (!raw) return null;
           const parsed = JSON.parse(raw);
-          const userData = Object.values(parsed)[0];
-          return userData?.access_token || null;
+          return Object.values(parsed)[0]?.access_token || null;
         } catch { return null; }
       },
     });
-    return results?.[0]?.result || null;
-  } catch (e) {
-    logE('[TOKEN] Capture failed', { error: e.message });
-    return null;
-  }
+    return r?.[0]?.result || null;
+  } catch { return null; }
 }
 
 async function ensureToken() {
-  if (cachedToken) return cachedToken;
-  let token = await loadPersistedToken();
   if (token) return token;
-  token = await captureTokenFromTab();
-  if (token) await persistToken(token);
-  return token;
+  let t = await loadToken();
+  if (t) return t;
+  t = await captureToken();
+  if (t) { await saveToken(t); return t; }
+  return null;
 }
 
-async function clearToken() {
-  cachedToken = null;
-  cachedPayload = null;
-  try { await chrome.storage.local.remove([TOKEN_KEY, 'tevi_cs_uid']); } catch {}
-  log('[TOKEN] Cleared');
+// ── STATE ────────────────────────────────────────────────────────────────
+const DEF = () => ({ repliedOnce: {}, botEnabled: false, knownUnreadIds: [], lastResult: null });
+
+async function loadState() {
+  try {
+    const d = await chrome.storage.local.get(STATE_KEY);
+    const s = d[STATE_KEY];
+    if (s && typeof s === 'object' && !Array.isArray(s)) {
+      return { ...DEF(), ...s, repliedOnce: { ...DEF().repliedOnce, ...(s.repliedOnce || {}) } };
+    }
+  } catch {}
+  return DEF();
 }
 
-// ── CLASSIFIERS ───────────────────────────────────────────────────────────────
-const VCS_KW = ['vcs','vc','videocal','video call','videoshow','telfon','telp','telpon','telepon','call','private','priv','meet','zoom','ngobrol','chat private','bicara'];
-const CASUAL_KW = ['hai','hi','hello','hey','kak','ka','aduh','permisi','makasih','thanks','thank','ok','oke','sip','siap','wkwk','haha','lol','hehe'];
+async function saveState(s) {
+  try { await chrome.storage.local.set({ [STATE_KEY]: s }); } catch {}
+}
 
-function isOnlyEmoji(t) {
+async function isEnabled() { const s = await loadState(); return !!s.botEnabled; }
+async function setEnabled(v) { const s = await loadState(); s.botEnabled = v; await saveState(s); }
+
+// ── AUTO-DISCOVER ENDPOINTS ──────────────────────────────────────────────
+async function getDiscoveredEndpoints() {
+  try {
+    const d = await chrome.storage.local.get([EP_KEY, SN_KEY]);
+    const eps = d[EP_KEY] || {};
+    const sniffs = d[SN_KEY] || [];
+    return { eps, sniffs };
+  } catch { return { eps: {}, sniffs: [] }; }
+}
+
+async function probeEndpoint(pathname, token, convId, text) {
+  const verify = await hmac(pathname);
+  const base = `https://wapi.flowstreamx.com${pathname}${pathname.includes('?') ? '&' : '?'}verify=${verify}`;
+
+  const candidates = [
+    `${base}&conversation_id=${convId}&text=${encodeURIComponent(text)}&type=TEXT&parser=PLAIN`,
+    `${base}conversation_id=${convId}&text=${encodeURIComponent(text)}&type=TEXT&parser=PLAIN`,
+    base,
+  ];
+
+  for (const url of candidates) {
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Origin': 'https://tevi.com',
+          'Referer': 'https://tevi.com/messages',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ conversation_id: convId, text, type: 'TEXT', parser: 'PLAIN' }),
+      });
+      const body = await resp.text().catch(() => '');
+      if (resp.ok) {
+        log(`[SEND] ✅ WORKING: ${pathname} → status=${resp.status}`);
+        return { ok: true, pathname, status: resp.status };
+      }
+      logD(`[SEND] ❌ ${pathname} → ${resp.status}: ${body.substring(0, 80)}`);
+    } catch (e) {
+      logD(`[SEND] ❌ ${pathname} → ${e.message}`);
+    }
+  }
+  return { ok: false };
+}
+
+// ── SEND MESSAGE ─────────────────────────────────────────────────────────
+const SEND_PATHS = [
+  '/messenger/v2/message/',
+  '/messenger/v2/rpc/send_message/',
+  '/messenger/message/send/',
+  '/api/v1/message/send/',
+];
+
+let cachedSendPath = null;
+
+async function sendMsg(convId, text) {
+  const t = await ensureToken();
   if (!t) return false;
-  const m = t.match(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u);
-  return m && m.length >= t.length * 0.6;
+
+  // Try discovered path first
+  if (cachedSendPath) {
+    const verify = await hmac(cachedSendPath);
+    const url = `https://wapi.flowstreamx.com${cachedSendPath}?verify=${verify}`;
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${t}`,
+          'Origin': 'https://tevi.com',
+          'Referer': 'https://tevi.com/messages',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ conversation_id: convId, text, type: 'TEXT', parser: 'PLAIN' }),
+      });
+      if (resp.ok) { log(`[SEND] ✅ cached path: ${cachedSendPath}`); return true; }
+      logD(`[SEND] cached fail ${resp.status}: ${cachedSendPath}`);
+    } catch {}
+  }
+
+  // Auto-probe all paths
+  for (const path of SEND_PATHS) {
+    const verify = await hmac(path);
+    const url = `https://wapi.flowstreamx.com${path}?verify=${verify}`;
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${t}`,
+          'Origin': 'https://tevi.com',
+          'Referer': 'https://tevi.com/messages',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ conversation_id: convId, text, type: 'TEXT', parser: 'PLAIN' }),
+      });
+      const body = await resp.text().catch(() => '');
+      if (resp.ok) {
+        log(`[SEND] ✅ FOUND: ${path} → status=${resp.status}`);
+        cachedSendPath = path;
+        return true;
+      }
+      logD(`[SEND] ${path} → ${resp.status}: ${body.substring(0, 60)}`);
+    } catch (e) {
+      logD(`[SEND] ${path} → ${e.message}`);
+    }
+  }
+
+  // Check sniffer data
+  const { sniffs, eps } = await getDiscoveredEndpoints();
+  const sendSniffs = sniffs.filter(s => s.type === 'ws_send' || (s.url && s.url.includes('message') && s.method !== 'GET'));
+  if (sendSniffs.length > 0) {
+    log(`[SNIFFER] Found ${sendSniffs.length} send-related captures — checking...`);
+    // Already logged in sniffer, just report
+  }
+
+  return false;
 }
+
+async function markRead(convId) {
+  const t = await ensureToken();
+  if (!t) return;
+  const pathname = `/messenger/v2/conversation/${convId}/read/`;
+  const verify = await hmac(pathname);
+  const url = `https://wapi.flowstreamx.com${pathname}?verify=${verify}`;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${t}`, 'Origin': 'https://tevi.com', 'Accept': 'application/json' },
+    });
+    logD(`[MARK] read: ${convId.substring(0, 8)}`);
+  } catch {}
+}
+
+// ── CLASSIFIERS ─────────────────────────────────────────────────────────
+const VCS_KW = ['vcs','vc','videocal','video call','videoshow','telfon','telp','telpon','call','private','priv','meet','zoom','ngobrol','chat private','bicara'];
+const CAS_KW = ['hai','hi','hello','hey','kak','ka','aduh','permisi','makasih','thanks','ok','oke','sip','wkwk','haha','lol'];
+
 function isVcs(t) { return t && VCS_KW.some(k => t.toLowerCase().includes(k)); }
 function isCasual(t) {
   if (!t) return true;
   const l = t.toLowerCase().trim();
   if (l.length < 10) return true;
-  if (isOnlyEmoji(l)) return true;
   const w = l.split(/\s+/).filter(Boolean).length;
-  const c = CASUAL_KW.filter(k => l.includes(k)).length;
-  return w <= 5 && c >= w * 0.5;
-}
-function isLongIdle(ts) { return ts && (Date.now() - ts) > (6 * 3600 * 1000); }
-
-function classify(conv, knownIds, myUid) {
-  const rcv = conv.recipient || {};
-  const msg = conv.latest_message || {};
-  const stats = conv.stats || {};
-  const text = msg.text || '';
-  const lastAct = stats.last_read_at || conv.last_activity_at;
-
-  if (msg.sender?.alias === myUid) return { action: 'ignore', reason: 'own' };
-  if (rcv.is_my_subscriber === true) return { action: 'ignore', reason: 'member' };
-  if (isVcs(text) || !knownIds.includes(conv.id)) return { action: 'vcs', reason: isVcs(text) ? 'vcs_kw' : 'first' };
-  if (isLongIdle(lastAct) || isCasual(text)) return { action: 'casual', reason: isLongIdle(lastAct) ? 'idle' : 'casual' };
-  return { action: 'casual', reason: 'default' };
+  return w <= 5;
 }
 
 const TPL_VCS = `vcs available💕
@@ -156,276 +278,223 @@ bisa payment ke web https://babyval.com/
 Jangan lupa kirim bukti tf ke dm
 
 AKU BALAS CHAT KHUSUS MEMBER ATAU SUDAH PAYMENT VCS`;
-const TPL_CASUAL = `Hai! 💕 Untuk request konten eksklusif atau VCS, bisa via:
+const TPL_CAS = `Hai! 💕 Untuk request konten eksklusif atau VCS, bisa via:
 1. Join membership: tevi.com/@cutieval
 2. Payment VCS: babyval.com → pilih videocall
 Terima kasih! 🙏`;
 
-// ── API: Conversations ────────────────────────────────────────────────────────
-async function getConversations(token) {
-  const pathname = '/messenger/v2/rpc/get_recent_conversations';
-  const verify = await hmac(pathname);
-  const url = `https://wapi.flowstreamx.com${pathname}?limit=50&filter=UNREAD&verify=${verify}`;
+// ── GET CONVERSATIONS ─────────────────────────────────────────────────────
+const CONV_PATHS = [
+  '/messenger/v2/rpc/get_recent_conversations',
+  '/messenger/v2/conversation/get_recent_conversations',
+  '/api/v1/conversations/',
+];
 
-  const resp = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Origin': 'https://tevi.com',
-      'Referer': 'https://tevi.com/messages',
-      'Accept': 'application/json',
-    },
-  });
-  const text = await resp.text().catch(() => '');
-  try {
-    const json = JSON.parse(text);
-    if (json?.success) return json.data;
-    logE('[API] Conversations fail', { status: resp.status, msg: json?.message });
-    return null;
-  } catch {
-    logE('[API] Conversations parse fail', { status: resp.status, body: text.substring(0, 100) });
-    return null;
+async function getConvs() {
+  const t = await ensureToken();
+  if (!t) return { data: null, error: 'no_token' };
+
+  for (const path of CONV_PATHS) {
+    const verify = await hmac(path);
+    const url = `https://wapi.flowstreamx.com${path}${path.includes('?') ? '&' : '?'}limit=50&filter=UNREAD&verify=${verify}`;
+    try {
+      const resp = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${t}`,
+          'Origin': 'https://tevi.com',
+          'Referer': 'https://tevi.com/messages',
+          'Accept': 'application/json',
+        },
+      });
+      const text = await resp.text().catch(() => '');
+      if (resp.ok) {
+        try {
+          const json = JSON.parse(text);
+          if (json?.success) {
+            log(`[API] ✅ Convs: ${path} → ${json.data?.results?.length || 0} unread`);
+            return { data: json.data, error: null };
+          }
+        } catch {}
+      }
+      logD(`[API] ${path} → ${resp.status}`);
+    } catch (e) {
+      logD(`[API] ${path} → ${e.message}`);
+    }
   }
-}
 
-async function sendReply(convId, text, token) {
-  const pathname = '/messenger/v2/message/';
-  const verify = await hmac(pathname);
-  const url = `https://wapi.flowstreamx.com${pathname}?verify=${verify}`;
-  try {
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Origin': 'https://tevi.com',
-        'Referer': 'https://tevi.com/messages',
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ conversation_id: convId, text, type: 'TEXT', parser: 'PLAIN' }),
-    });
-    const body = await resp.text().catch(() => '');
-    const ok = resp.ok;
-    if (!ok) logE('[API] Send fail', { status: resp.status, body: body.substring(0, 100) });
-    return ok;
-  } catch (e) {
-    logE('[API] Send exception', { error: e.message });
-    return false;
+  // Check token expiry
+  const payload = parseToken(t);
+  if (payload?.exp && Date.now() > payload.exp * 1000) {
+    log('[TOKEN] Expired — clearing for re-capture');
+    await clearToken();
+    return { data: null, error: 'token_expired' };
   }
+
+  return { data: null, error: 'all_endpoints_failed' };
 }
 
-async function markRead(convId, token) {
-  const pathname = `/messenger/v2/conversation/${convId}/read/`;
-  const verify = await hmac(pathname);
-  const url = `https://wapi.flowstreamx.com${pathname}?verify=${verify}`;
-  try {
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}`, 'Origin': 'https://tevi.com', 'Accept': 'application/json' },
-    });
-  } catch {}
-}
-
-// ── STATE ─────────────────────────────────────────────────────────────────────
-const DEFAULT_STATE = { repliedOnce: {}, botEnabled: false, knownUnreadIds: [], lastResult: null };
-
-function mergeState(fresh) {
-  if (!fresh || typeof fresh !== 'object' || Array.isArray(fresh)) return { ...DEFAULT_STATE };
-  return { ...DEFAULT_STATE, ...fresh };
-}
-
-async function loadState() {
-  try {
-    const d = await chrome.storage.local.get(STORAGE_KEY);
-    return mergeState(d[STORAGE_KEY]);
-  } catch { return { ...DEFAULT_STATE }; }
-}
-async function saveState(s) {
-  if (!s) return;
-  try { await chrome.storage.local.set({ [STORAGE_KEY]: s }); } catch {}
-}
-async function setEnabled(v) { const s = await loadState(); s.botEnabled = v; await saveState(s); }
-async function isEnabled() { const s = await loadState(); return !!s.botEnabled; }
-async function hasReplied(id) {
-  const s = await loadState();
-  return !!(s?.repliedOnce && s.repliedOnce[id]);
-}
-async function markReplied(id) {
-  const s = await loadState();
-  if (!s.repliedOnce) s.repliedOnce = {};
-  s.repliedOnce[id] = new Date().toISOString();
-  const entries = Object.entries(s.repliedOnce);
-  if (entries.length > 200) s.repliedOnce = Object.fromEntries(entries.slice(-200));
-  await saveState(s);
-}
-async function setLastResult(r) {
-  const s = await loadState();
-  s.lastResult = r;
-  s.knownUnreadIds = r?.convIds || [];
-  await saveState(s);
-}
-
-// ── POLL ──────────────────────────────────────────────────────────────────────
+// ── POLL ────────────────────────────────────────────────────────────────
 async function poll() {
   const start = Date.now();
-  const activeHours = new Date().getHours() >= 17 || new Date().getHours() < 5;
+  const hour = new Date().getHours();
+  const activeHours = hour >= 17 || hour < 5;
   const dry = !activeHours;
-  logD(`[POLL] Start dry=${dry}`);
+  logD(`[POLL] dry=${dry} active=${activeHours}`);
 
-  const token = await ensureToken();
-  if (!token) {
+  const state = await loadState();
+  const convsResult = await getConvs();
+
+  if (convsResult.error === 'no_token') {
     logE('[POLL] No token');
-    await setLastResult({ error: 'no_token', time: new Date().toISOString() });
+    await saveState({ ...state, lastResult: { error: 'no_token', time: new Date().toISOString() } });
     return { error: 'no_token' };
   }
-
-  const data = await getConversations(token);
-  if (data === null) {
-    // Token might be expired
-    const payload = parseToken(token);
-    const exp = payload?.exp * 1000;
-    if (exp && Date.now() > exp) {
-      log('[TOKEN] Expired — clearing for re-capture');
-      await clearToken();
-      await setLastResult({ error: 'token_expired', time: new Date().toISOString() });
-    } else {
-      await setLastResult({ convs: 0, time: new Date().toISOString() });
-    }
+  if (convsResult.error === 'token_expired') {
+    await saveState({ ...state, lastResult: { error: 'token_expired', time: new Date().toISOString() } });
+    return { error: 'token_expired' };
+  }
+  if (!convsResult.data) {
+    await saveState({ ...state, lastResult: { convs: 0, time: new Date().toISOString() } });
     return { convs: 0 };
   }
 
-  const convs = data.results || [];
-  const state = await loadState();
-  const known = state.knownUnreadIds || [];
-  log(`[POLL] ${convs.length} unread, dry=${dry}`);
+  const convs = convsResult.data.results || [];
+  log(`[POLL] ${convs.length} unread — dry=${dry}`);
+  if (dry) { log('[POLL] Dry run only — not sending replies'); }
+
+  const repliedOnce = state.repliedOnce || {};
+  const knownIds = state.knownUnreadIds || [];
 
   let processed = 0, replied = 0, ignored = 0;
+
   for (const conv of convs) {
-    const cls = classify(conv, known, MY_UID);
-    const text = conv.latest_message?.text || '';
-    const slug = conv.recipient?.channel_slug || '?';
-    logD(`  [${processed+1}] @${slug}: "${text.substring(0,40)}" → ${cls.action}/${cls.reason}`);
+    const convId = conv.id;
+    if (!convId) { processed++; continue; }
 
-    if (cls.action === 'ignore') { ignored++; processed++; continue; }
+    const rcv = conv.recipient || {};
+    const msg = conv.latest_message || {};
+    const text = msg.text || '';
+    const slug = rcv.channel_slug || '?';
+    const sender = msg.sender?.alias || '';
+    const isSubscriber = rcv.is_my_subscriber === true;
+    const isFirst = !knownIds.includes(convId);
 
-    const already = await hasReplied(conv.id);
-    if (already) {
-      if (!dry) await markRead(conv.id, token);
-      ignored++; processed++;
-      continue;
+    let action = 'ignore', reason = '';
+    if (sender === MY_UID) { action = 'ignore'; reason = 'own'; }
+    else if (isSubscriber) { action = 'ignore'; reason = 'member'; }
+    else if (isVcs(text) || isFirst) { action = 'vcs'; reason = isVcs(text) ? 'vcs_kw' : 'first'; }
+    else if (isCasual(text)) { action = 'casual'; reason = 'casual'; }
+    else { action = 'casual'; reason = 'default'; }
+
+    logD(`  [${processed+1}] @${slug}: "${text.substring(0,30)}" → ${action}/${reason}`);
+
+    if (action === 'ignore') { ignored++; processed++; continue; }
+
+    if (repliedOnce[convId]) {
+      logD(`    → already replied → mark read`);
+      if (!dry) await markRead(convId);
+      ignored++; processed++; continue;
     }
 
-    const reply = cls.action === 'vcs' ? TPL_VCS : TPL_CASUAL;
+    const replyText = action === 'vcs' ? TPL_VCS : TPL_CAS;
+    log(`    → REPLY (${action}): "${replyText.substring(0, 30)}..."`);
+
     if (!dry) {
-      const ok = await sendReply(conv.id, reply, token);
+      const ok = await sendMsg(convId, replyText);
       if (ok) {
-        await markReplied(conv.id);
         replied++;
+        repliedOnce[convId] = new Date().toISOString();
         log(`[POLL] ✅ Replied to @${slug}`);
+      } else {
+        logE(`[POLL] ❌ Send failed to @${slug} — convId=${convId}`);
       }
     } else {
-      await markReplied(conv.id);
       replied++;
+      repliedOnce[convId] = new Date().toISOString();
     }
     processed++;
   }
 
   const result = {
-    processed, replied, ignored, convs: convs.length,
-    dry, error: null, time: new Date().toISOString(),
-    durationMs: Date.now() - start
+    processed, replied, ignored,
+    convs: convs.length, dry,
+    error: null, time: new Date().toISOString(),
+    durationMs: Date.now() - start,
   };
-  await setLastResult(result);
-  log(`[POLL] Done — p=${processed} r=${replied} i=${ignored} (${result.durationMs}ms)`);
+
+  const newState = {
+    ...state,
+    repliedOnce,
+    knownUnreadIds: convs.map(c => c.id).filter(Boolean),
+    lastResult: result,
+  };
+  await saveState(newState);
+  log(`[POLL] Done p=${processed} r=${replied} i=${ignored} (${result.durationMs}ms)`);
   return result;
 }
 
-// ── AUTO-POLL WITH RETRY ──────────────────────────────────────────────────────
-async function autoPoll() {
-  const enabled = await isEnabled();
-  if (!enabled) { logD('[ALARM] Disabled — skip'); return; }
-
-  let lastError = null;
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const result = await poll();
-      if (!result.error) return; // Success
-      lastError = result.error;
-
-      // no_token or token_expired — don't retry, just stop
-      if (result.error === 'no_token' || result.error === 'token_expired') {
-        log(`[POLL] ${result.error} — waiting for re-login`);
-        return;
-      }
-    } catch (e) {
-      lastError = e.message;
-      logE(`[POLL] Attempt ${attempt} failed`, { error: e.message });
-    }
-
-    if (attempt < MAX_RETRIES) {
-      const delay = RETRY_BASE_DELAY_MS * attempt;
-      logD(`[POLL] Retry ${attempt+1}/${MAX_RETRIES} in ${delay}ms`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  logE('[POLL] All retries failed', { lastError });
-}
-
-// ── ALARM ────────────────────────────────────────────────────────────────────
-chrome.alarms.onAlarm.addListener(async (alarm) => {
+// ── ALARM ────────────────────────────────────────────────────────────────
+chrome.alarms.onAlarm.addListener(async alarm => {
   if (alarm.name !== ALARM_NAME) return;
-  await autoPoll();
+  if (!(await isEnabled())) { logD('[ALARM] disabled'); return; }
+  try { await poll(); } catch (e) { logE(`[ALARM] poll error: ${e.message}`); }
 });
 
-// ── MESSAGES ──────────────────────────────────────────────────────────────────
+// ── MESSAGES ────────────────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((msg, _, send) => {
-  const respond = (data) => { try { send(data); } catch {} };
-
   if (msg.type === 'GET_STATUS') {
-    Promise.all([loadState(), loadPersistedToken()]).then(([state, _]) => {
-      respond({
+    Promise.all([loadState(), ensureToken()]).then(([state, _]) => {
+      send({
         enabled: state.botEnabled,
         result: state.lastResult || {},
-        uid: cachedPayload?.uid || null,
-        hasToken: !!cachedToken,
+        uid,
+        hasToken: !!token,
         activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5,
       });
     });
     return true;
   }
-
   if (msg.type === 'TOGGLE') {
     setEnabled(msg.enabled).then(async () => {
       if (msg.enabled) {
         chrome.alarms.create(ALARM_NAME, { periodInMinutes: POLL_INTERVAL_MIN, delayInMinutes: 0.5 });
         log('[TOGGLE] ON');
-        // Immediate poll on enable
-        await autoPoll();
+        await poll();
       } else {
         chrome.alarms.cancel(ALARM_NAME);
         log('[TOGGLE] OFF');
       }
-      respond({ ok: true });
+      send({ ok: true });
+    });
+    return true;
+  }
+  if (msg.type === 'DUMP_SNIFF') {
+    getDiscoveredEndpoints().then(({ eps, sniffs }) => {
+      log(`[SNIFFER] Dump: ${sniffs.length} entries, ${Object.keys(eps).length} endpoints`);
+      Object.entries(eps).forEach(([k, v]) => {
+        log(`  ${k} | count=${v.captureCount} | lastStatus=${v.status} | send=${v.isSend}`);
+      });
+      send({ ok: true, entries: sniffs.length, endpoints: Object.keys(eps).length });
     });
     return true;
   }
 });
 
-// ── STARTUP ───────────────────────────────────────────────────────────────────
+// ── STARTUP ────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.2.1.0 started');
+  log('[SW] Tevi CS Bot v0.3.0.0 started');
+  await loadToken();
+  const { eps } = await getDiscoveredEndpoints();
+  if (Object.keys(eps).length > 0) {
+    log(`[SW] Discovered ${Object.keys(eps).length} endpoints from sniffer`);
+  }
 
-  // Load token immediately
-  await loadPersistedToken();
-
-  // If was enabled, schedule alarm + immediate poll
-  const wasEnabled = await isEnabled();
-  if (wasEnabled) {
+  if (await isEnabled()) {
     chrome.alarms.create(ALARM_NAME, { periodInMinutes: POLL_INTERVAL_MIN, delayInMinutes: 0.5 });
-    log('[SW] Was enabled — scheduling poll');
-    // Poll once at startup (with delay to ensure SW stays alive)
+    log('[SW] Was enabled — poll scheduled');
     setTimeout(async () => {
-      if (await isEnabled()) await autoPoll();
-    }, 1000);
+      if (await isEnabled()) await poll();
+    }, 1500);
   }
 })();
