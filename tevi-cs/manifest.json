@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.5.0.0",
-  "description": "Tevi CS Bot v0.5 — AI Sukii + DOM typing + Olagon gateway + CS keyword analysis",
+  "version": "0.5.1.0",
+  "description": "Tevi CS Bot v0.5.1 — config-driven rules, DOM typing, AI Sukii, visible send",
   "author": "Devata",
   "permissions": [
     "alarms",

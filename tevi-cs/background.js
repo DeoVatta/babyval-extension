@@ -1,12 +1,8 @@
 /**
- * BACKGROUND — Service Worker Tevi CS Bot v0.5.0.0
- * AI-powered: Olagon gateway generates replies
- * DOM automation: tab types + sends (visible, human-like)
- * State machine: member / first / return / intro_sent / cs_mode
- *
- * SECRETS: stored in chrome.storage.local keys:
- *   tevi_cs_secrets: { aiKey, hmacSecret }
- *   (set once via popup or background inject)
+ * BACKGROUND — Service Worker Tevi CS Bot v0.5.1.0
+ * Config-driven: all behavior from tevi_cs_config
+ * Flow: intro → CS turns → done (read-only)
+ * DOM typing for visible send
  */
 
 const MY_UID    = '392388705';
@@ -15,11 +11,8 @@ const STATE_KEY = 'tevi_cs_state';
 const TOKEN_KEY = 'tevi_cs_token';
 const SEC_KEY   = 'tevi_cs_secrets';
 const AI_BASE   = 'https://gateway.olagon.site/anthropic/v1';
-const POLL_MIN  = 3;
-const ALARM     = 'tevi-poll';
-const INTRO_WAIT_MS = 3 * 60 * 60 * 1000; // 3 hours
 
-// ── SECRETS (loaded from storage) ───────────────────────────────────────
+// ── SECRETS ─────────────────────────────────────────────────────────────
 let _secrets = null;
 async function getSecrets() {
   if (_secrets) return _secrets;
@@ -44,53 +37,7 @@ const log  = m => sendLog(m, 'INFO');
 const logD = m => sendLog(m, 'DEBUG');
 const logE = m => sendLog(m, 'ERROR');
 
-// ── AI REPLY ─────────────────────────────────────────────────────────────
-const CS_SYSTEM = `Kamu Sukii, AI Assistant milik Baby Val. Balas pesan dari followers yang chat Baby Val.
-Aturan:
-- Ramah, helpful, dan friendly
-- Jawab sesuai topik yang mereka tanyakan
-- Kalau tanya VCS / video call → arahkan ke babyval.com untuk payment
-- Kalau tanya membership → arahkan ke tevi.com/@cutieval
-- Kalau out of topic → bilang sopan bahwa kamu hanya bisa bantu soal layanan Baby Val
-- Jangan kasih info pribadi
-- Jawaban pendek, max 2-3 kalimat, pakai emoji 💕
-- Bahasa Indonesia casual`;
-
-async function aiReply(messages) {
-  const sec = await getSecrets();
-  const key = sec.aiKey;
-  if (!key) { logE('[AI] No AI key configured'); return null; }
-
-  try {
-    const resp = await fetch(`${AI_BASE}/messages`, {
-      method: 'POST',
-      headers: {
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 300,
-        system: CS_SYSTEM,
-        messages,
-        temperature: 0.7,
-      }),
-    });
-    if (!resp.ok) {
-      const txt = await resp.text().catch(() => '');
-      logE(`[AI] ❌ ${resp.status}: ${txt.substring(0, 100)}`);
-      return null;
-    }
-    const json = await resp.json();
-    const text = json.content?.[0]?.text?.trim();
-    log(`[AI] ✅ "${text?.substring(0, 60)}"`);
-    return text;
-  } catch (e) {
-    logE(`[AI] ❌ ${e.message}`);
-    return null;
-  }
-}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ── TOKEN ────────────────────────────────────────────────────────────────
 let token = null, uid = null;
@@ -150,63 +97,100 @@ async function ensureToken() {
   return null;
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────
-const DEF = () => ({
-  botEnabled: false,
-  convMeta: {},       // convId -> { stage, introAt, senderUid, lastText }
-  knownSenders: {},   // uid -> lastSeen ts
-  lastResult: null,
-  lastAnalysis: null,
-});
-
-async function loadState() {
+// ── CONFIG ────────────────────────────────────────────────────────────────
+async function loadConfig() {
   try {
-    const d = await chrome.storage.local.get(STATE_KEY);
-    const s = d[STATE_KEY];
-    if (s && typeof s === 'object' && !Array.isArray(s)) {
-      return {
-        ...DEF(), ...s,
-        convMeta: { ...DEF().convMeta, ...(s.convMeta || {}) },
-        knownSenders: { ...DEF().knownSenders, ...(s.knownSenders || {}) },
-      };
-    }
-  } catch {}
-  return DEF();
+    const d = await chrome.storage.local.get('tevi_cs_config');
+    return d.tevi_cs_config || getDefaultConfig();
+  } catch { return getDefaultConfig(); }
 }
 
-async function saveState(s) { try { await chrome.storage.local.set({ [STATE_KEY]: s }); } catch {} }
-async function isEnabled()  { const s = await loadState(); return !!s.botEnabled; }
-async function setEnabled(v){ const s = await loadState(); s.botEnabled = v; await saveState(s); }
+function getDefaultConfig() {
+  return {
+    version: 1,
+    persona: { name: 'Sukii', owner: 'Baby Val', tone: 'friendly' },
+    behavior: { introWaitMinutes: 180, csMaxTurns: 3, idleMinutes: 30, readAfterReply: true },
+    rules: getDefaultRules(),
+  };
+}
 
-// ── DOM SEND via open tab ───────────────────────────────────────────────
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function getDefaultRules() {
+  return [
+    { id: 'vcs', priority: 10, type: 'keyword', active: true, match: 'vcs,videocall,video call,vc ,telfon,telpon,call,meet,zoom', reply: `VCS available 💕\nBisa payment ke https://babyval.com/\n➡️ Pilih Video Call\nJangan lupa kirim bukti TF ke DM\n\nAKU BALAS KHUSUS MEMBER ATAU SUDAH PAYMENT VCS` },
+    { id: 'payment', priority: 10, type: 'keyword', active: true, match: 'payment,bayar,tf,transfer,donasi,donate,harga,price,berapa,cost', reply: `Untuk payment VCS:\n1. Buka https://babyval.com/\n2. Pilih Video Call\n3. Transfer ke rekening yang tertera\n4. Kirim bukti TF ke DM\n\nAku balas setelah payment terkonfirmasi ✅` },
+    { id: 'join_member', priority: 10, type: 'keyword', active: true, match: 'join,member,membership,subscribe,langganan,premium', reply: `Mau jadi member Baby Val?\nKunjungi: tevi.com/@cutieval\nPilih membership yang tersedia.\nSetelah join, kamu bisa chat langsung dengan Baby Val! 💕` },
+    { id: 'order', priority: 10, type: 'keyword', active: true, match: 'jual,beli,jasa,order,pembelian,buy', reply: `Untuk order:\n1. Buka https://babyval.com/\n2. Pilih layanan yang diinginkan\n3. Lakukan payment\n4. Kirim bukti ke DM\n\nAku bantu proses setelah payment masuk ✅` },
+    { id: 'konten', priority: 10, type: 'keyword', active: true, match: 'foto,video,konten,pic,image,send,kirim,eksklusif', reply: `Konten eksklusif tersedia untuk member!\nJoin membership di tevi.com/@cutieval\natau cek di https://babyval.com/ untuk pilihan konten 💕` },
+    { id: 'bot_sukii', priority: 10, type: 'keyword', active: true, match: 'bot,sukii,siapa kamu,siapa ini,ai,assistant', reply: `Aku Sukii, AI Assistant-nya Baby Val 💕\nAku bantu menjawab pertanyaan dan mengarahkan kamu ke layanan yang tepat.\nAda yang bisa aku bantu?` },
+    { id: 'terima_kasih', priority: 10, type: 'keyword', active: true, match: 'terima kasih,thanks,thx,makasih,ok,oke,sip,sipp,bagus,nice', reply: `Sama-sama! 💕 Kalau ada pertanyaan lagi, jangan ragu chat ya~` },
+    { id: 'redirect_ig', priority: 5, type: 'redirect', active: true, match: 'instagram,ig,freshlive,fresh', reply: `Untuk info lebih lanjut, cek:\n📱 Instagram: @babyval_official\n🌐 babyval.com\n\nAtau tanya di sini, aku bantu! 💕` },
+    { id: 'block', priority: 1, type: 'block', active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot', reply: `Maaf ya, topik itu di luar layanan yang bisa aku bantu 💕\nCoba tanyakan soal VCS, membership, atau konten Baby Val ya~` },
+    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Maaf ya, aku Sukii AI Assistant-nya Baby Val 💕\nAku hanya bisa bantu untuk:\n• Info VCS / Video Call\n• Cara join membership\n• Payment & order\n• Info konten eksklusif\n\nCoba tanya yang berkaitan dengan layanan di atas ya~` },
+  ];
+}
 
+function findReply(text, rules) {
+  if (!text) return null;
+  const sorted = [...rules].sort((a, b) => b.priority - a.priority);
+  for (const rule of sorted) {
+    if (!rule.active) continue;
+    if (rule.type === 'fallback') return rule;
+    const kw = rule.match.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+    const lower = text.toLowerCase();
+    if (kw.some(k => lower.includes(k))) return rule;
+  }
+  return null;
+}
+
+function fmtReply(tpl, name) { return tpl.replace(/{name}/g, name || 'kak'); }
+
+// ── AI ENRICHMENT ────────────────────────────────────────────────────────
+async function aiEnrich(baseReply, message) {
+  const cfg = await loadConfig();
+  if (!cfg.behavior?.aiEnabled) return baseReply;
+  const sec = await getSecrets();
+  const key = sec?.aiKey;
+  if (!key) return baseReply;
+
+  const SYSTEM = `Kamu Sukii, AI Assistant milik Baby Val. Ubah jawaban template ini jadi lebih natural dan conversational dalam Bahasa Indonesia. Pertahankan informasi pentingnya tapi buat lebih friendly dan sesuai konteks. Max 3 kalimat, pakai emoji 💕.`;
+
+  try {
+    const resp = await fetch(`${AI_BASE}/messages`, {
+      method: 'POST',
+      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 200, temperature: 0.7,
+        system: SYSTEM,
+        messages: [{ role: 'user', content: `Template: "${baseReply}"\nSender: "${message}"` }],
+      }),
+    });
+    if (resp.ok) {
+      const json = await resp.json();
+      const t = json.content?.[0]?.text?.trim();
+      if (t) { log(`[AI] ✨ "${t.substring(0,50)}"`); return t; }
+    }
+  } catch {}
+  return baseReply;
+}
+
+// ── DOM SEND ────────────────────────────────────────────────────────────
 async function domSend(text, slug) {
   try {
     const tabs = await chrome.tabs.query({ url: '*://tevi.com/*' });
-    if (!tabs.length) {
-      logE('[DOM] No tevi tab open');
-      return false;
-    }
+    if (!tabs.length) { logE('[DOM] No tevi tab open'); return false; }
     const tab = tabs[0];
-    log(`[DOM] Sending via tab ${tab.id} to @${slug}`);
+    log(`[DOM] → @${slug}: "${text.substring(0,40)}..."`);
     const resp = await chrome.tabs.sendMessage(tab.id, { type: 'DOM_SEND', text, slug });
-    if (resp?.ok) {
-      log(`[DOM] ✅ Sent to @${slug}`);
-      return true;
-    }
-    logE(`[DOM] Failed: ${resp?.reason || 'unknown'}`);
+    if (resp?.ok) { log(`[DOM] ✅ Sent to @${slug}`); return true; }
+    logE(`[DOM] ❌ ${resp?.reason || 'failed'}`);
     return false;
-  } catch (e) {
-    logE(`[DOM] Error: ${e.message}`);
-    return false;
-  }
+  } catch (e) { logE(`[DOM] Error: ${e.message}`); return false; }
 }
 
 // ── HMAC ─────────────────────────────────────────────────────────────────
 async function hmac(pathname) {
   const sec = await getSecrets();
-  const SECRET = sec.hmacSecret || 'PRDKqnSNCKrMDF9hAt0PSJ6'; // fallback for compat
+  const SECRET = sec.hmacSecret || 'PRDKqnSNCKrMDF9hAt0PSJ6';
   const ts = Math.floor(Date.now() / 1000);
   const data = new TextEncoder().encode(pathname + ts);
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(SECRET),
@@ -215,7 +199,7 @@ async function hmac(pathname) {
   return `${ts}-${sig}`;
 }
 
-// ── CONVERSATIONS ────────────────────────────────────────────────────────
+// ── GET CONVERSATIONS ───────────────────────────────────────────────────
 async function getConvs() {
   const t = await ensureToken();
   if (!t) return { data: null, error: 'no_token' };
@@ -236,30 +220,49 @@ async function getConvs() {
     }
     logD(`[API] ❌ ${resp.status}`);
     return { data: null, error: 'api_failed' };
-  } catch (e) {
-    logE(`[API] ❌ ${e.message}`);
-    return { data: null, error: 'network_error' };
-  }
+  } catch (e) { logE(`[API] ❌ ${e.message}`); return { data: null, error: 'network_error' }; }
 }
 
-// ── ANALYZE ───────────────────────────────────────────────────────────────
-async function analyze(convs) {
-  const kwCounts = {};
-  const KW = ['vcs','payment','join','member','foto','video','order','jual','beli','harga','subscribe','konten','bot','terima kasih'];
-  for (const c of convs) {
-    const text = c.latest_message?.text || '';
-    const lower = text.toLowerCase();
-    for (const kw of KW) {
-      if (lower.includes(kw)) kwCounts[kw] = (kwCounts[kw] || 0) + 1;
-    }
-  }
-  const sorted = Object.entries(kwCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
-  const analysis = { ts: new Date().toISOString(), topQuestions: sorted.map(([kw, count]) => ({ kw, count })) };
-  if (sorted.length > 0) log(`[ANALYSIS] ${sorted.map(s => `${s[0]}(${s[1]})`).join(', ')}`);
-  return analysis;
+async function markRead(convId) {
+  const t = await ensureToken();
+  if (!t) return;
+  const path = `/messenger/v2/conversation/${convId}/read/`;
+  const verify = await hmac(path);
+  try {
+    await fetch(`https://wapi.flowstreamx.com${path}?verify=${verify}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${t}`, 'Origin': 'https://tevi.com' },
+    });
+  } catch {}
 }
+
+// ── STATE ────────────────────────────────────────────────────────────────
+const DEF = () => ({
+  botEnabled: false,
+  convMeta: {},   // convId -> { stage, introAt, turns, lastText, lastReply, done }
+  knownSenders: {},
+  lastResult: null,
+});
+
+async function loadState() {
+  try {
+    const d = await chrome.storage.local.get(STATE_KEY);
+    const s = d[STATE_KEY];
+    if (s && typeof s === 'object' && !Array.isArray(s)) {
+      return { ...DEF(), ...s, convMeta: { ...DEF().convMeta, ...(s.convMeta || {}) }, knownSenders: { ...DEF().knownSenders, ...(s.knownSenders || {}) } };
+    }
+  } catch {}
+  return DEF();
+}
+
+async function saveState(s) { try { await chrome.storage.local.set({ [STATE_KEY]: s }); } catch {} }
+async function isEnabled()  { const s = await loadState(); return !!s.botEnabled; }
+async function setEnabled(v){ const s = await loadState(); s.botEnabled = v; await saveState(s); }
 
 // ── POLL ────────────────────────────────────────────────────────────────
+const POLL_MIN = 3;
+const ALARM    = 'tevi-poll';
+
 async function poll() {
   const start = Date.now();
   const hour  = new Date().getHours();
@@ -267,6 +270,7 @@ async function poll() {
   logD(`[POLL] active=${active}`);
 
   const state = await loadState();
+  const cfg  = await loadConfig();
   const convsResult = await getConvs();
 
   if (convsResult.error === 'no_token') {
@@ -280,15 +284,19 @@ async function poll() {
   }
 
   const convs = convsResult.data.results || [];
-  const analysis = await analyze(convs);
+  log(`[POLL] ${convs.length} unread — active=${active}`);
 
   if (!active) {
-    log('[POLL] Outside active hours');
     await saveState({ ...state, lastResult: { convs: convs.length, processed: 0, replied: 0, ignored: convs.length, dry: true, time: new Date().toISOString() } });
     return;
   }
 
   let processed = 0, replied = 0, ignored = 0;
+  const maxTurns   = cfg.behavior?.csMaxTurns || 3;
+  const idleMs    = (cfg.behavior?.idleMinutes || 30) * 60 * 1000;
+  const introWait = (cfg.behavior?.introWaitMinutes || 180) * 60 * 1000;
+  const rules     = cfg.rules || [];
+  const greeting = cfg.persona?.greeting || 'Halo! Aku Sukii, AI Assistant-nya Baby Val 💕';
 
   for (const conv of convs) {
     const convId    = conv.id;
@@ -297,17 +305,17 @@ async function poll() {
     const rcv       = conv.recipient || {};
     const msg       = conv.latest_message || {};
     const text      = msg.text || '';
-    const senderUid  = msg.sender?.uid || '';
+    const senderUid = msg.sender?.uid || '';
     const slug      = rcv.channel_slug || '?';
     const isSub     = rcv.is_my_subscriber === true;
     const meta      = state.convMeta[convId] || {};
-    const stage     = meta.stage || 'unknown';
+    const stage     = meta.stage || 'new';
 
     processed++;
 
     // ── MEMBER: never touch ─────────────────────────────────────────────
     if (isSub) {
-      if (stage !== 'member') { state.convMeta[convId] = { ...meta, stage: 'member' }; }
+      if (stage !== 'member') { state.convMeta[convId] = { ...meta, stage: 'member', done: true }; }
       logD(`  @${slug} [member] skipped`);
       ignored++;
       continue;
@@ -318,59 +326,94 @@ async function poll() {
 
     state.knownSenders[senderUid] = Date.now();
 
-    // ── CS_MODE ───────────────────────────────────────────────────────
-    if (stage === 'cs_mode') {
-      if (text) {
-        const aiText = await aiReply([{ role: 'user', content: text }]);
-        if (aiText) {
-          const ok = await domSend(aiText, slug);
-          if (ok) { replied++; log(`  @${slug} [CS] ✅ AI replied`); }
-          else { ignored++; logE(`  @${slug} [CS] ❌ DOM failed`); }
-        } else { ignored++; }
-      } else { ignored++; }
+    // ── DONE: stop replying ────────────────────────────────────────────
+    if (meta.done) {
+      logD(`  @${slug} [done] ignored`);
+      ignored++;
       continue;
     }
 
-    // ── INTRO_SENT ──────────────────────────────────────────────────
+    // ── STAGE: intro_sent ─────────────────────────────────────────────
     if (stage === 'intro_sent') {
       const elapsed = Date.now() - (meta.introAt || 0);
+      const waitExpired = elapsed >= introWait;
+
       if (text && text !== meta.lastText) {
-        state.convMeta[convId] = { ...meta, stage: 'cs_mode', lastText: text };
-        log(`  @${slug} [intro→CS] replied: "${text.substring(0, 30)}"`);
-        const aiText = await aiReply([{ role: 'user', content: text }]);
-        if (aiText) {
-          const ok = await domSend(aiText, slug);
-          if (ok) replied++;
-        }
-      } else if (elapsed >= INTRO_WAIT_MS) {
-        state.convMeta[convId] = { ...meta, stage: 'cs_mode' };
-        log(`  @${slug} [intro→CS] timeout`);
+        // User replied! → CS mode
+        log(`  @${slug} [intro→CS] replied: "${text.substring(0,30)}"`);
+        const rule = findReply(text, rules);
+        let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
+        replyText = await aiEnrich(replyText, text);
+        const sent = await domSend(replyText, slug);
+        if (sent) {
+          state.convMeta[convId] = { ...meta, stage: 'cs', turns: 1, lastText: text, lastReply: replyText, introAt: meta.introAt };
+          replied++;
+        } else { ignored++; }
+      } else if (waitExpired) {
+        // 3h passed without reply → done
+        log(`  @${slug} [intro→done] timeout (${Math.round(elapsed/60000)}m)`);
+        state.convMeta[convId] = { ...meta, stage: 'cs', done: true };
         ignored++;
       } else {
-        logD(`  @${slug} [intro_sent] waiting (${Math.round(elapsed/60000)}m left)`);
+        logD(`  @${slug} [intro_sent] waiting (${Math.round(elapsed/60000)}m/${introWait/60000}m)`);
         ignored++;
       }
       continue;
     }
 
-    // ── FIRST / RETURN: send intro ─────────────────────────────────────
-    const isReturn = !!state.knownSenders[senderUid] && senderUid !== MY_UID;
-    const newStage = isReturn ? 'return' : 'first';
+    // ── STAGE: cs (CS conversation) ────────────────────────────────────
+    if (stage === 'cs') {
+      if (text && text !== meta.lastText) {
+        // New message → count as new turn
+        const newTurns = (meta.turns || 0) + 1;
+        log(`  @${slug} [CS turn ${newTurns}/${maxTurns}] "${text.substring(0,30)}"`);
 
-    log(`  @${slug} [${newStage}] "${text.substring(0, 40)}"`);
+        if (newTurns > maxTurns) {
+          // Max turns reached → done
+          log(`  @${slug} [CS→done] max turns reached`);
+          state.convMeta[convId] = { ...meta, turns: newTurns, lastText: text, done: true };
+          await markRead(convId);
+          ignored++;
+          continue;
+        }
 
-    const introText = `Perkenalkan dulu 👋\nHalo aku Sukii, AI Assistant milik Baby Val\nKalau mau Chat dengan Baby Val Membership dulu yaa..\n\nKalau mau VCS bisa lakukan pembayaran ke babyval.com`;
+        // Find and send reply
+        const rule = findReply(text, rules);
+        let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
+        replyText = await aiEnrich(replyText, text);
+        const sent = await domSend(replyText, slug);
 
-    const sent = await domSend(introText, slug);
+        if (sent) {
+          state.convMeta[convId] = { ...meta, turns: newTurns, lastText: text, lastReply: replyText };
+          replied++;
+        } else { ignored++; }
+      } else {
+        // Same message (no new), check idle
+        const idleElapsed = Date.now() - (meta.lastActivityAt || meta.introAt || Date.now());
+        if (idleElapsed >= idleMs) {
+          log(`  @${slug} [CS→done] idle timeout (${Math.round(idleElapsed/60000)}m)`);
+          state.convMeta[convId] = { ...meta, done: true };
+          ignored++;
+        } else {
+          logD(`  @${slug} [CS turn ${meta.turns}] waiting (${Math.round(idleElapsed/60000)}m idle)`);
+          ignored++;
+        }
+      }
+      continue;
+    }
+
+    // ── STAGE: new ────────────────────────────────────────────────────
+    log(`  @${slug} [new→intro] "${text.substring(0,40)}"`);
+    const sent = await domSend(greeting, slug);
     if (sent) {
       state.convMeta[convId] = {
         stage: 'intro_sent', introAt: Date.now(),
-        senderUid, lastText: text,
+        senderUid, lastText: text, turns: 0,
       };
-      log(`  @${slug} [${newStage}→intro_sent] ✅ intro sent`);
+      log(`  @${slug} [intro_sent] ✅ greeting sent`);
       replied++;
     } else {
-      logE(`  @${slug} [${newStage}] ❌ DOM failed`);
+      logE(`  @${slug} [new] ❌ greeting failed`);
       ignored++;
     }
   }
@@ -379,10 +422,14 @@ async function poll() {
     processed, replied, ignored,
     convs: convs.length, dry: false,
     time: new Date().toISOString(), durationMs: Date.now() - start,
-    analysis: analysis.topQuestions.slice(0, 5),
+    stats: {
+      activeConvs: Object.values(state.convMeta).filter(m => m.stage === 'cs' && !m.done).length,
+      doneConvs:   Object.values(state.convMeta).filter(m => m.done).length,
+      introSent:   Object.values(state.convMeta).filter(m => m.stage === 'intro_sent').length,
+    },
   };
 
-  await saveState({ ...state, lastResult: result, lastAnalysis: analysis });
+  await saveState({ ...state, lastResult: result });
   log(`[POLL] Done p=${processed} r=${replied} i=${ignored} (${result.durationMs}ms)`);
 }
 
@@ -396,16 +443,17 @@ chrome.alarms.onAlarm.addListener(async alarm => {
 // ── MESSAGES ──────────────────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((msg, _, send) => {
   if (msg.type === 'GET_STATUS') {
-    Promise.all([loadState(), ensureToken()]).then(([state]) => {
+    Promise.all([loadState(), loadConfig(), ensureToken()]).then(([state, cfg]) => {
       send({
-        enabled: state.botEnabled, result: state.lastResult || {},
+        enabled: state.botEnabled,
+        result: state.lastResult || {},
         uid, hasToken: !!token,
         activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5,
-        analysis: state.lastAnalysis || null,
-        meta: {
-          cs:    Object.values(state.convMeta).filter(m => m.stage === 'cs_mode').length,
-          intro: Object.values(state.convMeta).filter(m => m.stage === 'intro_sent').length,
-          member:Object.values(state.convMeta).filter(m => m.stage === 'member').length,
+        stats: state.lastResult?.stats || {},
+        config: {
+          rulesCount: cfg.rules?.length || 0,
+          aiEnabled: cfg.behavior?.aiEnabled || false,
+          maxTurns: cfg.behavior?.csMaxTurns || 3,
         },
       });
     });
@@ -416,7 +464,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
     setEnabled(msg.enabled).then(async () => {
       if (msg.enabled) {
         chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
-        log('[TOGGLE] ON — AI + DOM mode');
+        log('[TOGGLE] ON');
         await poll();
       } else {
         chrome.alarms.cancel(ALARM);
@@ -427,20 +475,44 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
     return true;
   }
 
-  // Store secrets from popup
+  if (msg.type === 'GET_CONFIG') {
+    loadConfig().then(cfg => send(cfg));
+    return true;
+  }
+
+  if (msg.type === 'SAVE_CONFIG') {
+    const errors = [];
+    if (!msg.config?.persona?.name) errors.push('Persona name required');
+    if (!Array.isArray(msg.config?.rules)) errors.push('Rules must be array');
+    if (errors.length) { send({ ok: false, errors }); return true; }
+    chrome.storage.local.set({ tevi_cs_config: msg.config }).then(() => {
+      log(`[CONFIG] Saved — ${msg.config.rules.length} rules`);
+      send({ ok: true });
+    });
+    return true;
+  }
+
   if (msg.type === 'SET_SECRETS') {
     _secrets = msg.secrets;
-    await chrome.storage.local.set({ [SEC_KEY]: msg.secrets });
-    log('[CONFIG] Secrets updated');
-    send({ ok: true });
+    chrome.storage.local.set({ [SEC_KEY]: msg.secrets }).then(() => {
+      log('[CONFIG] Secrets updated');
+      send({ ok: true });
+    });
+    return true;
+  }
+
+  if (msg.type === 'RESET_STATE') {
+    chrome.storage.local.set({ [STATE_KEY]: DEF() }).then(() => {
+      log('[STATE] Reset');
+      send({ ok: true });
+    });
     return true;
   }
 });
 
-// ── BOOT: load secrets ─────────────────────────────────────────────────
+// ── STARTUP ───────────────────────────────────────────────────────────────
 (async () => {
-  await getSecrets();
-  log('[SW] Tevi CS Bot v0.5.0.0 — AI + DOM mode');
+  log('[SW] Tevi CS Bot v0.5.1.0 — config-driven');
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });

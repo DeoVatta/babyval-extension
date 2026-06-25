@@ -1,240 +1,451 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tevi CS Bot</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { width: 300px; background: #0f0f1a; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; font-size: 13px; border-radius: 16px; overflow: hidden; }
-    .hd { background: linear-gradient(135deg,#00cc6a,#00a855); padding: 12px 14px; display: flex; align-items: center; gap: 10px; border-radius: 16px 16px 0 0; }
-    .hd .ic { width: 32px; height: 32px; background: rgba(255,255,255,.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .hd .ti { flex: 1; }
-    .hd .ti h1 { font-size: 14px; font-weight: 700; color: #fff; }
-    .hd .ti .v { font-size: 10px; color: rgba(255,255,255,.6); }
-    .hd .bd { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: rgba(255,255,255,.2); color: #fff; }
-    .bd { padding: 12px 14px; }
-    .sr { display: flex; align-items: center; gap: 10px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
-    .do { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .do.G { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
-    .do.R { background: #ff4757; box-shadow: 0 0 8px #ff4757; }
-    .do.N { background: #444; }
-    .do.O { background: #ffa502; box-shadow: 0 0 8px #ffa502; }
-    .lb { font-weight: 600; font-size: 13px; color: #fff; }
-    .sb { font-size: 10px; color: #888; margin-top: 1px; }
-    .er { background: #2a1a1a; border: 1px solid #ff475744; border-radius: 8px; padding: 7px 10px; margin-bottom: 8px; font-size: 11px; color: #ff6b6b; display: none; }
-    .er.sh { display: block; }
-    .tr { display: flex; align-items: center; justify-content: space-between; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
-    .tl { font-size: 13px; color: #ccc; }
-    .tg { position: relative; width: 42px; height: 24px; }
-    .tg input { opacity: 0; width: 0; height: 0; }
-    .ts { position: absolute; cursor: pointer; inset: 0; background: #333; border-radius: 24px; transition: .3s; }
-    .ts::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .3s; }
-    .tg input:checked + .ts { background: #00cc6a; }
-    .tg input:checked + .ts::before { transform: translateX(18px); }
-    .st { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
-    .sk { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 6px; text-align: center; }
-    .sn { font-size: 18px; font-weight: 700; color: #fff; }
-    .sl { font-size: 9px; color: #555; margin-top: 2px; text-transform: uppercase; }
-    .if { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; }
-    .ir { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
-    .ir:last-child { margin-bottom: 0; }
-    .ir span:first-child { color: #555; }
-    .ir span:last-child { color: #aaa; font-family: 'Consolas', monospace; }
-    .qa { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; display: none; }
-    .qa.sh { display: block; }
-    .qa .qh { font-size: 9px; color: #a29bfe; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-    .qa .tags { display: flex; flex-wrap: wrap; gap: 4px; }
-    .qa .tag { background: #2a2a4a; border-radius: 12px; padding: 2px 8px; font-size: 9px; color: #ccc; }
-    .qa .tag .c { color: #00cc6a; font-weight: 700; }
-    .sec { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; display: none; }
-    .sec.sh { display: block; }
-    .sec .shd { font-size: 11px; color: #aaa; margin-bottom: 8px; }
-    .sec .f { margin-bottom: 7px; }
-    .sec .fl { font-size: 10px; color: #555; margin-bottom: 2px; }
-    .sec .fi { width: 100%; background: #0f0f1a; border: 1px solid #333; border-radius: 6px; padding: 5px 8px; color: #ccc; font-size: 11px; font-family: monospace; outline: none; }
-    .sec .fi:focus { border-color: #00cc6a; }
-    .sec .bt { width: 100%; background: #00cc6a; border: none; border-radius: 8px; padding: 7px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .sec .bt:hover { background: #00a855; }
-    .sec .sbt { font-size: 9px; color: #00cc6a; margin-top: 4px; text-align: center; }
-    .sec .opn { font-size: 10px; color: #555; margin-bottom: 6px; cursor: pointer; text-align: center; text-decoration: underline; }
-    .sec .opn:hover { color: #888; }
-    .ft { padding: 6px 14px 10px; font-size: 10px; color: #333; text-align: center; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tevi CS Bot</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; font-size: 12px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+
+.hd { background: linear-gradient(135deg,#00cc6a,#00a855); padding: 10px 14px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.hd .ic { width: 28px; height: 28px; background: rgba(255,255,255,.2); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.hd .ti { flex: 1; }
+.hd .ti h1 { font-size: 13px; font-weight: 700; color: #fff; }
+.hd .ti .v { font-size: 9px; color: rgba(255,255,255,.6); }
+.hd .bd { font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 20px; background: rgba(255,255,255,.2); color: #fff; flex-shrink: 0; }
+
+/* Scrollable content */
+.scroll { overflow-y: auto; flex: 1; padding: 10px 12px; }
+.scroll::-webkit-scrollbar { width: 4px; }
+.scroll::-webkit-scrollbar-track { background: transparent; }
+.scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+/* Toggle */
+.tr { display: flex; align-items: center; justify-content: space-between; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; }
+.tr .tl { font-size: 12px; color: #ccc; }
+.tg { position: relative; width: 38px; height: 22px; }
+.tg input { opacity: 0; width: 0; height: 0; }
+.ts { position: absolute; cursor: pointer; inset: 0; background: #333; border-radius: 22px; transition: .3s; }
+.ts::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .3s; }
+.tg input:checked + .ts { background: #00cc6a; }
+.tg input:checked + .ts::before { transform: translateX(16px); }
+
+/* Status */
+.sr { display: flex; align-items: center; gap: 8px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; }
+.do { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.do.G { background: #00ff88; box-shadow: 0 0 6px #00ff88; }
+.do.R { background: #ff4757; box-shadow: 0 0 6px #ff4757; }
+.do.N { background: #444; }
+.do.O { background: #ffa502; box-shadow: 0 0 6px #ffa502; }
+.lb { font-weight: 600; font-size: 12px; color: #fff; }
+.sb { font-size: 9px; color: #666; margin-top: 1px; }
+
+/* Stats row */
+.st { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+.sk { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 8px; padding: 6px 4px; text-align: center; }
+.sn { font-size: 16px; font-weight: 700; color: #fff; }
+.sl { font-size: 8px; color: #555; margin-top: 1px; text-transform: uppercase; }
+
+/* Info row */
+.if { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 7px 12px; margin-bottom: 8px; }
+.ir { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; }
+.ir:last-child { margin-bottom: 0; }
+.ir span:first-child { color: #555; }
+.ir span:last-child { color: #aaa; font-family: monospace; }
+
+/* Section headers */
+.shd { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .5px; margin: 10px 0 6px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+.tab { flex: 1; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 10px; font-weight: 600; color: #555; cursor: pointer; transition: all .2s; }
+.tab.on { background: #00cc6a22; border-color: #00cc6a55; color: #00cc6a; }
+.tab:hover { border-color: #00cc6a44; color: #aaa; }
+
+/* Rule cards */
+.rule-card { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; position: relative; }
+.rule-card.block { border-color: #ff475744; }
+.rule-card.block .rule-type { color: #ff4757; }
+.rule-card.keyword .rule-type { color: #00cc6a; }
+.rule-card.redirect .rule-type { color: #ffa502; }
+.rule-card.fallback .rule-type { color: #a29bfe; }
+.rule-hd { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.rule-type { font-size: 9px; font-weight: 700; text-transform: uppercase; min-width: 50px; }
+.rule-id { font-size: 11px; font-weight: 700; color: #fff; flex: 1; }
+.rule-on { font-size: 9px; color: #555; cursor: pointer; }
+.rule-on.on { color: #00cc6a; }
+.rule-del { font-size: 9px; color: #ff4757; cursor: pointer; margin-left: 4px; }
+.rule-kw { font-size: 9px; color: #666; margin-bottom: 3px; word-break: break-all; }
+.rule-reply { font-size: 10px; color: #aaa; background: #0f0f1a; border-radius: 6px; padding: 5px 8px; line-height: 1.4; white-space: pre-wrap; max-height: 60px; overflow: hidden; position: relative; }
+.rule-reply.expanded { max-height: none; }
+.rule-reply-toggle { font-size: 9px; color: #00cc6a; cursor: pointer; margin-top: 2px; display: block; }
+
+/* Add rule */
+.add-rule { background: #1a1a2e; border: 1px dashed #333; border-radius: 10px; padding: 8px; text-align: center; font-size: 11px; color: #555; cursor: pointer; margin-bottom: 8px; }
+.add-rule:hover { border-color: #00cc6a55; color: #00cc6a; }
+
+/* Behavior settings */
+.beh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.beh-row { background: #1a1a2e; border-radius: 8px; padding: 6px 8px; }
+.beh-lbl { font-size: 9px; color: #555; text-transform: uppercase; margin-bottom: 3px; }
+.beh-val { display: flex; align-items: center; gap: 4px; }
+.beh-num { width: 50px; background: #0f0f1a; border: 1px solid #333; border-radius: 5px; padding: 3px 6px; color: #ccc; font-size: 12px; font-family: monospace; }
+.beh-unit { font-size: 9px; color: #555; }
+.beh-sw { width: 32px; height: 18px; background: #333; border-radius: 18px; position: relative; cursor: pointer; transition: .3s; flex-shrink: 0; }
+.beh-sw.on { background: #00cc6a; }
+.beh-sw::before { content: ''; position: absolute; width: 12px; height: 12px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: .3s; }
+.beh-sw.on::before { transform: translateX(14px); }
+
+/* Persona */
+.persona-row { background: #1a1a2e; border-radius: 8px; padding: 7px 10px; margin-bottom: 6px; }
+.persona-lbl { font-size: 9px; color: #555; margin-bottom: 3px; }
+.persona-input { width: 100%; background: #0f0f1a; border: 1px solid #333; border-radius: 6px; padding: 5px 8px; color: #ccc; font-size: 11px; font-family: inherit; resize: vertical; min-height: 50px; outline: none; }
+.persona-input:focus { border-color: #00cc6a; }
+
+/* Secrets */
+.sec-grid { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; }
+.sec-row { margin-bottom: 6px; }
+.sec-row:last-child { margin-bottom: 0; }
+.sec-lbl { font-size: 9px; color: #555; margin-bottom: 2px; }
+.sec-input { width: 100%; background: #0f0f1a; border: 1px solid #333; border-radius: 6px; padding: 5px 8px; color: #ccc; font-size: 10px; font-family: monospace; }
+.sec-save { width: 100%; background: #00cc6a; border: none; border-radius: 8px; padding: 7px; color: #fff; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+.sec-save:hover { background: #00a855; }
+.sec-msg { font-size: 9px; margin-top: 4px; text-align: center; }
+.sec-msg.ok { color: #00cc6a; }
+.sec-msg.err { color: #ff4757; }
+
+/* Footer */
+.ft { padding: 6px 14px 8px; font-size: 9px; color: #333; text-align: center; flex-shrink: 0; border-top: 1px solid #1a1a2e; }
+
+/* Hidden sections */
+.tab-content { display: none; }
+.tab-content.on { display: block; }
+
+/* Reset btn */
+.reset-btn { background: #ff475722; border: 1px solid #ff475744; border-radius: 8px; padding: 6px 10px; color: #ff4757; font-size: 10px; cursor: pointer; margin-top: 6px; width: 100%; }
+
+/* AI badge */
+.ai-badge { display: inline-block; background: #a29bfe22; border: 1px solid #a29bfe44; border-radius: 12px; padding: 1px 6px; font-size: 8px; color: #a29bfe; }
+</style>
 </head>
 <body>
 
 <div class="hd">
   <div class="ic">🤖</div>
-  <div class="ti"><h1>Tevi CS Bot</h1><div class="v">v0.5.0.0</div></div>
+  <div class="ti"><h1>Tevi CS Bot</h1><div class="v">v0.5.1.0</div></div>
   <div class="bd" id="topBd">OFF</div>
 </div>
 
-<div class="bd">
+<div class="scroll">
+  <!-- Status -->
   <div class="sr">
     <div class="do N" id="dot"></div>
     <div><div class="lb" id="label">Memuat...</div><div class="sb" id="sub">—</div></div>
   </div>
-  <div class="er" id="errBanner"></div>
 
+  <!-- Toggle -->
   <div class="tr">
     <span class="tl">Aktifkan Bot</span>
     <label class="tg"><input type="checkbox" id="toggle"><span class="ts"></span></label>
   </div>
 
+  <!-- Stats -->
   <div class="st">
-    <div class="sk"><div class="sn" id="csCnt">—</div><div class="sl">CS</div></div>
+    <div class="sk"><div class="sn" id="csCnt">—</div><div class="sl">Active</div></div>
+    <div class="sk"><div class="sn" id="doneCnt">—</div><div class="sl">Done</div></div>
     <div class="sk"><div class="sn" id="introCnt">—</div><div class="sl">Intro</div></div>
-    <div class="sk"><div class="sn" id="memCnt">—</div><div class="sl" style="color:#a29bfe">Mbr</div></div>
   </div>
 
+  <!-- Info -->
   <div class="if">
     <div class="ir"><span>Last Poll</span><span id="lp">—</span></div>
     <div class="ir"><span>Token UID</span><span id="uid">—</span></div>
     <div class="ir"><span>Hours</span><span id="hrs">—</span></div>
-    <div class="ir"><span>AI Key</span><span id="aiKey" style="color:#00cc6a">—</span></div>
+    <div class="ir"><span>Rules</span><span id="rulesCnt">—</span></div>
   </div>
 
-  <div class="qa" id="qaBlock">
-    <div class="qh">Top Q&amp;A Patterns</div>
-    <div class="tags" id="qaTags"></div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab on" data-tab="rules">Rules</div>
+    <div class="tab" data-tab="beh">Behavior</div>
+    <div class="tab" data-tab="persona">Persona</div>
+    <div class="tab" data-tab="secrets">Keys</div>
   </div>
 
-  <div class="sec" id="secBlock">
-    <div class="opn" id="closeSec">tutup</div>
-    <div class="shd">Set API Keys — tersimpan di chrome.storage.local</div>
-    <div class="f">
-      <div class="fl">Olagon AI Key</div>
-      <input class="fi" type="password" id="aiKeyIn" placeholder="rk_live_...">
+  <!-- RULES TAB -->
+  <div class="tab-content on" id="tab-rules">
+    <div id="rulesList"></div>
+    <div class="add-rule" id="addRuleBtn">+ Tambah Rule</div>
+  </div>
+
+  <!-- BEHAVIOR TAB -->
+  <div class="tab-content" id="tab-beh">
+    <div class="shd">Batas Percakapan</div>
+    <div class="beh-grid">
+      <div class="beh-row">
+        <div class="beh-lbl">Max Balasan CS</div>
+        <div class="beh-val">
+          <input class="beh-num" id="maxTurns" type="number" min="1" max="10" value="3">
+          <span class="beh-unit">kali</span>
+        </div>
+      </div>
+      <div class="beh-row">
+        <div class="beh-lbl">Intro Wait</div>
+        <div class="beh-val">
+          <input class="beh-num" id="introWait" type="number" min="1" max="1440" value="180">
+          <span class="beh-unit">min</span>
+        </div>
+      </div>
+      <div class="beh-row">
+        <div class="beh-lbl">Idle Timeout</div>
+        <div class="beh-val">
+          <input class="beh-num" id="idleTimeout" type="number" min="1" max="1440" value="30">
+          <span class="beh-unit">min</span>
+        </div>
+      </div>
+      <div class="beh-row">
+        <div class="beh-lbl">AI Enrich <span class="ai-badge">Olagon</span></div>
+        <div class="beh-val">
+          <div class="beh-sw" id="aiSw"></div>
+        </div>
+      </div>
     </div>
-    <div class="f">
-      <div class="fl">HMAC Secret</div>
-      <input class="fi" type="password" id="hmacIn" placeholder="PRDKqnSNCKrMDF9hAt0PSJ6">
+    <div class="shd">Reset State</div>
+    <div class="reset-btn" id="resetBtn">Reset Semua Conversation State</div>
+  </div>
+
+  <!-- PERSONA TAB -->
+  <div class="tab-content" id="tab-persona">
+    <div class="shd">Intro Greeting</div>
+    <div class="persona-row">
+      <div class="persona-lbl">Pesan Perkenalan</div>
+      <textarea class="persona-input" id="introTpl" rows="5"></textarea>
     </div>
-    <button class="bt" id="saveBtn">Save Secrets</button>
-    <div class="sbt" id="saveMsg"></div>
+  </div>
+
+  <!-- SECRETS TAB -->
+  <div class="tab-content" id="tab-secrets">
+    <div class="sec-grid">
+      <div class="sec-row">
+        <div class="sec-lbl">Olagon AI Key</div>
+        <input class="sec-input" type="password" id="aiKeyIn" placeholder="rk_live_...">
+      </div>
+      <div class="sec-row">
+        <div class="sec-lbl">HMAC Secret</div>
+        <input class="sec-input" type="password" id="hmacIn" placeholder="PRDKqnSNCKrMDF9...">
+      </div>
+      <button class="sec-save" id="saveBtn">Save &amp; Apply</button>
+      <div class="sec-msg" id="saveMsg"></div>
+    </div>
   </div>
 </div>
 
-<div class="ft">Active 17:00–05:00 • 3 min interval • AI + DOM</div>
+<div class="ft">Active 17:00–05:00 • DOM typing visible • v0.5.1.0</div>
 
 <script>
 (function() {
   const $ = id => document.getElementById(id);
-  const el = {
-    topBd: $('topBd'), dot: $('dot'), label: $('label'), sub: $('sub'),
-    errBanner: $('errBanner'), toggle: $('toggle'),
-    csCnt: $('csCnt'), introCnt: $('introCnt'), memCnt: $('memCnt'),
-    lp: $('lp'), uid: $('uid'), hrs: $('hrs'),
-    aiKey: $('aiKey'),
-    qaBlock: $('qaBlock'), qaTags: $('qaTags'),
-    secBlock: $('secBlock'),
-    aiKeyIn: $('aiKeyIn'), hmacIn: $('hmacIn'),
-    saveBtn: $('saveBtn'), saveMsg: $('saveMsg'),
-  };
 
+  // State
+  let config = {};
+  let hasSecrets = false;
+
+  // ── TAB SWITCHING ────────────────────────────────────────────────
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+      document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('on'));
+      t.classList.add('on');
+      $('tab-' + t.dataset.tab).classList.add('on');
+    });
+  });
+
+  // ── FORMAT TIME ──────────────────────────────────────────────────
   function fmt(iso) {
     if (!iso) return '—';
     try { return new Date(iso).toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }); }
     catch { return '—'; }
   }
 
-  let hasAiKey = false;
-  function render(s) {
-    const { enabled, hasToken, result, activeHours, analysis, meta } = s;
+  // ── RENDER STATUS ────────────────────────────────────────────────
+  function renderStatus(s) {
+    const { enabled, hasToken, result, activeHours, config: cfg } = s;
     if (!enabled) {
-      el.dot.className = 'do N'; el.label.textContent = 'Nonaktif';
-      el.sub.textContent = 'Toggle untuk aktifkan';
-      el.topBd.textContent = 'OFF'; el.errBanner.classList.remove('sh');
+      $('dot').className = 'do N'; $('label').textContent = 'Nonaktif';
+      $('sub').textContent = 'Toggle untuk aktifkan';
+      $('topBd').textContent = 'OFF';
     } else if (!hasToken) {
-      el.dot.className = 'do R'; el.label.textContent = 'No Token';
-      el.sub.textContent = 'Buka Tevi & login'; el.topBd.textContent = 'ERR';
-      el.errBanner.classList.add('sh'); el.errBanner.textContent = '⚠️ Login ke tevi.com';
-    } else if (result?.error) {
-      el.dot.className = 'do O'; el.label.textContent = 'Error';
-      el.sub.textContent = result.error; el.topBd.textContent = 'ERR';
-      el.errBanner.classList.add('sh'); el.errBanner.textContent = '⚠️ ' + result.error;
+      $('dot').className = 'do R'; $('label').textContent = 'No Token';
+      $('sub').textContent = 'Buka Tevi & login'; $('topBd').textContent = 'ERR';
     } else {
-      el.dot.className = 'do G'; el.label.textContent = 'Aktif';
-      el.sub.textContent = activeHours ? '🟢 Memantau' : '🟡 Closed (dry)';
-      el.topBd.textContent = 'ON'; el.errBanner.classList.remove('sh');
+      $('dot').className = 'do G'; $('label').textContent = 'Aktif';
+      $('sub').textContent = activeHours ? '🟢 Memantau' : '🟡 Closed';
+      $('topBd').textContent = 'ON';
     }
-    el.csCnt.textContent = meta?.cs ?? '—';
-    el.introCnt.textContent = meta?.intro ?? '—';
-    el.memCnt.textContent = meta?.member ?? '—';
-    el.lp.textContent = fmt(result?.time);
-    el.uid.textContent = s.uid || '—';
-    el.hrs.innerHTML = activeHours
+    $('csCnt').textContent = result?.stats?.activeConvs ?? '—';
+    $('doneCnt').textContent = result?.stats?.doneConvs ?? '—';
+    $('introCnt').textContent = result?.stats?.introSent ?? '—';
+    $('lp').textContent = fmt(result?.time);
+    $('uid').textContent = s.uid || '—';
+    $('rulesCnt').textContent = cfg?.rulesCount ?? '—';
+    $('hrs').innerHTML = activeHours
       ? '<span style="color:#00cc6a;font-weight:700">BUKA</span>'
       : '<span style="color:#ff4757;font-weight:700">TUTUP</span>';
-
-    if (analysis?.topQuestions?.length > 0) {
-      el.qaTags.innerHTML = analysis.topQuestions
-        .map(q => `<span class="tag"><span class="c">${q.count}x</span> ${q.kw}</span>`)
-        .join('');
-      el.qaBlock.classList.add('sh');
-    } else {
-      el.qaBlock.classList.remove('sh');
-    }
   }
 
-  async function load() {
-    // Load secrets status
-    try {
-      const d = await chrome.storage.local.get('tevi_cs_secrets');
-      const sec = d.tevi_cs_secrets || {};
-      hasAiKey = !!(sec.aiKey);
-      el.aiKey.textContent = hasAiKey ? (sec.aiKey.substring(0, 12) + '...') : '❌ Missing';
-      el.aiKey.style.color = hasAiKey ? '#00cc6a' : '#ff4757';
-      if (hasAiKey) {
-        el.aiKeyIn.value = sec.aiKey;
-        el.hmacIn.value = sec.hmacSecret || '';
-      }
-    } catch {}
+  // ── RENDER RULES ─────────────────────────────────────────────────
+  function renderRules() {
+    const list = $('rulesList');
+    const rules = config.rules || [];
+    if (!rules.length) { list.innerHTML = '<div style="color:#444;font-size:11px;text-align:center;padding:20px">No rules yet</div>'; return; }
 
-    try {
-      const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' });
-      if (s) { el.toggle.checked = s.enabled; render(s); }
-    } catch {}
+    const sorted = [...rules].sort((a, b) => b.priority - a.priority);
+    list.innerHTML = sorted.map((r, i) => {
+      const typeColor = { keyword: '#00cc6a', block: '#ff4757', redirect: '#ffa502', fallback: '#a29bfe' };
+      const typeLabel = { keyword: 'KW', block: 'BLOCK', redirect: 'REDIR', fallback: 'FALLBACK' };
+      return `<div class="rule-card ${r.type}" id="rule-${r.id}">
+        <div class="rule-hd">
+          <span class="rule-type" style="color:${typeColor[r.type]||'#aaa'}">${typeLabel[r.type]||r.type}</span>
+          <span class="rule-id">${r.id}</span>
+          <span class="rule-pri" style="font-size:9px;color:#555">p${r.priority}</span>
+          <span class="rule-on ${r.active ? 'on' : ''}" onclick="toggleRule('${r.id}')">${r.active ? 'ON' : 'OFF'}</span>
+          ${r.type !== 'fallback' ? `<span class="rule-del" onclick="deleteRule('${r.id}')">✕</span>` : ''}
+        </div>
+        ${r.match ? `<div class="rule-kw">🔑 ${r.match}</div>` : ''}
+        <div class="rule-reply" id="reply-${r.id}">${escapeHtml(r.reply)}</div>
+        <span class="rule-reply-toggle" onclick="toggleReply('${r.id}')">show more</span>
+      </div>`;
+    }).join('');
   }
 
-  el.toggle.addEventListener('change', async () => {
-    const enabled = el.toggle.checked;
-    render({ enabled, hasToken: true, result: {}, activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5, meta: {} });
+  function escapeHtml(s) {
+    return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g, '<br>');
+  }
+
+  window.toggleRule = function(id) {
+    const r = config.rules.find(r => r.id === id);
+    if (r) { r.active = !r.active; renderRules(); saveConfigSilent(); }
+  };
+
+  window.deleteRule = function(id) {
+    config.rules = config.rules.filter(r => r.id !== id);
+    renderRules(); saveConfigSilent();
+  };
+
+  window.toggleReply = function(id) {
+    const el = $('reply-' + id);
+    if (el) el.classList.toggle('expanded');
+  };
+
+  // ── ADD RULE ────────────────────────────────────────────────────
+  $('addRuleBtn').addEventListener('click', () => {
+    const keywords = prompt('Keywords (pisah koma):\nContoh: vcs,payment,join');
+    if (!keywords) return;
+    const reply = prompt('Reply text:');
+    if (!reply) return;
+    const id = keywords.split(',')[0].trim().toLowerCase().replace(/\s+/g, '_');
+    if (config.rules.find(r => r.id === id)) { alert('ID already exists!'); return; }
+    config.rules.push({ id, priority: 10, type: 'keyword', match: keywords, reply, active: true });
+    renderRules(); saveConfigSilent();
+  });
+
+  // ── BEHAVIOR ───────────────────────────────────────────────────
+  function loadBehavior() {
+    const beh = config.behavior || {};
+    $('maxTurns').value = beh.csMaxTurns || 3;
+    $('introWait').value = beh.introWaitMinutes || 180;
+    $('idleTimeout').value = beh.idleMinutes || 30;
+    $('aiSw').className = 'beh-sw ' + (beh.aiEnabled ? 'on' : '');
+  }
+
+  function saveBehavior() {
+    config.behavior = {
+      csMaxTurns: parseInt($('maxTurns').value) || 3,
+      introWaitMinutes: parseInt($('introWait').value) || 180,
+      idleMinutes: parseInt($('idleTimeout').value) || 30,
+      aiEnabled: $('aiSw').classList.contains('on'),
+    };
+  }
+
+  $('aiSw').addEventListener('click', () => {
+    $('aiSw').classList.toggle('on');
+    saveBehavior(); saveConfigSilent();
+  });
+
+  [$('maxTurns'), $('introWait'), $('idleTimeout')].forEach(el => {
+    el.addEventListener('change', () => { saveBehavior(); saveConfigSilent(); });
+  });
+
+  // ── PERSONA ────────────────────────────────────────────────────
+  function loadPersona() {
+    $('introTpl').value = config.persona?.greeting || '';
+  }
+
+  $('introTpl').addEventListener('change', () => {
+    config.persona = config.persona || {};
+    config.persona.greeting = $('introTpl').value;
+    saveConfigSilent();
+  });
+
+  // ── SECRETS ────────────────────────────────────────────────────
+  $('saveBtn').addEventListener('click', async () => {
+    const aiKey = $('aiKeyIn').value.trim();
+    const hmac = $('hmacIn').value.trim();
+    const msg = $('saveMsg');
+    if (!aiKey) { msg.textContent = '⚠️ AI key required'; msg.className = 'sec-msg err'; return; }
+    msg.textContent = 'Saving...'; msg.className = 'sec-msg';
+    try {
+      await chrome.runtime.sendMessage({ type: 'SET_SECRETS', secrets: { aiKey, hmacSecret: hmac || 'PRDKqnSNCKrMDF9hAt0PSJ6' } });
+      hasSecrets = true;
+      msg.textContent = '✅ Saved!'; msg.className = 'sec-msg ok';
+      setTimeout(() => { msg.textContent = ''; }, 2000);
+    } catch (e) { msg.textContent = '❌ ' + e.message; msg.className = 'sec-msg err'; }
+  });
+
+  // ── RESET STATE ────────────────────────────────────────────────
+  $('resetBtn').addEventListener('click', async () => {
+    if (!confirm('Reset semua conversation state? Bot akan lupa semua conversations.')) return;
+    try { await chrome.runtime.sendMessage({ type: 'RESET_STATE' }); alert('State reset!'); } catch {}
+  });
+
+  // ── SAVE CONFIG SILENTLY ───────────────────────────────────────
+  function saveConfigSilent() {
+    chrome.runtime.sendMessage({ type: 'SAVE_CONFIG', config }).catch(() => {});
+  }
+
+  // ── TOGGLE BOT ──────────────────────────────────────────────────
+  $('toggle').addEventListener('change', async () => {
+    const enabled = $('toggle').checked;
+    renderStatus({ enabled, hasToken: !!config, result: {}, activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5, config: {} });
     try { await chrome.runtime.sendMessage({ type: 'TOGGLE', enabled }); } catch {}
   });
 
-  // Show secrets panel
-  $('secBlock').querySelector('.opn') || null;
-  document.getElementById('closeSec').addEventListener('click', () => {
-    el.secBlock.classList.remove('sh');
-  });
-
-  // Allow opening secrets from aiKey display
-  el.aiKey.style.cursor = 'pointer';
-  el.aiKey.addEventListener('click', () => {
-    el.secBlock.classList.toggle('sh');
-  });
-
-  el.saveBtn.addEventListener('click', async () => {
-    const aiKey = el.aiKeyIn.value.trim();
-    const hmac = el.hmacIn.value.trim();
-    if (!aiKey) { el.saveMsg.textContent = '⚠️ AI key required'; el.saveMsg.style.color = '#ff4757'; return; }
-    el.saveMsg.textContent = 'Saving...'; el.saveMsg.style.color = '#888';
-    const secrets = { aiKey, hmacSecret: hmac || 'PRDKqnSNCKrMDF9hAt0PSJ6' };
+  // ── INIT ───────────────────────────────────────────────────────
+  async function init() {
+    // Load secrets
     try {
-      await chrome.runtime.sendMessage({ type: 'SET_SECRETS', secrets });
-      hasAiKey = true;
-      el.aiKey.textContent = aiKey.substring(0, 12) + '...';
-      el.aiKey.style.color = '#00cc6a';
-      el.saveMsg.textContent = '✅ Saved!'; el.saveMsg.style.color = '#00cc6a';
-      setTimeout(() => { el.secBlock.classList.remove('sh'); el.saveMsg.textContent = ''; }, 1500);
-    } catch (e) {
-      el.saveMsg.textContent = '❌ Error: ' + e.message; el.saveMsg.style.color = '#ff4757';
-    }
-  });
+      const d = await chrome.storage.local.get('tevi_cs_secrets');
+      const sec = d.tevi_cs_secrets || {};
+      hasSecrets = !!sec.aiKey;
+      if (sec.aiKey) $('aiKeyIn').value = sec.aiKey;
+      if (sec.hmacSecret) $('hmacIn').value = sec.hmacSecret;
+    } catch {}
 
-  load();
+    // Load config
+    try {
+      const d = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
+      if (d) { config = d; renderRules(); loadBehavior(); loadPersona(); }
+    } catch {}
+
+    // Load status
+    try {
+      const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' });
+      if (s) { $('toggle').checked = s.enabled; renderStatus(s); }
+    } catch {}
+  }
+
+  init();
 })();
 </script>
 </body>
