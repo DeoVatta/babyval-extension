@@ -503,9 +503,21 @@ async function processOneConv(conv, state, cfg) {
   // ── Navigate to DM ─────────────────────────────────────────────────
   const ready = await navigateToConv(slug);
   if (!ready) {
-    logE(`[QUEUE] Could not ready @${slug} — deferring`);
+    const failCount = (meta.navigateFailCount || 0) + 1;
+    if (failCount >= 3) {
+      logE(`[QUEUE] @${slug} skipped — failed 3x to navigate`);
+      state.convMeta[convId] = { ...meta, stage: 'done', done: true, lastText: text };
+      markQueueDone(state, convId);
+      return { action: 'skipped', reason: 'navigate_fail' };
+    }
+    logE(`[QUEUE] Could not ready @${slug} — deferring (attempt ${failCount}/3)`);
+    state.convMeta[convId] = { ...meta, navigateFailCount: failCount };
     releaseQueue(state);
     return { action: 'deferred', reason: 'not_ready' };
+  }
+  // Reset fail count on success
+  if (meta.navigateFailCount) {
+    state.convMeta[convId] = { ...meta, navigateFailCount: 0 };
   }
 
   // ── STAGE: new ─────────────────────────────────────────────────────
@@ -754,7 +766,14 @@ async function poll() {
       continue;
     }
 
-    log(`[QUEUE] Processing @${conv.recipient?.channel_slug || nextConvId} (${state.queue.length} remaining)`);
+    // Skip convs already tracked (intro_sent/cs/done) — tracked section handles them
+    if (state.convMeta[nextConvId]?.stage && state.convMeta[nextConvId].stage !== 'new') {
+      logD('[QUEUE] Skipping @' + (conv.recipient?.channel_slug || nextConvId) + ' — already tracked (stage=' + state.convMeta[nextConvId].stage + ')');
+      markQueueDone(state, nextConvId);
+      continue;
+    }
+
+    log('[QUEUE] Processing @' + (conv.recipient?.channel_slug || nextConvId) + ' (' + state.queue.length + ' remaining)');
     const result = await processOneConv(conv, state, cfg);
     processed++;
 
