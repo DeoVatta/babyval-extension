@@ -482,12 +482,13 @@
   }
 
   function renderOverlay(os, st, cfg) {
-    // Update dot
-    if (!st.botEnabled) {
-      dot.className = 'tc-dot N'; dot.textContent = '✕';
-      setState('sleep');
-    } else {
+    // Read botEnabled from overlay state (SW writes here on every poll/toggle)
+    if (os.botEnabled) {
       dot.className = 'tc-dot G'; dot.textContent = 'Z';
+      pdBot.innerHTML = '<span class="tc-badge on">ON</span>';
+    } else {
+      dot.className = 'tc-dot N'; dot.textContent = '✕';
+      pdBot.innerHTML = '<span class="tc-badge off">OFF</span>';
     }
 
     // React to typing state
@@ -511,12 +512,6 @@
       }, 5000);
     }
 
-    // Panel data
-    if (st.botEnabled) {
-      pdBot.innerHTML = '<span class="tc-badge on">ON</span>';
-    } else {
-      pdBot.innerHTML = '<span class="tc-badge off">OFF</span>';
-    }
     // 24/7 mode — always show Active (user controls ON/OFF via extension popup)
     pdMode.textContent = '🌙 24/7';
     pdPoll.textContent = os.pollTime ? new Date(os.pollTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '—';
