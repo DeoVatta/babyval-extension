@@ -662,18 +662,32 @@
       if (!raw) return null;
       const entries = JSON.parse(raw);
       for (const [uid, entry] of Object.entries(entries)) {
-        if (!entry || !entry.access_token) continue;
-        // Decode JWT payload to check expiry
+        if (!entry) continue;
+
+        // Structure: { "392388705": { user:{...}, access_token:"eyJ...", refresh_token:"eyJ...", expires_in:86400 } }
+        const token = entry.access_token || (entry.user && entry.user.access_token);
+        const refresh = entry.refresh_token || (entry.user && entry.user.refresh_token);
+        if (!token) continue;
+
+        // Decode JWT payload to check expiry and anonymity
         try {
-          const payload = JSON.parse(atob(entry.access_token.split('.')[1]));
+          const payload = JSON.parse(atob(token.split('.')[1]));
           const isExpired = payload.exp * 1000 < Date.now();
-          if (!isExpired && !payload.anonymous) {
+          const isAnonymous = payload.anonymous !== false; // default to true if not set
+          if (!isExpired && !isAnonymous) {
+            // Calculate expires_at from expires_in if available, else from JWT exp
+            let expiresAt;
+            if (entry.expires_in) {
+              expiresAt = new Date(Date.now() + entry.expires_in * 1000).toISOString();
+            } else {
+              expiresAt = new Date(payload.exp * 1000).toISOString();
+            }
             return {
-              uid,
-              access_token: entry.access_token,
-              refresh_token: entry.refresh_token || null,
-              expires_at: new Date(payload.exp * 1000).toISOString(),
-              isAnonymous: payload.anonymous,
+              uid: String(uid),
+              access_token: token,
+              refresh_token: refresh || null,
+              expires_at: expiresAt,
+              isAnonymous: false,
               display_name: entry.user?.display_name || null,
             };
           }
