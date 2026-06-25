@@ -37,11 +37,15 @@
   function isIdle() { return location.href.includes('/messages') && !location.href.includes('/@'); }
 
   function findInput() {
+    // Priority 1: specific textarea (Tevi's main message input)
+    const specific = document.getElementById('_r_17_');
+    if (specific && isVisible(specific)) return specific;
+    // Fallback: generic selectors
     const sels = [
+      'textarea',
       'div[contenteditable="true"]',
       'div[role="textbox"]',
       'div[contenteditable]',
-      'textarea',
       'input[type="text"]',
     ];
     for (const s of sels) {
