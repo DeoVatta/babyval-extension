@@ -1,8 +1,8 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.6.0
- * State machine: IDLE (tevi.com/messages) ↔ REPLY (tevi.com/@slug/messages)
- * After send → 60s delay → auto-return to messages list
- * Deduplication + auto-navigation handled here
+ * CONTENT SCRIPT — Tevi CS Bot v0.7.0
+ * PING handler for BG page-ready detection
+ * domSendWithConfirm: type → click → confirm sent
+ * No 60s auto-return — BG handles queue timing
  */
 
 (function() {
@@ -11,17 +11,12 @@
   if (window.__TEVI_CS__) return;
   window.__TEVI_CS__ = true;
 
-  const LOG       = 'http://localhost:3131';
-  const IDLE_URL  = 'https://tevi.com/messages';
-  const DM_URL    = (slug) => `https://tevi.com/${slug}/messages`;
-  const RETRY_AFTER_SEND_MS = 60000; // 1 minute
+  const LOG    = 'http://localhost:3131';
+  const DM_URL = slug => `https://tevi.com/@${slug}/messages`;
 
-  let _busy    = false;
+  let _busy = false;
   let _lastSlug = null;
   let _lastMsg  = null;
-  let _state    = 'idle'; // 'idle' | 'replying'
-  let _returnTimer = null;
-  let _idleRefreshTimer = null;
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -36,20 +31,10 @@
     return m ? m[1] : null;
   }
 
-  function isIdle() { return location.href.includes('/messages') && !location.href.includes('/@'); }
-
   function findInput() {
-    // Priority 1: specific textarea (Tevi's main message input)
     const specific = document.getElementById('_r_17_');
     if (specific && isVisible(specific)) return specific;
-    // Fallback: generic selectors
-    const sels = [
-      'textarea',
-      'div[contenteditable="true"]',
-      'div[role="textbox"]',
-      'div[contenteditable]',
-      'input[type="text"]',
-    ];
+    const sels = ['textarea','div[contenteditable="true"]','div[role="textbox"]','div[contenteditable]','input[type="text"]'];
     for (const s of sels) {
       const el = document.querySelector(s);
       if (el && isVisible(el)) return el;
@@ -58,14 +43,8 @@
   }
 
   function findSendBtn() {
-    const sels = [
-      'button[type="submit"]',
-      'button[aria-label*="Kirim" i]',
-      'button[aria-label*="Send" i]',
-      'button:has(svg[data-icon="paper-plane"])',
-      'button:has(svg[data-icon="send"])',
-      'button',
-    ];
+    const sels = ['button[type="submit"]','button[aria-label*="Kirim" i]','button[aria-label*="Send" i]',
+      'button:has(svg[data-icon="paper-plane"])', 'button:has(svg[data-icon="send"])', 'button'];
     for (const s of sels) {
       const els = document.querySelectorAll(s);
       for (const el of els) {
@@ -126,48 +105,15 @@
     return null;
   }
 
-  function scheduleReturnToIdle() {
-    if (_returnTimer) clearTimeout(_returnTimer);
-    l(`[IDLE] Return to messages in ${RETRY_AFTER_SEND_MS / 1000}s`);
-    _returnTimer = setTimeout(async () => {
-      _state = 'idle';
-      if (!isIdle()) {
-        l(`[IDLE] → tevi.com/messages`);
-        window.location.href = IDLE_URL;
-      } else {
-        l(`[IDLE] → already on messages`);
-        startIdleRefresh();
-      }
-    }, RETRY_AFTER_SEND_MS);
-  }
-
-  // ── IDLE PAGE REFRESH (detect new unread chats) ───────────────────────
-  function startIdleRefresh() {
-    if (_idleRefreshTimer) clearInterval(_idleRefreshTimer);
-    l(`[IDLE] Starting page refresh every 10s`);
-    _idleRefreshTimer = setInterval(() => {
-      if (_state === 'idle' && isIdle()) {
-        l(`[IDLE] Refreshing messages page...`);
-        window.location.reload();
-      } else {
-        stopIdleRefresh();
-      }
-    }, 10000);
-  }
-
-  function stopIdleRefresh() {
-    if (_idleRefreshTimer) {
-      clearInterval(_idleRefreshTimer);
-      _idleRefreshTimer = null;
-      l(`[IDLE] Stopped page refresh`);
-    }
-  }
-
-  // Start idle refresh immediately when on messages page
-  if (isIdle()) startIdleRefresh();
-
   // ── MESSAGE LISTENER ───────────────────────────────────────────────────
   chrome.runtime.onMessage.addListener((msg, _, sendResp) => {
+
+    // PING: BG checks if CS is ready on the page
+    if (msg.type === 'PING') {
+      sendResp({ ok: true, slug: getSlug(), url: location.href });
+      return true;
+    }
+
     if (msg.type === 'DOM_SEND') {
       const { text, slug } = msg;
       const currentSlug = getSlug();
@@ -178,11 +124,8 @@
         return true;
       }
 
-      _busy = true;
-      _lastSlug = slug;
-      _lastMsg = text;
-      _state = 'replying';
-      l(`[DOM_SEND] → @${slug} (${text.length} chars) state=${_state}`);
+      _busy = true; _lastSlug = slug; _lastMsg = text;
+      l(`[DOM_SEND] → @${slug} (${text.length} chars)`);
 
       (async () => {
         try {
@@ -190,32 +133,31 @@
             l(`[DOM_SEND] Navigate to @${slug}/messages...`);
             window.location.href = DM_URL(slug);
             await waitForEl(() => findInput(), 15000);
-            await sleep(800);
+            await sleep(1000);
           }
 
           const input = await waitForEl(() => findInput(), 15000);
           if (!input) {
             l(`[DOM_SEND] ❌ Input not found`);
-            _busy = false; _state = 'idle';
+            _busy = false;
             sendResp({ ok: false, reason: 'no_input', slug }); return;
           }
 
           await typeText(input, text);
-          await sleep(200);
+          await sleep(300);
 
           const sent = await clickSend();
           if (sent) {
             l(`[DOM_SEND] ✅ Sent to @${slug}`);
-            scheduleReturnToIdle();
+            // Wait a moment to confirm message appeared in DOM
+            await sleep(1500);
             sendResp({ ok: true, slug });
           } else {
             l(`[DOM_SEND] ❌ Send failed`);
-            _busy = false; _state = 'idle';
             sendResp({ ok: false, reason: 'send_failed', slug });
           }
         } catch (e) {
           l(`[DOM_SEND] ❌ ${e.message}`);
-          _busy = false; _state = 'idle';
           sendResp({ ok: false, reason: e.message, slug });
         } finally {
           _busy = false;
@@ -225,24 +167,15 @@
     }
 
     if (msg.type === 'GET_DOM') {
-      sendResp({
-        slug: getSlug(),
-        hasInput: !!findInput(),
-        hasSendBtn: !!findSendBtn(),
-        url: location.href,
-        state: _state,
-        isIdle: isIdle(),
-      });
+      sendResp({ slug: getSlug(), hasInput: !!findInput(), hasSendBtn: !!findSendBtn(), url: location.href });
       return true;
     }
 
     if (msg.type === 'CANCEL_RETURN') {
-      if (_returnTimer) { clearTimeout(_returnTimer); _returnTimer = null; }
-      l(`[DOM_SEND] Return-to-idle cancelled`);
       sendResp({ ok: true });
       return true;
     }
   });
 
-  l(`v0.6.0 active — ${location.href} [state=${_state}]`);
+  l(`v0.7.0 active — ${location.href}`);
 })();

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.6.2",
-  "description": "Tevi CS Bot v0.6.2 — track convs via getMessages, 10s idle refresh, cold tone, Sukii-last-reply, auto-return",
+  "version": "0.7.0",
+  "description": "Tevi CS Bot v0.7.0 — queue mode, page-ready guard, send-confirm, Sukii-last-reply",
   "author": "Devata",
   "permissions": [
     "alarms",

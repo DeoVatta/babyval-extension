@@ -6,9 +6,9 @@ Edge/Chrome MV3 extension untuk otomatisasi Tevi CS (Customer Service) bot @cuti
 
 ```
 tevi-cs/
-├── manifest.json      # MV3 manifest v0.6.2
-├── background.js      # Service Worker: polling, HMAC, API, state machine
-├── content-script.js  # DOM automation: idle/reply state machine
+├── manifest.json      # MV3 manifest v0.7.0
+├── background.js      # Service Worker: polling, HMAC, API, state machine, conv queue
+├── content-script.js  # DOM automation: PING, typing, send, page-ready detection
 ├── overlay.js         # Cute cat overlay (sleep/alert/typing animation)
 ├── popup/popup.html   # Rules editor UI
 ├── log-server.js      # Local HTTP log receiver
@@ -19,21 +19,20 @@ tevi-cs/
 
 ```
 IDLE (tevi.com/messages)
-  ↓ poll detects unread
-REPLY (tevi.com/@slug/messages)
-  ↓ send message
-60s delay → return to IDLE
+  ↓ poll detects new conv → add to queue
+QUEUE MODE: process ONE conv at a time
+  → navigate to DM
+  → waitForPageReady (PING until CS responds)
+  → type + send + wait 1.5s confirm
+  → 8-12s delay before next task
+  → loop until queue empty
 ```
-
-- **Idle**: di `tevi.com/messages` → deteksi pesan masuk via API polling (3 menit)
-- **Reply**: navigasi otomatis ke DM → ketik → kirim → 60 detik → auto-kembali
-- **Idle Check**: pastikan tidak ada pesan yang belum Sukii balas (dalam 24 jam terakhir)
 
 ## Flow Bot
 
 ```
 Pesan masuk → Greeting (intro_sent)
-  ↓ user balas (dalam 180 menit)
+  ↓ user balas (immediate — no 3h wait)
 CS mode → reply sesuai keyword rules
   ↓ max turns (3) → loop greeting
   ↓ idle 30 menit → done
@@ -44,6 +43,23 @@ CS mode → reply sesuai keyword rules
 1. Membership — never touch
 2. Payment confirmed — 6 jam delay
 3. User diam >24 jam — boleh balas
+
+## Queue Mode (v0.7.0)
+
+```
+Poll → discover new convs → add to queue
+Process ONE at a time:
+  1. Navigate to @slug/messages
+  2. waitForPageReady (PING until CS responds, max 20s)
+  3. domSendWithConfirm: type → click send → wait 1.5s → confirm
+  4. Dynamic delay before next:
+     - Greeting sent: 12s
+     - Reply sent: 8s
+     - Failed/deferred: 15s
+     - Ignored: 5s
+  5. Release queue → next conv
+```
+**Problem solved**: v0.6.x — 100 convs processed simultaneously → tab collision → "No tevi tab open"
 
 ## Keyword Rules (Cold/Informant Tone)
 
@@ -73,12 +89,20 @@ Chat langsung: membership Tevi.
 VCS: babyval.com
 ```
 
+## Page-Ready Guard (v0.7.0)
+
+Bot waits until content-script responds to PING before typing:
+- Navigate to DM URL
+- Poll PING every 500ms (max 20s total)
+- If page not ready → extra 5s wait → retry PING
+- Only then type message
+
 ## Auto-Recovery (DOM Send)
 
 1. Direct send
-2. CS injection + retry (3s wait)
-3. CS injection + retry (2s wait)
-4. Hard refresh + navigate + retry
+2. Inject CS + retry (1.5s wait)
+3. Hard refresh + navigate + retry (3s wait + 3s wait)
+4. All failed → defer to next poll
 
 ## Auto-Reload (Development)
 
@@ -87,7 +111,7 @@ File changes trigger automatic extension reload via CDP:
 ```bash
 cd tevi-cs
 npm install        # install ws + chokidar
-node auto-reloader.js
+npm run watch     # auto-reloader.js
 ```
 
 `auto-reloader.js` watches all extension files. On change → CDP → `__TEVI_RELOAD__` → `chrome.runtime.reload()` → new code active. No manual reload needed.
@@ -119,7 +143,15 @@ Aktif: **17:00 - 05:00 WIB**
 
 ## Changelog
 
-### v0.6.2 — 2026-06-26
+### v0.7.0 — 2026-06-26
+- **Queue mode**: process ONE conv at a time — no more tab collision with 100 convs
+- **Page-ready guard**: `waitForPageReady` via PING — waits for CS to load before typing
+- **Send confirmation**: 1.5s wait after clickSend to confirm message appeared
+- **Dynamic delays**: greeting=12s, reply=8s, failed=15s, ignored=5s
+- **CS v0.7.0**: PING handler, no 60s auto-return (BG handles timing)
+- Removed: 3h wait, filter=UNREAD, old tracked loop pattern
+
+### v0.6.2 — 2026-06-25
 - Fix: track intro_sent/cs convs via getMessages even after greeting drops them from UNREAD filter
 - Idle refresh every 10s on messages page for new chat detection
 - Poll loop checks tracked conversations for user replies

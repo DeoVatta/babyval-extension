@@ -1,11 +1,9 @@
 /**
- * BACKGROUND — Service Worker Tevi CS Bot v0.6.2
- * Config-driven: all behavior from tevi_cs_config
- * Flow: intro → CS turns → loop-to-greeting (annoying tactic)
- * Payment proof → silent end (no reply, no read)
- * Sukii must always be last replier — no unanswered unless: membership, payment, >24h
- * DOM typing for visible send + overlay cat state signaling
- * Auto-reload: listens for __TEVI_RELOAD__ message to force SW restart
+ * BACKGROUND — Service Worker Tevi CS Bot v0.7.0
+ * Conv queue: process ONE conversation at a time
+ * Page-load guard: wait for page ready before typing
+ * Send guard: confirm message sent before next task
+ * Sukii must always be last replier
  */
 
 const MY_UID    = '392388705';
@@ -16,7 +14,7 @@ const SEC_KEY   = 'tevi_cs_secrets';
 const AI_BASE   = 'https://gateway.olagon.site/anthropic/v1';
 const OVERLAY_KEY = 'tevi_cs_overlay_state';
 
-// ── OVERLAY STATE (cat UI) ────────────────────────────────────────────────
+// ── OVERLAY STATE ─────────────────────────────────────────────────────────
 async function setOverlay(updates) {
   try {
     const d = await chrome.storage.local.get(OVERLAY_KEY);
@@ -27,16 +25,14 @@ async function setOverlay(updates) {
 function signalTyping(text, slug) {
   setOverlay({ typing: true, typingText: text, typingSlug: slug });
 }
-
 function signalNewMessage(text, slug) {
   setOverlay({ newMessage: text, newSlug: slug });
 }
-
 function clearOverlay() {
   setOverlay({ typing: false, typingText: '', newMessage: '' });
 }
 
-// ── SECRETS ─────────────────────────────────────────────────────────────
+// ── SECRETS ──────────────────────────────────────────────────────────────
 let _secrets = null;
 async function getSecrets() {
   if (_secrets) return _secrets;
@@ -47,7 +43,7 @@ async function getSecrets() {
   return _secrets;
 }
 
-// ── LOGGING ──────────────────────────────────────────────────────────────
+// ── LOGGING ───────────────────────────────────────────────────────────────
 async function sendLog(msg, level = 'INFO') {
   try {
     await fetch(`${LOG}/log`, {
@@ -79,7 +75,6 @@ async function loadToken() {
     if (d[TOKEN_KEY]) {
       token = d[TOKEN_KEY];
       uid = d.tevi_cs_uid || parseToken(token)?.uid || null;
-      log(`[TOKEN] Loaded UID=${uid}`);
       return token;
     }
   } catch {}
@@ -121,7 +116,7 @@ async function ensureToken() {
   return null;
 }
 
-// ── CONFIG ────────────────────────────────────────────────────────────────
+// ── CONFIG ───────────────────────────────────────────────────────────────
 async function loadConfig() {
   try {
     const d = await chrome.storage.local.get('tevi_cs_config');
@@ -140,50 +135,21 @@ function getDefaultConfig() {
 
 function getDefaultRules() {
   return [
-    // Priority 50: ABSOLUTE BLOCKS
-    { id: 'block_personal', priority: 50, type: 'keyword', active: true, match: 'alamat rumah,no hp,nomor hp,wa ,whatsapp,umur kamu,berapa umur,usia kamu,domisili,kota kamu,daerah kamu', reply: `Informasi pribadi tidak diberikan.` },
-
-    // Priority 45: OFFLINE / KETEMU — block and redirect to VCS
-    { id: 'offline_ketemu', priority: 45, type: 'keyword', active: true, match: 'ketemu,bertemu,langsung,offline,nemu,dateng,datang,meet up,nyambung,in person,temu muka', reply: `Cuma bisa VCS. Offline tidak tersedia.` },
-
-    // Priority 40: VCS STEPS
-    { id: 'vcs_cara', priority: 40, type: 'keyword', active: true, match: 'cara vcs,cara payment,cara bayarnya,cara order,bagaimn cara,gimana cara,cara nya', reply: `1. Buka babyval.com\n2. Pilih Video Call\n3. Pilih Durasi\n4. Bayar` },
-
-    // Priority 35: DURASI 7 vs 10 MENIT
-    { id: 'durasi_7_10', priority: 35, type: 'keyword', active: true, match: 'beda 7 dan 10,beda 10 sama 7,7 menit 10 menit,10 menit 7 menit,bedanya apa 7,selisih 7 dan 10', reply: `Beda durasi aja. Squirt minimal 20 menit.` },
-
-    // Priority 35: MASKER
-    { id: 'masker', priority: 35, type: 'keyword', active: true, match: 'buka masker,lepas masker,pake masker,tanpa masker', reply: `Buka masker: tip 250rb ke ganknow.com/babyval/tip. Masker diganti penutup mata.` },
-
-    // Priority 30: GENERIC VCS
-    { id: 'vcs', priority: 30, type: 'keyword', active: true, match: 'vcs,videocall,video call,vc ,telfon,telpon,call,meet,zoom', reply: `VCS tersedia. babyval.com → Video Call → Durasi → Bayar.` },
-
-    // Priority 25: MEMBERSHIP CTA
-    { id: 'chat_males', priority: 25, type: 'keyword', active: true, match: 'doang,aja sih,santai aja,cuma ngobrol,bsa ngobrol gk,sih gk,santai aja kak', reply: `Chat langsung: membership Tevi.` },
-
-    // Priority 20: PAYMENT
-    { id: 'payment', priority: 20, type: 'keyword', active: true, match: 'payment,bayar,tf,transfer,donasi,donate,harga,price,berapa,cost', reply: `babyval.com → Video Call → Durasi → Bayar. Transfer, kirim bukti ke DM.` },
-
-    // Priority 20: JOIN MEMBERSHIP
-    { id: 'join_member', priority: 20, type: 'keyword', active: true, match: 'join,member,membership,subscribe,langganan,premium', reply: `tevi.com/@cutieval. Pilih membership yang tersedia.` },
-
-    // Priority 15: ORDER / BUY
-    { id: 'order', priority: 15, type: 'keyword', active: true, match: 'jual,beli,jasa,order,pembelian,buy', reply: `babyval.com. Pilih layanan, bayar, kirim bukti.` },
-
-    // Priority 15: KONTEN
-    { id: 'konten', priority: 15, type: 'keyword', active: true, match: 'foto,video,konten,pic,image,send,kirim,eksklusif', reply: `Konten untuk member. tevi.com/@cutieval atau babyval.com.` },
-
-    // Priority 10: BOT IDENTITY
-    { id: 'bot_sukii', priority: 10, type: 'keyword', active: true, match: 'bot,sukii,siapa kamu,siapa ini,ai,assistant', reply: `Sukii. Informan Baby Val.` },
-
-    // Priority 5: GREETINGS / CASUAL
-    { id: 'terima_kasih', priority: 5, type: 'keyword', active: true, match: 'terima kasih,thanks,thx,makasih,sip,sipp,bagus,nice', reply: `Sukii. Ada yang perlu ditanyakan soal VCS atau membership.` },
-
-    // Priority 1: BLOCK INAPPROPRIATE
-    { id: 'block_inap', priority: 1, type: 'block', active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot,lubang', reply: `Di luar layanan.` },
-
-    // Priority 0: FALLBACK
-    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Chat langsung dengan Baby Val: membership Tevi.` },
+    { id: 'block_personal',   priority: 50, type: 'keyword', active: true, match: 'alamat rumah,no hp,nomor hp,wa ,whatsapp,umur kamu,berapa umur,usia kamu,domisili,kota kamu,daerah kamu', reply: `Informasi pribadi tidak diberikan.` },
+    { id: 'offline_ketemu',   priority: 45, type: 'keyword', active: true, match: 'ketemu,bertemu,langsung,offline,nemu,dateng,datang,meet up,nyambung,in person,temu muka', reply: `Cuma bisa VCS. Offline tidak tersedia.` },
+    { id: 'vcs_cara',         priority: 40, type: 'keyword', active: true, match: 'cara vcs,cara payment,cara bayarnya,cara order,bagaimn cara,gimana cara,cara nya', reply: `1. Buka babyval.com\n2. Pilih Video Call\n3. Pilih Durasi\n4. Bayar` },
+    { id: 'durasi_7_10',      priority: 35, type: 'keyword', active: true, match: 'beda 7 dan 10,beda 10 sama 7,7 menit 10 menit,10 menit 7 menit,bedanya apa 7,selisih 7 dan 10', reply: `Beda durasi aja. Squirt minimal 20 menit.` },
+    { id: 'masker',           priority: 35, type: 'keyword', active: true, match: 'buka masker,lepas masker,pake masker,tanpa masker', reply: `Buka masker: tip 250rb ke ganknow.com/babyval/tip. Masker diganti penutup mata.` },
+    { id: 'vcs',              priority: 30, type: 'keyword', active: true, match: 'vcs,videocall,video call,vc ,telfon,telpon,call,meet,zoom', reply: `VCS tersedia. babyval.com → Video Call → Durasi → Bayar.` },
+    { id: 'chat_males',       priority: 25, type: 'keyword', active: true, match: 'doang,aja sih,santai aja,cuma ngobrol,bsa ngobrol gk,sih gk,santai aja kak', reply: `Chat langsung: membership Tevi.` },
+    { id: 'payment',          priority: 20, type: 'keyword', active: true, match: 'payment,bayar,tf,transfer,donasi,donate,harga,price,berapa,cost', reply: `babyval.com → Video Call → Durasi → Bayar. Transfer, kirim bukti ke DM.` },
+    { id: 'join_member',      priority: 20, type: 'keyword', active: true, match: 'join,member,membership,subscribe,langganan,premium', reply: `tevi.com/@cutieval. Pilih membership yang tersedia.` },
+    { id: 'order',            priority: 15, type: 'keyword', active: true, match: 'jual,beli,jasa,order,pembelian,buy', reply: `babyval.com. Pilih layanan, bayar, kirim bukti.` },
+    { id: 'konten',           priority: 15, type: 'keyword', active: true, match: 'foto,video,konten,pic,image,send,kirim,eksklusif', reply: `Konten untuk member. tevi.com/@cutieval atau babyval.com.` },
+    { id: 'bot_sukii',        priority: 10, type: 'keyword', active: true, match: 'bot,sukii,siapa kamu,siapa ini,ai,assistant', reply: `Sukii. Informan Baby Val.` },
+    { id: 'terima_kasih',     priority: 5,  type: 'keyword', active: true, match: 'terima kasih,thanks,thx,makasih,sip,sipp,bagus,nice', reply: `Sukii. Ada yang perlu ditanyakan soal VCS atau membership.` },
+    { id: 'block_inap',       priority: 1,  type: 'block',   active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot,lubang', reply: `Di luar layanan.` },
+    { id: 'fallback',         priority: 0,  type: 'fallback', active: true, match: '', reply: `Chat langsung dengan Baby Val: membership Tevi.` },
   ];
 }
 
@@ -194,8 +160,7 @@ function findReply(text, rules) {
     if (!rule.active) continue;
     if (rule.type === 'fallback') return rule;
     const kw = rule.match.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
-    const lower = text.toLowerCase();
-    if (kw.some(k => lower.includes(k))) return rule;
+    if (kw.some(k => text.toLowerCase().includes(k))) return rule;
   }
   return null;
 }
@@ -225,58 +190,58 @@ async function aiEnrich(baseReply, message) {
     if (resp.ok) {
       const json = await resp.json();
       const t = json.content?.[0]?.text?.trim();
-      if (t) { log(`[AI] ✨ "${t.substring(0,50)}"`); return t; }
+      if (t) { log(`[AI] "${t.substring(0, 50)}"`); return t; }
     }
   } catch {}
   return baseReply;
 }
 
-// ── DOM SEND ────────────────────────────────────────────────────────────
-async function domSend(text, slug) {
+// ── PAGE LOAD DETECTION ──────────────────────────────────────────────────
+// Waits until content-script is ready on tevi tab
+async function waitForPageReady(tabId, slug, maxWaitMs = 15000) {
+  const deadline = Date.now() + maxWaitMs;
+  while (Date.now() < deadline) {
+    try {
+      const r = await chrome.tabs.sendMessage(tabId, { type: 'PING' });
+      if (r?.ok) return true;
+    } catch {}
+    await sleep(500);
+  }
+  logD(`[WAIT] Page not ready after ${maxWaitMs}ms for @${slug}`);
+  return false;
+}
+
+// ── SEND CONFIRMATION ────────────────────────────────────────────────────
+// Sends text to CS, waits for PENDING → SENT/FAILED signal from CS
+async function domSendWithConfirm(tabId, text, slug, maxWaitMs = 20000) {
+  log(`[SEND] → @${slug}: "${text.substring(0, 40)}..."`);
+
+  // Attempt 1: direct
   try {
-    const tabs = await chrome.tabs.query({ url: '*://tevi.com/*' });
-    if (!tabs.length) { logE('[DOM] No tevi tab open'); return false; }
-    const tab = tabs[0];
-    const tabId = tab.id;
-    log(`[DOM] → @${slug}: "${text.substring(0,40)}..."`);
+    const r1 = await chrome.tabs.sendMessage(tabId, { type: 'DOM_SEND', text, slug });
+    if (r1?.ok) { log(`[SEND] ✅ @${slug} sent`); return true; }
+  } catch (e) { logD(`[SEND] direct fail: ${e.message}`); }
 
-    async function trySend() {
-      try {
-        const resp = await chrome.tabs.sendMessage(tabId, { type: 'DOM_SEND', text, slug });
-        if (resp?.ok) return true;
-        logD(`[DOM] Send failed: ${resp?.reason}`); return false;
-      } catch (e) { logD(`[DOM] Port error: ${e.message}`); return false; }
-    }
+  // Attempt 2: inject CS + retry
+  try {
+    await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
+    await sleep(1500);
+    const r2 = await chrome.tabs.sendMessage(tabId, { type: 'DOM_SEND', text, slug });
+    if (r2?.ok) { log(`[SEND] ✅ @${slug} sent (after inject)`); return true; }
+  } catch (e) { logD(`[SEND] inject fail: ${e.message}`); }
 
-    // Attempt 1: direct
-    if (await trySend()) { log(`[DOM] ✅ Sent to @${slug}`); return true; }
-
-    // Attempt 2: CS may be navigating — wait and retry
-    logD(`[DOM] Retrying after 3s...`);
+  // Attempt 3: hard refresh + wait + retry
+  try {
+    await chrome.tabs.reload(tabId, { bypassCache: true });
     await sleep(3000);
-    if (await trySend()) { log(`[DOM] ✅ Sent to @${slug} (retry)`); return true; }
+    await chrome.tabs.update(tabId, { url: `https://tevi.com/@${slug}/messages` });
+    await sleep(3000);
+    const r3 = await chrome.tabs.sendMessage(tabId, { type: 'DOM_SEND', text, slug });
+    if (r3?.ok) { log(`[SEND] ✅ @${slug} sent (after refresh)`); return true; }
+  } catch (e) { logD(`[SEND] refresh fail: ${e.message}`); }
 
-    // Attempt 3: inject fresh CS + retry
-    logD(`[DOM] Injecting CS + retry...`);
-    try {
-      await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
-      await sleep(2000);
-      if (await trySend()) { log(`[DOM] ✅ Sent (after inject)`); return true; }
-    } catch (e) { logD(`[DOM] Inject failed: ${e.message}`); }
-
-    // Attempt 4: hard refresh + navigate to DM + retry
-    logD(`[DOM] Hard refreshing + navigating...`);
-    try {
-      await chrome.tabs.reload(tabId, { bypassCache: true });
-      await sleep(4000);
-      await chrome.tabs.update(tabId, { url: `https://tevi.com/@${slug}/messages` });
-      await sleep(3000);
-      if (await trySend()) { log(`[DOM] ✅ Sent (after hard refresh)`); return true; }
-    } catch (e) { logD(`[DOM] Hard refresh failed: ${e.message}`); }
-
-    logE(`[DOM] ❌ All attempts failed for @${slug}`);
-    return false;
-  } catch (e) { logE(`[DOM] Error: ${e.message}`); return false; }
+  logE(`[SEND] ❌ All attempts failed for @${slug}`);
+  return false;
 }
 
 // ── HMAC ─────────────────────────────────────────────────────────────────
@@ -291,7 +256,7 @@ async function hmac(pathname) {
   return `${ts}-${sig}`;
 }
 
-// ── GET CONVERSATIONS ───────────────────────────────────────────────────
+// ── API ──────────────────────────────────────────────────────────────────
 async function getConvs() {
   const t = await ensureToken();
   if (!t) return { data: null, error: 'no_token' };
@@ -306,30 +271,13 @@ async function getConvs() {
     if (resp.ok) {
       const json = await resp.json().catch(() => null);
       if (json?.success) {
-        log(`[API] ✅ ${json.data?.results?.length || 0} total convs`);
-        if (json.data?.results?.length > 0) {
-          logD(`[API] first conv: ${JSON.stringify(Object.keys(json.data.results[0]))}`);
-          logD(`[API] first conv.last_msg.sender: ${JSON.stringify(json.data.results[0]?.latest_message?.sender)}`);
-        }
+        const n = json.data?.results?.length || 0;
+        log(`[API] ${n} total convs`);
         return { data: json.data, error: null };
       }
     }
-    logD(`[API] ❌ ${resp.status}`);
     return { data: null, error: 'api_failed' };
-  } catch (e) { logE(`[API] ❌ ${e.message}`); return { data: null, error: 'network_error' }; }
-}
-
-async function markRead(convId) {
-  const t = await ensureToken();
-  if (!t) return;
-  const path = `/messenger/v2/conversation/${convId}/read/`;
-  const verify = await hmac(path);
-  try {
-    await fetch(`https://wapi.flowstreamx.com${path}?verify=${verify}`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${t}`, 'Origin': 'https://tevi.com' },
-    });
-  } catch {}
+  } catch (e) { return { data: null, error: 'network_error' }; }
 }
 
 async function getMessages(convId) {
@@ -350,12 +298,30 @@ async function getMessages(convId) {
   return null;
 }
 
+async function markRead(convId) {
+  const t = await ensureToken();
+  if (!t) return;
+  const path = `/messenger/v2/conversation/${convId}/read/`;
+  const verify = await hmac(path);
+  try {
+    await fetch(`https://wapi.flowstreamx.com${path}?verify=${verify}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${t}`, 'Origin': 'https://tevi.com' },
+    });
+  } catch {}
+}
+
 // ── STATE ────────────────────────────────────────────────────────────────
 const DEF = () => ({
   botEnabled: false,
-  convMeta: {},   // convId -> { stage, introAt, turns, lastText, lastReply, done, lastSukiiReplyAt, userLastMsgAt, paymentConfirmedAt, membershipAt }
+  convMeta: {},
   knownSenders: {},
   lastResult: null,
+  // ── CONVERSATION QUEUE ──────────────────────────────────────────────
+  // Processes ONE conv at a time to avoid tab collision
+  queue: [],       // convId[] — pending convs to process
+  queueDone: [],    // convId[] — recently processed (cooldown)
+  queueBusy: false, // currently processing
 });
 
 async function loadState() {
@@ -363,7 +329,12 @@ async function loadState() {
     const d = await chrome.storage.local.get(STATE_KEY);
     const s = d[STATE_KEY];
     if (s && typeof s === 'object' && !Array.isArray(s)) {
-      return { ...DEF(), ...s, convMeta: { ...DEF().convMeta, ...(s.convMeta || {}) }, knownSenders: { ...DEF().knownSenders, ...(s.knownSenders || {}) } };
+      return {
+        ...DEF(), ...s,
+        convMeta: { ...DEF().convMeta, ...(s.convMeta || {}) },
+        queue: Array.isArray(s.queue) ? s.queue : [],
+        queueDone: Array.isArray(s.queueDone) ? s.queueDone : [],
+      };
     }
   } catch {}
   return DEF();
@@ -373,20 +344,344 @@ async function saveState(s) { try { await chrome.storage.local.set({ [STATE_KEY]
 async function isEnabled()  { const s = await loadState(); return !!s.botEnabled; }
 async function setEnabled(v){ const s = await loadState(); s.botEnabled = v; await saveState(s); }
 
-// ── POLL ────────────────────────────────────────────────────────────────
+// ── QUEUE HELPERS ────────────────────────────────────────────────────────
+function enqueueConv(state, convId) {
+  if (state.queue.includes(convId) || state.queueDone.includes(convId)) return false;
+  state.queue.push(convId);
+  return true;
+}
+
+function markQueueDone(state, convId) {
+  state.queue = state.queue.filter(id => id !== convId);
+  state.queueDone = [convId, ...state.queueDone].slice(0, 20); // keep last 20
+}
+
+function dequeueConv(state) {
+  if (state.queueBusy || state.queue.length === 0) return null;
+  state.queueBusy = true;
+  return state.queue[0];
+}
+
+function releaseQueue(state) {
+  if (state.queue.length > 0) {
+    const next = state.queue[0];
+    state.queueBusy = false;
+    return next;
+  }
+  state.queueBusy = false;
+  return null;
+}
+
+// ── IS SUKII? (recipient.id matches MY_UID) ───────────────────────────────
+// API returns recipient.id — compare against numeric MY_UID
+function isSukiiMessage(recipient, senderUid) {
+  // recipient.id = our UID (numeric string)
+  // senderUid = the person who sent the message
+  return recipient?.id === MY_UID;
+}
+
+// ── PAYMENT PROOF ────────────────────────────────────────────────────────
+function isPaymentProof(msg) {
+  if (!msg) return false;
+  const t = (msg.text || '').toLowerCase();
+  const textKws = ['bukti', 'transfer', 'pembayaran', 'bayar', 'tf', 'receipt', 'lunas', 'sudah transfer', 'udah transfer', 'sdh transfer'];
+  const hasTextKw = textKws.some(k => t.includes(k));
+  const hasImage = !!(msg.images?.length || (msg.attachments?.some && msg.attachments.some(a => a.type?.includes?.('image'))) || t.includes('[image]') || t.includes('foto'));
+  return hasTextKw || hasImage;
+}
+
+// ── SUKII-LAST-REPLIER ───────────────────────────────────────────────────
+function shouldSkipReply(meta, msgTime) {
+  if (!meta) return false;
+  const now = Date.now();
+
+  // Rule: Sukii was last → user following up on Sukii's message → skip
+  if (meta.sukiiLastReplyAt && meta.sukiiLastReplyAt >= (meta.userLastMsgAt || 0)) {
+    return true;
+  }
+
+  // Rule: User silent >24h → wake them up
+  const userAge = now - (meta.userLastMsgAt || msgTime || now);
+  if (userAge > 24 * 60 * 60 * 1000) return false;
+
+  // Rule: Payment confirmed, <6h passed → wait
+  if (meta.paymentConfirmedAt && now - meta.paymentConfirmedAt < 6 * 60 * 60 * 1000) {
+    return true;
+  }
+
+  return false;
+}
+
+// ── GET TEVI TAB ─────────────────────────────────────────────────────────
+async function getTeviTab() {
+  const tabs = await chrome.tabs.query({ url: '*://tevi.com/*' });
+  return tabs.find(t => !t.url.includes('/settings')) || tabs[0] || null;
+}
+
+// ── NAVIGATE TO CONV ─────────────────────────────────────────────────────
+async function navigateToConv(tabId, slug) {
+  const url = `https://tevi.com/@${slug}/messages`;
+  await chrome.tabs.update(tabId, { url, active: true });
+  // Wait for navigation + page ready
+  await sleep(2000);
+  const ready = await waitForPageReady(tabId, slug, 12000);
+  if (!ready) {
+    // Give extra time for slow connections
+    await sleep(5000);
+  }
+  return waitForPageReady(tabId, slug, 8000);
+}
+
+// ── PROCESS ONE CONVERSATION ─────────────────────────────────────────────
+async function processOneConv(conv, state, cfg, tab) {
+  const convId  = conv.id;
+  const rcv     = conv.recipient || {};
+  const msg     = conv.latest_message || {};
+  const text    = msg.text || '';
+  const slug    = rcv.channel_slug || '?';
+  const isSub   = rcv.is_my_subscriber === true;
+  const meta    = state.convMeta[convId] || {};
+  const stage   = meta.stage || 'new';
+
+  let msgTime = Date.now();
+  if (msg?.created_at) {
+    const ts = Number(msg.created_at) * 1000;
+    if (ts > 1700000000000) msgTime = ts;
+  }
+
+  // ── MEMBER: never touch ──────────────────────────────────────────────
+  if (isSub) {
+    if (stage !== 'member') state.convMeta[convId] = { ...meta, stage: 'member', done: true, membershipAt: Date.now() };
+    logD(`  @${slug} [member] skipped`);
+    markQueueDone(state, convId);
+    return { action: 'ignored', reason: 'member' };
+  }
+
+  // ── OWN MESSAGE (recipient is me → I sent this) ─────────────────────
+  if (isSukiiMessage(rcv, msg.sender?.uid)) {
+    if (text && meta.lastReply === text) {
+      state.convMeta[convId] = { ...meta, sukiiLastReplyAt: msgTime };
+      clearOverlay();
+    }
+    markQueueDone(state, convId);
+    return { action: 'ignored', reason: 'own_message' };
+  }
+
+  // ── DONE: stop replying ────────────────────────────────────────────
+  if (meta.done) {
+    markQueueDone(state, convId);
+    return { action: 'ignored', reason: 'done' };
+  }
+
+  // ── Navigate to DM ─────────────────────────────────────────────────
+  const tabId = tab.id;
+  const ready = await navigateToConv(tabId, slug);
+  if (!ready) {
+    logE(`[QUEUE] Could not ready @${slug} — deferring`);
+    releaseQueue(state);
+    return { action: 'deferred', reason: 'not_ready' };
+  }
+
+  // ── STAGE: new ─────────────────────────────────────────────────────
+  if (stage === 'new') {
+    const greeting = `Sukii. Informan Baby Val.\nChat langsung: membership Tevi.\nVCS: babyval.com`;
+    signalNewMessage(`Hai @${slug}!`, slug);
+    const sent = await domSendWithConfirm(tabId, greeting, slug);
+    if (sent) {
+      state.convMeta[convId] = {
+        slug, stage: 'intro_sent', introAt: Date.now(),
+        lastText: text, turns: 0,
+        sukiiLastReplyAt: Date.now(),
+        userLastMsgAt: msgTime,
+      };
+      log(`  @${slug} [intro_sent] ✅ greeting sent`);
+      markQueueDone(state, convId);
+      return { action: 'replied', greeting: true };
+    } else {
+      logE(`  @${slug} [new] ❌ greeting failed`);
+      releaseQueue(state);
+      return { action: 'failed', reason: 'send_failed' };
+    }
+  }
+
+  // ── STAGE: intro_sent ─────────────────────────────────────────────
+  if (stage === 'intro_sent') {
+    if (isPaymentProof(msg)) {
+      log(`  @${slug} [intro→done] payment proof — silent end`);
+      state.convMeta[convId] = { ...meta, done: true, lastText: text, paymentConfirmedAt: Date.now() };
+      markQueueDone(state, convId);
+      return { action: 'silent_end', reason: 'payment' };
+    }
+    if (!text || text === meta.lastText) {
+      logD(`  @${slug} [intro_sent] waiting for reply...`);
+      markQueueDone(state, convId);
+      return { action: 'ignored', reason: 'no_new_msg' };
+    }
+    // User replied → CS mode
+    log(`  @${slug} [intro→CS] replied: "${text.substring(0, 30)}"`);
+    const rule = findReply(text, cfg.rules);
+    let replyText = fmtReply(rule?.reply || cfg.rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
+    replyText = await aiEnrich(replyText, text);
+    signalTyping(replyText, slug);
+    const sent = await domSendWithConfirm(tabId, replyText, slug);
+    clearOverlay();
+    if (sent) {
+      state.convMeta[convId] = {
+        ...meta, slug,
+        stage: 'cs', turns: 1,
+        lastText: text, lastReply: replyText,
+        sukiiLastReplyAt: Date.now(),
+        userLastMsgAt: msgTime,
+      };
+      markQueueDone(state, convId);
+      return { action: 'replied', greeting: false };
+    } else {
+      releaseQueue(state);
+      return { action: 'failed', reason: 'send_failed' };
+    }
+  }
+
+  // ── STAGE: cs ─────────────────────────────────────────────────────
+  if (stage === 'cs') {
+    if (isPaymentProof(msg)) {
+      log(`  @${slug} [CS→done] payment proof — silent end`);
+      state.convMeta[convId] = { ...meta, done: true, lastText: text, paymentConfirmedAt: Date.now() };
+      markQueueDone(state, convId);
+      return { action: 'silent_end', reason: 'payment' };
+    }
+    if (!text || text === meta.lastText) {
+      const idleMs = (cfg.behavior?.idleMinutes || 30) * 60 * 1000;
+      const idleElapsed = Date.now() - (meta.lastActivityAt || meta.sukiiLastReplyAt || Date.now());
+      if (idleElapsed >= idleMs) {
+        log(`  @${slug} [CS→done] idle timeout`);
+        state.convMeta[convId] = { ...meta, done: true };
+        markQueueDone(state, convId);
+        return { action: 'done', reason: 'idle_timeout' };
+      }
+      markQueueDone(state, convId);
+      return { action: 'ignored', reason: 'no_new_msg' };
+    }
+    // New user message
+    const newMeta = { ...meta, userLastMsgAt: msgTime, lastText: text };
+    state.convMeta[convId] = newMeta;
+
+    if (shouldSkipReply(newMeta, msgTime)) {
+      log(`  @${slug} [CS→skip] Sukii was last replier`);
+      markQueueDone(state, convId);
+      return { action: 'ignored', reason: 'sukii_last' };
+    }
+
+    const maxTurns = cfg.behavior?.csMaxTurns || 3;
+    const newTurns = (meta.turns || 0) + 1;
+    log(`  @${slug} [CS turn ${newTurns}/${maxTurns}] "${text.substring(0, 30)}"`);
+
+    let replyText;
+    if (newTurns > maxTurns) {
+      const greeting = `Sukii. Informan Baby Val.\nChat langsung: membership Tevi.\nVCS: babyval.com`;
+      replyText = greeting;
+      signalNewMessage(`Loop @${slug}`, slug);
+    } else {
+      const rule = findReply(text, cfg.rules);
+      replyText = fmtReply(rule?.reply || cfg.rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
+      replyText = await aiEnrich(replyText, text);
+      signalTyping(replyText, slug);
+    }
+
+    const sent = await domSendWithConfirm(tabId, replyText, slug);
+    clearOverlay();
+
+    if (sent) {
+      state.convMeta[convId] = {
+        ...newMeta,
+        stage: newTurns > maxTurns ? 'intro_sent' : 'cs',
+        turns: newTurns > maxTurns ? 0 : newTurns,
+        lastReply: replyText,
+        sukiiLastReplyAt: Date.now(),
+        introAt: newTurns > maxTurns ? Date.now() : meta.introAt,
+      };
+      markQueueDone(state, convId);
+      return { action: 'replied', greeting: newTurns > maxTurns };
+    } else {
+      releaseQueue(state);
+      return { action: 'failed', reason: 'send_failed' };
+    }
+  }
+
+  markQueueDone(state, convId);
+  return { action: 'ignored', reason: 'unknown_stage' };
+}
+
+// ── POLL ─────────────────────────────────────────────────────────────────
 const POLL_MIN = 3;
 const ALARM    = 'tevi-poll';
+const BASE_DELAY = 8000; // base delay between queue tasks
 
 async function poll() {
   const start = Date.now();
   const hour  = new Date().getHours();
   const active = hour >= 17 || hour < 5;
-  logD(`[POLL] active=${active}`);
 
   const state = await loadState();
-  const cfg  = await loadConfig();
-  const convsResult = await getConvs();
+  const cfg   = await loadConfig();
 
+  if (!active) {
+    log(`[POLL] Outside active hours (${hour}:00) — skipping`);
+    await saveState({ ...state, lastResult: { dry: true, time: new Date().toISOString() } });
+    return;
+  }
+
+  // ── First: check TRACKED convs (greeting sent, conv dropped from unread) ──
+  const tracked = Object.entries(state.convMeta)
+    .filter(([id, m]) => !m.done && (m.stage === 'intro_sent' || m.stage === 'cs'))
+    .map(([id, m]) => ({ convId: id, ...m }));
+
+  for (const tc of tracked) {
+    // Skip if also in current unread list
+    const messages = await getMessages(tc.convId);
+    if (!messages?.length) continue;
+
+    const latest  = messages[messages.length - 1];
+    const lText   = latest?.text || '';
+    const lTime   = latest?.created_at ? Number(latest.created_at) * 1000 : Date.now();
+    if (lText === tc.lastText || !lText) continue;
+
+    const tab = await getTeviTab();
+    if (!tab) { logE('[POLL] No tevi tab for tracked conv'); continue; }
+
+    // Determine sender — compare recipient.id (our UID) vs sender uid
+    const senderUid = latest?.sender?.uid || '';
+    const isMe = latest?.sender?.is_me || false;
+
+    // If we sent it (is_me=true or sender uid = MY_UID), update sukiiLastReplyAt
+    if (isMe || senderUid === MY_UID) {
+      state.convMeta[tc.convId] = { ...state.convMeta[tc.convId], sukiiLastReplyAt: lTime };
+      continue;
+    }
+
+    // New user reply in tracked conv
+    log(`  [tracked @${tc.slug || tc.convId}] user replied: "${lText.substring(0, 30)}"`);
+    const slug = tc.slug || tc.convId;
+
+    if (shouldSkipReply(state.convMeta[tc.convId], lTime)) {
+      log(`  @${slug} [skip] Sukii was last replier`);
+      continue;
+    }
+
+    const newMeta = { ...state.convMeta[tc.convId], userLastMsgAt: lTime, lastText: lText };
+    const rule = findReply(lText, cfg.rules);
+    let replyText = fmtReply(rule?.reply || cfg.rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
+    replyText = await aiEnrich(replyText, lText);
+    signalTyping(replyText, slug);
+    const sent = await domSendWithConfirm(tab.id, replyText, slug);
+    clearOverlay();
+    if (sent) {
+      state.convMeta[tc.convId] = { ...newMeta, stage: 'cs', turns: 1, lastReply: replyText, sukiiLastReplyAt: Date.now() };
+    }
+    await sleep(BASE_DELAY);
+  }
+
+  // ── Queue-based processing of new convs ──────────────────────────────
+  const convsResult = await getConvs();
   if (convsResult.error === 'no_token') {
     logE('[POLL] No token');
     await saveState({ ...state, lastResult: { error: 'no_token', time: new Date().toISOString() } });
@@ -397,305 +692,77 @@ async function poll() {
     return;
   }
 
-  const convs = convsResult.data.results || [];
-  log(`[POLL] ${convs.length} unread — active=${active}`);
+  const allConvs = convsResult.data.results || [];
+  log(`[POLL] ${allConvs.length} total convs, queue=${state.queue.length}, busy=${state.queueBusy}`);
 
-  if (!active) {
-    await saveState({ ...state, lastResult: { convs: convs.length, processed: 0, replied: 0, ignored: convs.length, dry: true, time: new Date().toISOString() } });
+  // Discover new convs → add to queue
+  let enqueued = 0;
+  for (const conv of allConvs) {
+    if (!conv.id) continue;
+    const meta  = state.convMeta[conv.id] || {};
+    const stage = meta.stage || 'new';
+    // Only enqueue truly new convs
+    if (stage === 'new' && !meta.done) {
+      if (enqueueConv(state, conv.id)) enqueued++;
+    }
+  }
+  if (enqueued > 0) log(`[QUEUE] Added ${enqueued} new convs → ${state.queue.length} total pending`);
+
+  // Get tevi tab once for all queue processing
+  const tab = await getTeviTab();
+  if (!tab) {
+    logE('[POLL] No tevi tab — cannot process queue');
+    await saveState({ ...state, lastResult: { convs: allConvs.length, queue: state.queue.length, time: new Date().toISOString() } });
     return;
   }
 
-  let processed = 0, replied = 0, ignored = 0;
-  const maxTurns   = cfg.behavior?.csMaxTurns || 3;
-  const idleMs    = (cfg.behavior?.idleMinutes || 30) * 60 * 1000;
-  const introWait = 0; // disabled — no 3h wait, loop greeting on max turns
-  const rules     = cfg.rules || [];
-  const greeting = `Sukii. Informan Baby Val.\nChat langsung: membership Tevi.\nVCS: babyval.com`;
+  // Process queue ONE AT A TIME
+  let processed = 0, replied = 0, ignored = 0, failed = 0;
+  while (true) {
+    const nextConvId = dequeueConv(state);
+    if (!nextConvId) break;
 
-  // ── PAYMENT PROOF DETECTION ───────────────────────────────────────────
-  function isPaymentProof(msg) {
-    if (!msg) return false;
-    const t = msg.text || '';
-    const LOWER = t.toLowerCase();
-    // Check text keywords
-    const textKws = ['bukti', 'transfer', 'pembayaran', 'bayar', 'tf', 'receipt', 'lunas', 'sudah transfer', 'udah transfer', 'sdh transfer'];
-    const hasTextKw = textKws.some(k => LOWER.includes(k));
-    // Check for image attachment (has image_url or image data in the message object)
-    const hasImage = !!(msg.images?.length || msg.attachments?.some(a => a.type?.includes('image')) || t.includes('[image]') || t.includes('🖼') || t.includes('foto'));
-    // If user mentions payment proof in text AND/OR sends image → payment proof
-    return hasTextKw || hasImage;
-  }
-
-  // ── SUKII LAST REPLY LOGIC ───────────────────────────────────────────
-  // Sukii harus selalu terakhir balas.
-  // Skip reply (no reply, no read) if ALL of:
-  //   1. NOT a member (handled above)
-  //   2. NOT payment (paymentConfirmedAt + 6h not passed yet)
-  //   3. NOT user silent >24h
-  //   4. Sukii was already the LAST replier (user just following up)
-  function shouldSkipReply(meta, msgTime) {
-    if (!meta) return false;
-    const now = Date.now();
-    const sixHours = 6 * 60 * 60 * 1000;
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    // Rule 4: Sukii was last → user is following up on Sukii's message → skip
-    if (meta.sukiiLastReplyAt && meta.sukiiLastReplyAt >= (meta.userLastMsgAt || 0)) {
-      logD(`  [skip] Sukii was last replier (sukii=${meta.sukiiLastReplyAt} >= user=${meta.userLastMsgAt})`);
-      return true;
-    }
-
-    // Rule 3: User silent >24h → OK to reply (wake them up)
-    const userAge = (meta.userLastMsgAt || msgTime) ? now - (meta.userLastMsgAt || msgTime) : 0;
-    if (userAge > oneDay) {
-      logD(`  [allow] User silent >24h (${Math.round(userAge/3600000)}h) — will reply`);
-      return false;
-    }
-
-    // Rule 2: Payment delay (6h)
-    if (meta.paymentConfirmedAt && now - meta.paymentConfirmedAt < sixHours) {
-      const remaining = Math.round((sixHours - (now - meta.paymentConfirmedAt)) / 3600000);
-      logD(`  [skip] Payment confirmed, ${remaining}h remaining before reply window`);
-      return true;
-    }
-
-    return false;
-  }
-
-  // ── CHECK TRACKED CONVS (after greeting sent, conv drops from unread list) ──
-  const tracked = Object.entries(state.convMeta)
-    .filter(([id, m]) => !m.done && (m.stage === 'intro_sent' || m.stage === 'cs'))
-    .map(([id, m]) => ({ convId: id, ...m }));
-
-  for (const tc of tracked) {
-    const { convId, stage, lastText } = tc;
-    // Skip if already in this poll's unread convs
-    if (convs.find(c => c.id === convId)) continue;
-
-    const messages = await getMessages(convId);
-    if (!messages || messages.length === 0) continue;
-
-    const latest = messages[messages.length - 1];
-    const latestText = latest?.text || '';
-    const latestSenderUid = latest?.sender?.uid || '';
-    const latestTime = latest?.created_at ? Number(latest.created_at) * 1000 : Date.now();
-
-    if (latestText === lastText || !latestText) continue;
-
-    if (latestSenderUid === MY_UID) {
-      state.convMeta[convId] = { ...state.convMeta[convId], sukiiLastReplyAt: latestTime };
+    const conv = allConvs.find(c => c.id === nextConvId);
+    if (!conv) {
+      markQueueDone(state, nextConvId);
       continue;
     }
 
-    // New user message in tracked conv
-    log(`  [tracked @${tc.slug || convId}] user replied: "${latestText.substring(0,30)}"`);
-    const slug = tc.slug || convId;
-    const newMeta = { ...state.convMeta[convId], userLastMsgAt: latestTime, lastText: latestText };
-    state.convMeta[convId] = newMeta;
-
-    if (shouldSkipReply(newMeta, latestTime)) { log(`  @${slug} [skip] Sukii was last replier`); continue; }
-
-    // User replied → go to CS mode immediately
-    const rule = findReply(latestText, rules);
-    let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || '', slug);
-    replyText = await aiEnrich(replyText, latestText);
-    signalTyping(replyText, slug);
-    const sent = await domSend(replyText, slug);
-    clearOverlay();
-    if (sent) {
-      state.convMeta[convId] = { ...newMeta, stage: 'cs', turns: 1, lastReply: replyText, sukiiLastReplyAt: Date.now() };
-      replied++;
-    }
-  }
-
-  for (const conv of convs) {
-    const convId    = conv.id;
-    if (!convId) { processed++; continue; }
-
-    const rcv       = conv.recipient || {};
-    const msg       = conv.latest_message || {};
-    const text      = msg.text || '';
-    const senderUid = msg.sender?.uid || '';
-    const slug      = rcv.channel_slug || '?';
-    const isSub     = rcv.is_my_subscriber === true;
-    const meta      = state.convMeta[convId] || {};
-    const stage     = meta.stage || 'new';
-
-    // Message timestamp (fallback to now)
-    let msgTime = Date.now();
-    if (msg?.created_at) {
-      const ts = Number(msg.created_at) * 1000;
-      if (ts > 1700000000000) msgTime = ts;
-    }
-
+    log(`[QUEUE] Processing @${conv.recipient?.channel_slug || nextConvId} (${state.queue.length} remaining)`);
+    const result = await processOneConv(conv, state, cfg, tab);
     processed++;
 
-    // ── MEMBER: never touch ─────────────────────────────────────────────
-    if (isSub) {
-      if (stage !== 'member') { state.convMeta[convId] = { ...meta, stage: 'member', done: true, membershipAt: Date.now() }; }
-      logD(`  @${slug} [member] skipped`);
-      ignored++;
-      continue;
+    if (result.action === 'replied') replied++;
+    else if (result.action === 'ignored') ignored++;
+    else if (result.action === 'failed' || result.action === 'deferred') {
+      failed++;
+      // Failed: don't re-mark done, it stays in queue via releaseQueue
+      // Already handled inside processOneConv
     }
 
-    // ── OWN MESSAGE ────────────────────────────────────────────────────
-    if (senderUid === MY_UID) {
-      // Sukii just replied → update timestamp
-      if (text && meta.lastReply === text) {
-        state.convMeta[convId] = { ...meta, sukiiLastReplyAt: msgTime };
-        // Update overlay: Sukii typing done
-        clearOverlay();
-      }
-      ignored++;
-      continue;
-    }
+    // Dynamic delay: longer if greeting, shorter if simple reply
+    const delay = result.action === 'replied' && result.greeting
+      ? 12000   // greeting: 12s
+      : result.action === 'replied'
+        ? BASE_DELAY  // reply: 8s
+        : result.action === 'deferred'
+          ? 15000       // deferred (not ready): 15s before retry
+          : 5000;       // ignored: 5s
 
-    // ── DONE: stop replying ────────────────────────────────────────────
-    if (meta.done) {
-      logD(`  @${slug} [done] ignored`);
-      ignored++;
-      continue;
-    }
+    logD(`[QUEUE] Waiting ${delay}ms before next task...`);
+    await sleep(delay);
 
-    // ── STAGE: intro_sent ─────────────────────────────────────────────
-    if (stage === 'intro_sent') {
-      // Payment proof in intro_sent → silent end
-      if (text && isPaymentProof(msg)) {
-        log(`  @${slug} [intro→done] payment proof — silent end`);
-        state.convMeta[convId] = { ...meta, done: true, lastText: text, paymentConfirmedAt: Date.now() };
-        ignored++;
-        continue;
-      }
-
-      if (text && text !== meta.lastText) {
-        // User replied → go to CS mode immediately
-        log(`  @${slug} [intro→CS] replied: "${text.substring(0,30)}"`);
-        const rule = findReply(text, rules);
-        let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
-        replyText = await aiEnrich(replyText, text);
-        signalTyping(replyText, slug);
-        const sent = await domSend(replyText, slug);
-        clearOverlay();
-        if (sent) {
-          state.convMeta[convId] = {
-            ...meta,
-            slug,
-            stage: 'cs',
-            turns: 1,
-            lastText: text,
-            lastReply: replyText,
-            sukiiLastReplyAt: Date.now(),
-            userLastMsgAt: msgTime,
-          };
-          replied++;
-        } else { ignored++; }
-      } else {
-        logD(`  @${slug} [intro_sent] waiting for reply...`);
-        ignored++;
-      }
-      continue;
-    }
-
-    // ── STAGE: cs (CS conversation) ────────────────────────────────────
-    if (stage === 'cs') {
-      // Payment proof → silent end
-      if (text && isPaymentProof(msg)) {
-        log(`  @${slug} [CS→done] payment proof — silent end`);
-        state.convMeta[convId] = { ...meta, done: true, lastText: text, paymentConfirmedAt: Date.now() };
-        ignored++;
-        continue;
-      }
-
-      if (text && text !== meta.lastText) {
-        // New message from user — update user timestamp
-        const newMeta = { ...meta, userLastMsgAt: msgTime, lastText: text };
-        state.convMeta[convId] = newMeta;
-
-        // Check Sukii-last-replier rule
-        if (shouldSkipReply(newMeta, msgTime)) {
-          log(`  @${slug} [CS→skip] Sukii was last replier — no reply`);
-          // Don't update sukiiLastReplyAt, don't reply
-          ignored++;
-          continue;
-        }
-
-        // Count turn
-        const newTurns = (meta.turns || 0) + 1;
-        log(`  @${slug} [CS turn ${newTurns}/${maxTurns}] "${text.substring(0,30)}"`);
-
-        if (newTurns > maxTurns) {
-          // Max turns → LOOP back to greeting
-          log(`  @${slug} [CS→intro] max turns — looping greeting`);
-          const sent = await domSend(greeting, slug);
-          if (sent) {
-            state.convMeta[convId] = {
-              ...newMeta,
-              stage: 'intro_sent',
-              introAt: Date.now(),
-              turns: 0,
-              lastReply: greeting,
-              sukiiLastReplyAt: Date.now(),
-            };
-            replied++;
-          } else { ignored++; }
-          continue;
-        }
-
-        // Find and send reply
-        const rule = findReply(text, rules);
-        let replyText = rule ? fmtReply(rule.reply, slug) : fmtReply(rules.find(r => r.type === 'fallback')?.reply || 'Maaf ya...', slug);
-        replyText = await aiEnrich(replyText, text);
-        signalTyping(replyText, slug);
-        const sent = await domSend(replyText, slug);
-        clearOverlay();
-
-        if (sent) {
-          state.convMeta[convId] = {
-            ...newMeta,
-            turns: newTurns,
-            lastReply: replyText,
-            sukiiLastReplyAt: Date.now(),
-          };
-          replied++;
-        } else { ignored++; }
-      } else {
-        // Same message (no new), check idle
-        const idleElapsed = Date.now() - (meta.lastActivityAt || meta.sukiiLastReplyAt || Date.now());
-        if (idleElapsed >= idleMs) {
-          log(`  @${slug} [CS→done] idle timeout (${Math.round(idleElapsed/60000)}m)`);
-          state.convMeta[convId] = { ...meta, done: true };
-          ignored++;
-        } else {
-          logD(`  @${slug} [CS turn ${meta.turns}] waiting (${Math.round(idleElapsed/60000)}m idle)`);
-          ignored++;
-        }
-      }
-      continue;
-    }
-
-    // ── STAGE: new ────────────────────────────────────────────────────
-    log(`  @${slug} [new→intro] "${text.substring(0,40)}"`);
-    signalNewMessage(`Hai @${slug}!`, slug);
-    const sent = await domSend(greeting, slug);
-    if (sent) {
-      state.convMeta[convId] = {
-        slug, stage: 'intro_sent', introAt: Date.now(),
-        senderUid, lastText: text, turns: 0,
-        sukiiLastReplyAt: Date.now(),
-        userLastMsgAt: msgTime,
-      };
-      log(`  @${slug} [intro_sent] ✅ greeting sent`);
-      replied++;
-    } else {
-      logE(`  @${slug} [new] ❌ greeting failed`);
-      ignored++;
-    }
+    // Release and move to next
+    releaseQueue(state);
   }
 
   const result = {
-    processed, replied, ignored,
-    convs: convs.length, dry: false,
-    time: new Date().toISOString(), durationMs: Date.now() - start,
+    processed, replied, ignored, failed,
+    convs: allConvs.length,
+    queueRemaining: state.queue.length,
+    dry: false,
+    time: new Date().toISOString(),
+    durationMs: Date.now() - start,
     stats: {
       activeConvs: Object.values(state.convMeta).filter(m => m.stage === 'cs' && !m.done).length,
       doneConvs:   Object.values(state.convMeta).filter(m => m.done).length,
@@ -705,7 +772,7 @@ async function poll() {
 
   await saveState({ ...state, lastResult: result });
   await setOverlay({ pollTime: Date.now() });
-  log(`[POLL] Done p=${processed} r=${replied} i=${ignored} (${result.durationMs}ms)`);
+  log(`[POLL] Done p=${processed} r=${replied} i=${ignored} f=${failed} (${result.durationMs}ms)`);
 }
 
 // ── ALARM ────────────────────────────────────────────────────────────────
@@ -715,7 +782,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
   try { await poll(); } catch (e) { logE(`[ALARM] ${e.message}`); }
 });
 
-// ── MESSAGES ──────────────────────────────────────────────────────────────
+// ── MESSAGES ─────────────────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((msg, _, send) => {
   if (msg.type === 'GET_STATUS') {
     Promise.all([loadState(), loadConfig(), ensureToken()]).then(([state, cfg]) => {
@@ -724,6 +791,8 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
         result: state.lastResult || {},
         uid, hasToken: !!token,
         activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5,
+        queueLen: state.queue.length,
+        queueBusy: state.queueBusy,
         stats: state.lastResult?.stats || {},
         config: {
           rulesCount: cfg.rules?.length || 0,
@@ -739,7 +808,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
     setEnabled(msg.enabled).then(async () => {
       if (msg.enabled) {
         chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
-        log('[TOGGLE] ON');
+        log('[TOGGLE] ON — queue mode active');
         await poll();
       } else {
         chrome.alarms.cancel(ALARM);
@@ -750,10 +819,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
     return true;
   }
 
-  if (msg.type === 'GET_CONFIG') {
-    loadConfig().then(cfg => send(cfg));
-    return true;
-  }
+  if (msg.type === 'GET_CONFIG') { loadConfig().then(cfg => send(cfg)); return true; }
 
   if (msg.type === 'SAVE_CONFIG') {
     const errors = [];
@@ -790,24 +856,22 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
   }
 });
 
-// ── AUTO-RELOAD TRIGGER (for auto-reloader.js) ─────────────────────────────
+// ── AUTO-RELOAD ─────────────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((msg, _, send) => {
   if (msg.type === '__TEVI_RELOAD__') {
-    log('[RELOAD] __TEVI_RELOAD__ received — reloading extension...');
-    // Force service worker to terminate and restart
+    log('[RELOAD] Reloading...');
     chrome.runtime.reload();
     send({ ok: true });
     return true;
   }
 });
 
-// ── STARTUP ───────────────────────────────────────────────────────────────
+// ── STARTUP ─────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.6.2 — no 3h wait, loop greeting on max turns, Sukii-last-reply');
+  log('[SW] Tevi CS Bot v0.7.0 — queue mode, page-ready guard, send-confirm');
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
-    log('[SW] Was enabled — poll scheduled');
     setTimeout(async () => { if (await isEnabled()) await poll(); }, 2000);
   }
 })();
