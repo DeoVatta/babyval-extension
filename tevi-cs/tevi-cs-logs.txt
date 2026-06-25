@@ -1261,3 +1261,21 @@ Chat langsung:..."
 [2026-06-25T17:19:45.992Z] [BG] [DEBUG] [POLL] active=true
 [2026-06-25T17:19:46.120Z] [BG] [INFO] [API] ✅ 3 unread
 [2026-06-25T17:19:46.129Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:20:14.002Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:20:14.090Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:20:14.098Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:20:14.114Z] [BG] [ERROR] [ALARM] Cannot access 'tracked' before initialization
+[2026-06-25T17:23:14.098Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:23:14.112Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:23:14.119Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:23:14.126Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:23:14.199Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:23:14.205Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:23:14.211Z] [BG] [ERROR] [ALARM] Cannot access 'tracked' before initialization
+[2026-06-25T17:23:16.097Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:23:16.287Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:23:16.305Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:23:45.000Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:23:45.102Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:23:45.110Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:23:45.117Z] [BG] [ERROR] [ALARM] Cannot access 'tracked' before initialization

@@ -1,10 +1,11 @@
 /**
- * BACKGROUND — Service Worker Tevi CS Bot v0.6.0
+ * BACKGROUND — Service Worker Tevi CS Bot v0.6.2
  * Config-driven: all behavior from tevi_cs_config
  * Flow: intro → CS turns → loop-to-greeting (annoying tactic)
  * Payment proof → silent end (no reply, no read)
  * Sukii must always be last replier — no unanswered unless: membership, payment, >24h
  * DOM typing for visible send + overlay cat state signaling
+ * Auto-reload: listens for __TEVI_RELOAD__ message to force SW restart
  */
 
 const MY_UID    = '392388705';
@@ -844,6 +845,17 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
   if (msg.type === 'OPEN_POPUP') {
     chrome.action.openPopup().catch(() => {});
+    return true;
+  }
+});
+
+// ── AUTO-RELOAD TRIGGER (for auto-reloader.js) ─────────────────────────────
+chrome.runtime.onMessage.addListener((msg, _, send) => {
+  if (msg.type === '__TEVI_RELOAD__') {
+    log('[RELOAD] __TEVI_RELOAD__ received — reloading extension...');
+    // Force service worker to terminate and restart
+    chrome.runtime.reload();
+    send({ ok: true });
     return true;
   }
 });

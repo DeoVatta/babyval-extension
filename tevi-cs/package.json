@@ -5,6 +5,12 @@
   "main": "log-server.js",
   "scripts": {
     "start": "node log-server.js",
-    "dev": "node log-server.js"
+    "dev": "node log-server.js",
+    "watch": "node auto-reloader.js",
+    "reload": "node auto-reloader.js"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "ws": "^8.21.0"
   }
 }
