@@ -327,18 +327,37 @@
     .tc-dot.R { background: #F44336; }
     .tc-dot.O { background: #FF9800; }
     .tc-dot.N { background: #9E9E9E; }
+
+    /* ── TOGGLE BAR — always visible ─────────────────────────── */
+    .tc-toggle-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(15,15,26,0.88); border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 14px; padding: 7px 12px; margin-bottom: 6px;
+      backdrop-filter: blur(6px); min-width: 180px;
+    }
+    .tc-toggle-label { font-size: 11px; color: #aaa; font-weight: 600; }
+    .tc-toggle-btn {
+      padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 800;
+      cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .tc-toggle-btn.on  { background: #4CAF50; color: #fff; }
+    .tc-toggle-btn.off { background: #333; color: #777; border: 1px solid #444; }
   `);
 
   // ── BUILD CAT DOM ─────────────────────────────────────────────────────────
   const ui = document.createElement('div');
   ui.className = 'tc-wrap';
   ui.innerHTML = `
+    <div class="tc-toggle-bar" id="tcToggleBar">
+      <span class="tc-toggle-label">🐱 Sukii Bot</span>
+      <button class="tc-toggle-btn off" id="tcToggleBtn">OFF</button>
+    </div>
     <div class="tc-bubble" id="tcBubble">
       <span id="tcBubbleText"></span>
       <span class="tc-bubble-tail" id="tcBubbleTail"></span>
     </div>
     <div class="tc-panel" id="tcPanel">
-      <div class="tc-ph">🐱 Sukii Bot <span id="tcToggle" style="margin-left:auto;cursor:pointer;font-size:13px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.25);font-weight:700;">—</span></div>
+      <div class="tc-ph">🐱 Sukii Status</div>
       <div class="tc-pb">
         <div class="tc-pr"><span>Mode</span><span id="tcPdMode">—</span></div>
         <div class="tc-pr"><span>Poll</span><span id="tcPdPoll">—</span></div>
@@ -375,16 +394,16 @@
   document.body.appendChild(ui);
 
   // ── ELEMENTS ──────────────────────────────────────────────────────────────
-  const cat     = document.getElementById('tcCat');
-  const dot     = document.getElementById('tcDot');
-  const bubble  = document.getElementById('tcBubble');
-  const bText   = document.getElementById('tcBubbleText');
-  const bTail   = document.getElementById('tcBubbleTail');
-  const panel   = document.getElementById('tcPanel');
-  const pdMode  = document.getElementById('tcPdMode');
-  const pdToggle = document.getElementById('tcToggle');
-  const pdPoll  = document.getElementById('tcPdPoll');
-  const pdCount = document.getElementById('tcPdCount');
+  const cat       = document.getElementById('tcCat');
+  const dot       = document.getElementById('tcDot');
+  const bubble    = document.getElementById('tcBubble');
+  const bText     = document.getElementById('tcBubbleText');
+  const bTail     = document.getElementById('tcBubbleTail');
+  const panel     = document.getElementById('tcPanel');
+  const pdMode    = document.getElementById('tcPdMode');
+  const pdPoll    = document.getElementById('tcPdPoll');
+  const pdCount   = document.getElementById('tcPdCount');
+  const toggleBtn = document.getElementById('tcToggleBtn');
 
   // ── STATE ─────────────────────────────────────────────────────────────────
   // 'sleep' | 'alert' | 'typing'
@@ -484,18 +503,24 @@
     // Read botEnabled from overlay state (SW writes here on every poll/toggle)
     if (os.botEnabled) {
       dot.className = 'tc-dot G'; dot.textContent = 'Z';
-      pdToggle.textContent = 'ON';
-      pdToggle.style.background = 'rgba(76,175,80,0.5)';
+      toggleBtn.textContent = 'ON';
+      toggleBtn.className = 'tc-toggle-btn on';
     } else {
       dot.className = 'tc-dot N'; dot.textContent = '✕';
-      pdToggle.textContent = 'OFF';
-      pdToggle.style.background = 'rgba(255,82,82,0.5)';
+      toggleBtn.textContent = 'OFF';
+      toggleBtn.className = 'tc-toggle-btn off';
     }
 
     // Click toggle → write directly to storage (bypasses SW message channel)
-    pdToggle.onclick = async () => {
+    toggleBtn.onclick = async () => {
       const newVal = !os.botEnabled;
       await chrome.storage.local.set({ tevi_cs_toggle_req: { enabled: newVal, ts: Date.now() } });
+      // Optimistic update
+      os.botEnabled = newVal;
+      dot.className = newVal ? 'tc-dot G' : 'tc-dot N';
+      dot.textContent = newVal ? 'Z' : '✕';
+      toggleBtn.textContent = newVal ? 'ON' : 'OFF';
+      toggleBtn.className = newVal ? 'tc-toggle-btn on' : 'tc-toggle-btn off';
     };
 
     // React to typing state
