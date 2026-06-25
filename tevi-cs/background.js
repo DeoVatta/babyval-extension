@@ -801,6 +801,28 @@ async function poll() {
   log(`[POLL] Done p=${processed} r=${replied} i=${ignored} f=${failed} (${result.durationMs}ms)`);
 }
 
+// ── TOGGLE via STORAGE (popup/offline fallback) ──────────────────────────
+// MV3: popup → SW message fails when SW is suspended.
+// Instead popup writes to storage, SW watches onChanged.
+chrome.storage.onChanged.addListener(async (changes, area) => {
+  if (area !== 'local') return;
+  const t = changes['tevi_cs_toggle_req'];
+  if (!t || !t.newValue) return;
+  const { enabled } = t.newValue;
+  await setEnabled(enabled);
+  await setOverlay({ botEnabled: enabled });
+  if (enabled) {
+    chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
+    log('[TOGGLE] ON (via storage) — queue mode active');
+    await poll();
+  } else {
+    chrome.alarms.cancel(ALARM);
+    log('[TOGGLE] OFF (via storage)');
+  }
+  // Acknowledge toggle so popup knows it worked
+  await chrome.storage.local.set({ tevi_cs_toggle_ack: { enabled, ts: Date.now() } });
+});
+
 // ── ALARM ────────────────────────────────────────────────────────────────
 chrome.alarms.onAlarm.addListener(async alarm => {
   if (alarm.name !== ALARM) return;

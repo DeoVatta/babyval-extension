@@ -338,10 +338,9 @@
       <span class="tc-bubble-tail" id="tcBubbleTail"></span>
     </div>
     <div class="tc-panel" id="tcPanel">
-      <div class="tc-ph">🐱 Sukii Status</div>
+      <div class="tc-ph">🐱 Sukii Bot <span id="tcToggle" style="margin-left:auto;cursor:pointer;font-size:13px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.25);font-weight:700;">—</span></div>
       <div class="tc-pb">
         <div class="tc-pr"><span>Mode</span><span id="tcPdMode">—</span></div>
-        <div class="tc-pr"><span>Bot</span><span id="tcPdBot"><span class="tc-badge err">—</span></span></div>
         <div class="tc-pr"><span>Poll</span><span id="tcPdPoll">—</span></div>
         <div class="tc-pf">
           <span>Counter</span>
@@ -383,7 +382,7 @@
   const bTail   = document.getElementById('tcBubbleTail');
   const panel   = document.getElementById('tcPanel');
   const pdMode  = document.getElementById('tcPdMode');
-  const pdBot   = document.getElementById('tcPdBot');
+  const pdToggle = document.getElementById('tcToggle');
   const pdPoll  = document.getElementById('tcPdPoll');
   const pdCount = document.getElementById('tcPdCount');
 
@@ -485,11 +484,19 @@
     // Read botEnabled from overlay state (SW writes here on every poll/toggle)
     if (os.botEnabled) {
       dot.className = 'tc-dot G'; dot.textContent = 'Z';
-      pdBot.innerHTML = '<span class="tc-badge on">ON</span>';
+      pdToggle.textContent = 'ON';
+      pdToggle.style.background = 'rgba(76,175,80,0.5)';
     } else {
       dot.className = 'tc-dot N'; dot.textContent = '✕';
-      pdBot.innerHTML = '<span class="tc-badge off">OFF</span>';
+      pdToggle.textContent = 'OFF';
+      pdToggle.style.background = 'rgba(255,82,82,0.5)';
     }
+
+    // Click toggle → write directly to storage (bypasses SW message channel)
+    pdToggle.onclick = async () => {
+      const newVal = !os.botEnabled;
+      await chrome.storage.local.set({ tevi_cs_toggle_req: { enabled: newVal, ts: Date.now() } });
+    };
 
     // React to typing state
     if (os.typing === true && os.typingText) {

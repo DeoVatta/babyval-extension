@@ -1,5 +1,3 @@
-[2026-06-25T17:47:07.890Z] [BG] [INFO] [POLL] 3 unread — active=true
-[2026-06-25T17:47:07.946Z] [BG] [INFO] [API] ✅ 3 unread
 [2026-06-25T17:47:07.984Z] [BG] [INFO] [POLL] 3 unread — active=true
 [2026-06-25T17:47:09.485Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
 [2026-06-25T17:47:14.417Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
@@ -1998,3 +1996,5 @@ Chat langsung:..."
 [2026-06-25T18:20:28.845Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
 [2026-06-25T18:20:40.442Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
 [2026-06-25T18:23:01.833Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.2 — tab staleness fix, slow-laptop waits, slow typing, dom verify
+[2026-06-25T18:35:41.437Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.3 — overlay sync, queueBusy reset, 24/7 mode
+[2026-06-25T18:36:35.276Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.3 — overlay sync, queueBusy reset, 24/7 mode

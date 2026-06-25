@@ -415,8 +415,9 @@ body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; fon
   // ── TOGGLE BOT ──────────────────────────────────────────────────
   $('toggle').addEventListener('change', async () => {
     const enabled = $('toggle').checked;
-    renderStatus({ enabled, hasToken: !!config, result: {}, activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5, config: {} });
-    try { await chrome.runtime.sendMessage({ type: 'TOGGLE', enabled }); } catch {}
+    renderStatus({ enabled, hasToken: !!config, result: {}, activeHours: true, config: {} });
+    // Write to storage — SW detects via onChanged (works even when SW is suspended)
+    await chrome.storage.local.set({ tevi_cs_toggle_req: { enabled, ts: Date.now() } });
   });
 
   // ── INIT ───────────────────────────────────────────────────────
@@ -430,17 +431,36 @@ body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; fon
       if (sec.hmacSecret) $('hmacIn').value = sec.hmacSecret;
     } catch {}
 
-    // Load config
+    // Load config — try SW message first, fallback to storage
     try {
       const d = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
       if (d) { config = d; renderRules(); loadBehavior(); loadPersona(); }
-    } catch {}
+    } catch {
+      // SW suspended — read from storage directly
+      const d = await chrome.storage.local.get('tevi_cs_config');
+      if (d.tevi_cs_config) { config = d.tevi_cs_config; renderRules(); loadBehavior(); loadPersona(); }
+    }
 
-    // Load status
+    // Load status — try SW message first, fallback to storage
     try {
       const s = await chrome.runtime.sendMessage({ type: 'GET_STATUS' });
-      if (s) { $('toggle').checked = s.enabled; renderStatus(s); }
-    } catch {}
+      if (s) { $('toggle').checked = !!s.enabled; renderStatus(s); }
+    } catch {
+      // SW suspended — read botEnabled from overlay state
+      const d = await chrome.storage.local.get('tevi_cs_overlay_state');
+      const os = d.tevi_cs_overlay_state || {};
+      $('toggle').checked = !!os.botEnabled;
+      renderStatus({ enabled: os.botEnabled, hasToken: hasSecrets, result: {}, activeHours: true, config: {} });
+    }
+
+    // Keep in sync: when SW acknowledges toggle, update checkbox
+    chrome.storage.onChanged.addListener((changes) => {
+      const ack = changes['tevi_cs_toggle_ack'];
+      if (ack?.newValue) {
+        $('toggle').checked = ack.newValue.enabled;
+        renderStatus({ enabled: ack.newValue.enabled, hasToken: hasSecrets, result: {}, activeHours: true, config: {} });
+      }
+    });
   }
 
   init();
