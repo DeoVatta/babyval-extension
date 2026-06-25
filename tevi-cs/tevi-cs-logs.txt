@@ -1,30 +1,3 @@
-[2026-06-25T17:44:38.262Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.2 — no 3h wait, loop greeting on max turns, Sukii-last-reply
-[2026-06-25T17:44:39.815Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:44:40.155Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:44:49.091Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:44:49.813Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:44:50.362Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:44:59.847Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:45:00.604Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:45:01.218Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:45:10.664Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:45:11.365Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:45:11.831Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:45:21.418Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:45:22.201Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:45:22.323Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:45:32.265Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:45:32.978Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:45:33.408Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:45:44.844Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
-[2026-06-25T17:46:12.638Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:46:12.880Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:46:45.357Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.2 — no 3h wait, loop greeting on max turns, Sukii-last-reply
-[2026-06-25T17:46:45.521Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
-[2026-06-25T17:46:46.049Z] [BG] [INFO] [SW] Was enabled — poll scheduled
-[2026-06-25T17:46:46.066Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:46:49.664Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:46:54.313Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
 [2026-06-25T17:47:07.602Z] [BG] [INFO] [API] ✅ 3 unread
 [2026-06-25T17:47:07.890Z] [BG] [INFO] [POLL] 3 unread — active=true
 [2026-06-25T17:47:07.946Z] [BG] [INFO] [API] ✅ 3 unread
@@ -1998,3 +1971,30 @@ Chat langsung:..."
 [2026-06-25T18:16:41.820Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
 [2026-06-25T18:16:45.978Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
 [2026-06-25T18:16:48.102Z] [BG] [ERROR] [ALARM] Tabs cannot be edited right now (user may be dragging a tab).
+[2026-06-25T18:16:52.834Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:16:55.410Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:16:55.431Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:16:55.444Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:17:23.242Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:17:23.252Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T18:17:23.261Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:18:44.256Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:18:46.694Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:18:46.709Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:18:46.726Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:19:07.599Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:19:14.689Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:19:14.758Z] [BG] [INFO] [POLL] 100 total convs, queue=93, busy=false
+[2026-06-25T18:19:15.243Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:19:26.541Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:19:26.558Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:19:26.582Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:19:35.626Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:19:41.556Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:19:54.039Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:19:54.077Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:19:54.155Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:20:02.400Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:20:09.078Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
+[2026-06-25T18:20:28.845Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:20:40.442Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback

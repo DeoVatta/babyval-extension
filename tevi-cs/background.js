@@ -894,7 +894,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
 // ── STARTUP ─────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback');
+  log('[SW] Tevi CS Bot v0.7.2 — tab staleness fix, slow-laptop waits, slow typing, dom verify');
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
