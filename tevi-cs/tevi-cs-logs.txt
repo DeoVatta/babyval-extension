@@ -232,3 +232,132 @@
 [2026-06-25T15:02:18.531Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
 [2026-06-25T15:02:18.732Z] [OVERLAY] [INFO] [OVERLAY] Loaded v0.1.0.3 on https://tevi.com/messages
 [2026-06-25T15:02:18.812Z] [INTERCEPTOR] [INFO] [INTERCEPTOR] ✅ Active — watching tevi.com API calls
+[2026-06-25T15:04:59.790Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.0.0 started
+[2026-06-25T15:04:59.879Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:05:00.685Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:05:01.299Z] [BG] [INFO] [POLL] 7 unread, dry=false
+[2026-06-25T15:05:01.311Z] [BG] [DEBUG]   [1] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:05:01.339Z] [BG] [ERROR] [POLL] Attempt 1 failed | {"error":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:01.357Z] [BG] [DEBUG] [POLL] Retry 2/3 in 2000ms
+[2026-06-25T15:05:03.354Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:05:03.490Z] [BG] [INFO] [POLL] 7 unread, dry=false
+[2026-06-25T15:05:03.505Z] [BG] [DEBUG]   [1] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:05:03.534Z] [BG] [ERROR] [POLL] Attempt 2 failed | {"error":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:03.558Z] [BG] [DEBUG] [POLL] Retry 3/3 in 4000ms
+[2026-06-25T15:05:04.539Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:05:04.874Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:05:07.676Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:05:07.695Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:05:08.451Z] [BG] [INFO] [POLL] 7 unread, dry=false
+[2026-06-25T15:05:08.515Z] [BG] [DEBUG]   [1] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:05:08.580Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:08.618Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:19.518Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:05:23.320Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:05:23.344Z] [CS] [INFO] [CS] Token found — UID=392388705 | prefix=eyJhbGciOiJSUzI1NiIs
+[2026-06-25T15:05:27.069Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:05:29.659Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:05:29.898Z] [BG] [INFO] [POLL] 7 unread, dry=false
+[2026-06-25T15:05:29.906Z] [BG] [DEBUG]   [1] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:05:29.916Z] [BG] [ERROR] [POLL] Attempt 1 failed | {"error":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:29.922Z] [BG] [DEBUG] [POLL] Retry 2/3 in 2000ms
+[2026-06-25T15:05:32.191Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:05:32.939Z] [BG] [INFO] [POLL] 7 unread, dry=false
+[2026-06-25T15:05:32.949Z] [BG] [DEBUG]   [1] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:05:32.963Z] [BG] [ERROR] [POLL] Attempt 2 failed | {"error":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:32.970Z] [BG] [DEBUG] [POLL] Retry 3/3 in 4000ms
+[2026-06-25T15:05:36.975Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:05:37.122Z] [BG] [INFO] [POLL] 7 unread, dry=false
+[2026-06-25T15:05:37.128Z] [BG] [DEBUG]   [1] @aa_andi_a.s: "live lagi ga malam ini" → vcs/first
+[2026-06-25T15:05:37.137Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:37.147Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '577a4732-11e1-4565-af55-de16cdb66d6f')"}
+[2026-06-25T15:05:39.181Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:05:54.163Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:06:09.162Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:06:24.235Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:06:39.179Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:06:54.179Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:07:09.421Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:07:24.159Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:08:09.906Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.0.0 started
+[2026-06-25T15:08:09.929Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:08:09.958Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:08:09.972Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:08:10.879Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:08:11.142Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:08:11.155Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:08:11.162Z] [BG] [ERROR] [POLL] Attempt 1 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:08:11.174Z] [BG] [DEBUG] [POLL] Retry 2/3 in 2000ms
+[2026-06-25T15:08:13.159Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:08:13.310Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:08:13.321Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:08:13.334Z] [BG] [ERROR] [POLL] Attempt 2 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:08:13.345Z] [BG] [DEBUG] [POLL] Retry 3/3 in 4000ms
+[2026-06-25T15:08:17.335Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:08:17.438Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:08:17.445Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:08:17.451Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:08:17.458Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:08:39.878Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:08:40.012Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:08:40.022Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:08:40.030Z] [BG] [ERROR] [POLL] Attempt 1 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:08:40.036Z] [BG] [DEBUG] [POLL] Retry 2/3 in 2000ms
+[2026-06-25T15:08:42.033Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:08:42.154Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:08:42.160Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:08:42.168Z] [BG] [ERROR] [POLL] Attempt 2 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:08:42.174Z] [BG] [DEBUG] [POLL] Retry 3/3 in 4000ms
+[2026-06-25T15:08:46.165Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:08:46.285Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:08:46.291Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:08:46.298Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:08:46.303Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:40.527Z] [BG] [INFO] [SW] Tevi CS Bot v0.2.0.0 started
+[2026-06-25T15:11:40.566Z] [BG] [INFO] [TOKEN] Loaded from storage — UID=392388705
+[2026-06-25T15:11:40.585Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:11:40.613Z] [BG] [INFO] [SW] Was enabled — scheduling poll
+[2026-06-25T15:11:41.283Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:11:41.304Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:11:41.352Z] [BG] [ERROR] [POLL] Attempt 1 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:41.398Z] [BG] [DEBUG] [POLL] Retry 2/3 in 2000ms
+[2026-06-25T15:11:41.742Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:11:41.966Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:11:41.976Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:11:41.984Z] [BG] [ERROR] [POLL] Attempt 1 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:42.000Z] [BG] [DEBUG] [POLL] Retry 2/3 in 2000ms
+[2026-06-25T15:11:43.350Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:11:43.984Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:11:44.037Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:11:44.072Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:11:44.096Z] [BG] [ERROR] [POLL] Attempt 2 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:44.109Z] [BG] [DEBUG] [POLL] Retry 3/3 in 4000ms
+[2026-06-25T15:11:44.212Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:11:44.223Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:11:44.245Z] [BG] [ERROR] [POLL] Attempt 2 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:44.261Z] [BG] [DEBUG] [POLL] Retry 3/3 in 4000ms
+[2026-06-25T15:11:48.082Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:11:48.195Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:11:48.202Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:11:48.209Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:48.227Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:48.252Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:11:48.343Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:11:48.353Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:11:48.361Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:11:48.368Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:12:10.620Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:12:10.750Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:12:10.758Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:12:10.775Z] [BG] [ERROR] [POLL] Attempt 1 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:12:10.785Z] [BG] [DEBUG] [POLL] Retry 2/3 in 2000ms
+[2026-06-25T15:12:12.783Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:12:12.995Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:12:13.007Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:12:13.027Z] [BG] [ERROR] [POLL] Attempt 2 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:12:13.053Z] [BG] [DEBUG] [POLL] Retry 3/3 in 4000ms
+[2026-06-25T15:12:17.046Z] [BG] [DEBUG] [POLL] Start dry=false
+[2026-06-25T15:12:17.160Z] [BG] [INFO] [POLL] 8 unread, dry=false
+[2026-06-25T15:12:17.171Z] [BG] [DEBUG]   [1] @mister_up: "👋👋👋" → vcs/first
+[2026-06-25T15:12:17.190Z] [BG] [ERROR] [POLL] Attempt 3 failed | {"error":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}
+[2026-06-25T15:12:17.201Z] [BG] [ERROR] [POLL] All retries failed | {"lastError":"Cannot read properties of undefined (reading '667691ff-72a2-4baf-a154-208d80317397')"}

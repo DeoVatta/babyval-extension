@@ -116,7 +116,7 @@
   <div class="ic">🤖</div>
   <div class="ti">
     <h1>Tevi CS Bot</h1>
-    <div class="v">v0.2.0.0 — tevi-cs</div>
+    <div class="v">v0.2.1.0 — tevi-cs</div>
   </div>
   <div class="bd" id="topBd">OFF</div>
 </div>
@@ -155,10 +155,12 @@
     <div class="ir"><span>Last Poll</span><span id="lp">—</span></div>
     <div class="ir"><span>Token UID</span><span id="uid">—</span></div>
     <div class="ir"><span>Hours</span><span id="hrs">—</span></div>
+    <div class="ir"><span>API Sniff</span><span id="sniff" style="color:#a29bfe">—</span></div>
   </div>
 </div>
 
 <div class="ft">Active 17:00–05:00 • 3 min interval</div>
+<div class="ft" style="color:#6c5ce7;font-size:9px;padding-top:0">🔍 Purple badge = Sniffer • Click to dump logs</div>
 
 <script>
 (function() {
@@ -168,6 +170,7 @@
     sub: $('sub'), errBanner: $('errBanner'),
     toggle: $('toggle'), proc: $('proc'), repl: $('repl'),
     ign: $('ign'), lp: $('lp'), uid: $('uid'), hrs: $('hrs'),
+    sniff: $('sniff'),
   };
 
   function fmt(iso) {
@@ -233,6 +236,14 @@
         localStorage.setItem('tevi_cs_popup', JSON.stringify({ botEnabled: s.enabled }));
         render(s);
       }
+    } catch {}
+
+    // Sniff counter
+    try {
+      chrome.storage.local.get('tevi_sniff', d => {
+        const n = (d['tevi_sniff'] || []).length;
+        el.sniff.textContent = n > 0 ? `${n} calls` : '—';
+      });
     } catch {}
   }
 

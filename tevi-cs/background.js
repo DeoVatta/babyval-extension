@@ -227,18 +227,32 @@ async function markRead(convId, token) {
 }
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
+const DEFAULT_STATE = { repliedOnce: {}, botEnabled: false, knownUnreadIds: [], lastResult: null };
+
+function mergeState(fresh) {
+  if (!fresh || typeof fresh !== 'object' || Array.isArray(fresh)) return { ...DEFAULT_STATE };
+  return { ...DEFAULT_STATE, ...fresh };
+}
+
 async function loadState() {
   try {
     const d = await chrome.storage.local.get(STORAGE_KEY);
-    return d[STORAGE_KEY] || { repliedOnce: {}, botEnabled: false, knownUnreadIds: [] };
-  } catch { return { repliedOnce: {}, botEnabled: false, knownUnreadIds: [] }; }
+    return mergeState(d[STORAGE_KEY]);
+  } catch { return { ...DEFAULT_STATE }; }
 }
-async function saveState(s) { try { await chrome.storage.local.set({ [STORAGE_KEY]: s }); } catch {} }
+async function saveState(s) {
+  if (!s) return;
+  try { await chrome.storage.local.set({ [STORAGE_KEY]: s }); } catch {}
+}
 async function setEnabled(v) { const s = await loadState(); s.botEnabled = v; await saveState(s); }
 async function isEnabled() { const s = await loadState(); return !!s.botEnabled; }
-async function hasReplied(id) { const s = await loadState(); return !!s.repliedOnce[id]; }
+async function hasReplied(id) {
+  const s = await loadState();
+  return !!(s?.repliedOnce && s.repliedOnce[id]);
+}
 async function markReplied(id) {
   const s = await loadState();
+  if (!s.repliedOnce) s.repliedOnce = {};
   s.repliedOnce[id] = new Date().toISOString();
   const entries = Object.entries(s.repliedOnce);
   if (entries.length > 200) s.repliedOnce = Object.fromEntries(entries.slice(-200));
@@ -399,7 +413,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
 // ── STARTUP ───────────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.2.0.0 started');
+  log('[SW] Tevi CS Bot v0.2.1.0 started');
 
   // Load token immediately
   await loadPersistedToken();
