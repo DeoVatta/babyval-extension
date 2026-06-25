@@ -9,7 +9,8 @@
     "storage",
     "activeTab",
     "scripting",
-    "management"
+    "management",
+    "tabs"
   ],
   "host_permissions": [
     "https://tevi.com/*",

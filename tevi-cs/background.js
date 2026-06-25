@@ -279,13 +279,131 @@ async function refreshTeviToken() {
 let _wapiToken = null;
 let _wapiTokenExpiry = 0;
 
+// Old getWapiToken removed — see new one at line ~438
+
+// ── Inject Token Capture ────────────────────────────────────────────────
+
+const TOKEN_INJECT_SCRIPT = `
+(function() {
+  try {
+    var raw = localStorage.getItem('user_logged_list');
+    if (!raw) { window.__TEVI_TOKEN_RESULT__ = null; return; }
+    var entries = JSON.parse(raw);
+    for (var uid in entries) {
+      var entry = entries[uid];
+      if (!entry || !entry.access_token) continue;
+      var token = entry.access_token;
+      var refresh = entry.refresh_token;
+      var payload;
+      try { payload = JSON.parse(atob(token.split('.')[1])); } catch(e) { continue; }
+      var isExpired = payload.exp * 1000 < Date.now();
+      var isAnonymous = payload.anonymous !== false;
+      if (isExpired || isAnonymous) continue;
+      var expiresAt = new Date(payload.exp * 1000).toISOString();
+      window.__TEVI_TOKEN_RESULT__ = {
+        uid: uid,
+        access_token: token,
+        refresh_token: refresh || null,
+        expires_at: expiresAt,
+        isAnonymous: false,
+        display_name: (entry.user && entry.user.display_name) || null
+      };
+      return;
+    }
+    window.__TEVI_TOKEN_RESULT__ = null;
+  } catch(e) {
+    window.__TEVI_TOKEN_RESULT__ = null;
+  }
+})();
+`;
+
+/**
+ * Capture Tevi token directly by injecting script into Tevi tab.
+ * Uses chrome.scripting.executeScript (MV3) — no CS message needed.
+ */
+async function captureTokenFromTeviTab() {
+  try {
+    // Find Tevi tab
+    const tabs = await new Promise(r => chrome.tabs.query({}, r));
+    const teviTab = tabs.find(t => t.url && t.url.match(/tevi\.com\//));
+    if (!teviTab) {
+      log('WARN', '[AUTH] No Tevi tab found');
+      return null;
+    }
+
+    // Inject script to read localStorage
+    await chrome.scripting.executeScript({
+      target: { tabId: teviTab.id },
+      func: () => {
+        try {
+          const raw = localStorage.getItem('user_logged_list');
+          if (!raw) { window.__TEVI_TOKEN_RESULT__ = null; return; }
+          const entries = JSON.parse(raw);
+          for (const uid in entries) {
+            const entry = entries[uid];
+            if (!entry || !entry.access_token) continue;
+            const token = entry.access_token;
+            let payload;
+            try { payload = JSON.parse(atob(token.split('.')[1])); } catch(e) { continue; }
+            const isExpired = payload.exp * 1000 < Date.now();
+            const isAnonymous = payload.anonymous !== false;
+            if (isExpired || isAnonymous) continue;
+            window.__TEVI_TOKEN_RESULT__ = {
+              uid: uid,
+              access_token: token,
+              refresh_token: entry.refresh_token || null,
+              expires_at: new Date(payload.exp * 1000).toISOString(),
+              isAnonymous: false,
+              display_name: (entry.user && entry.user.display_name) || null,
+            };
+            return;
+          }
+          window.__TEVI_TOKEN_RESULT__ = null;
+        } catch(e) {
+          window.__TEVI_TOKEN_RESULT__ = null;
+        }
+      },
+    });
+
+    // Read result back via evaluate
+    const result = await new Promise(resolve => {
+      chrome.scripting.executeScript({
+        target: { tabId: teviTab.id },
+        func: () => window.__TEVI_TOKEN_RESULT__,
+      }).then(results => resolve(results && results[0] && results[0].result));
+    });
+
+    return result || null;
+  } catch (e) {
+    log('WARN', '[AUTH] Token capture from tab failed: ' + e.message);
+    return null;
+  }
+}
+
+/**
+ * Capture Tevi token — Priority:
+ * 1. Inject script into Tevi tab (MV3 scripting API)
+ * 2. On TEVI_TOKEN message from CS (fallback)
+ */
+async function captureTeviToken() {
+  // Try injecting into Tevi tab first
+  const tokenInfo = await captureTokenFromTeviTab();
+  if (tokenInfo) {
+    log('INFO', '[AUTH] Token captured from Tevi tab: uid=' + tokenInfo.uid + ' display=' + tokenInfo.display_name);
+    await handleTeviToken(tokenInfo);
+    return;
+  }
+  log('WARN', '[AUTH] No token from Tevi tab — ensure Tevi tab is open');
+}
+
 async function getWapiToken() {
+  if (_wapiToken && Date.now() < _wapiTokenExpiry - 60000) return _wapiToken;
+
   // Priority 1: Check storage for valid Tevi token
   const stored = await sg(['tevi_token', 'tevi_cs_secrets']);
   const storedToken = stored.tevi_token;
 
   if (storedToken?.access_token) {
-    // Check expiry
     if (storedToken.expires_at) {
       const exp = new Date(storedToken.expires_at).getTime();
       if (exp > Date.now() + 60000) {
@@ -295,8 +413,6 @@ async function getWapiToken() {
         return _wapiToken;
       }
     }
-
-    // Priority 2: Try refresh with stored refresh_token
     if (storedToken.refresh_token) {
       const refreshed = await refreshTeviToken();
       if (refreshed) {
@@ -307,7 +423,7 @@ async function getWapiToken() {
     }
   }
 
-  // Priority 3: Try Supabase for any stored token
+  // Priority 2: Try Supabase for any stored token
   const dbToken = await getTokenFromSupabase();
   if (dbToken) {
     _wapiToken = dbToken.access_token;
@@ -320,9 +436,9 @@ async function getWapiToken() {
   return null;
 }
 
-// Called by CS when it captures Tevi token
+// Called when token captured (from CS message or direct tab injection)
 async function handleTeviToken(tokenInfo) {
-  log('INFO', '[AUTH] Tevi token received from CS: uid=' + tokenInfo.uid + ' display=' + tokenInfo.display_name);
+  log('INFO', '[AUTH] Tevi token: uid=' + tokenInfo.uid + ' display=' + tokenInfo.display_name);
 
   // Save to storage
   await ss({ tevi_token: tokenInfo });
@@ -338,15 +454,10 @@ async function handleTeviToken(tokenInfo) {
 
   // If bot is enabled and no token, trigger scan
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
-  if (st.botEnabled && !_wapiToken) {
+  if (st.botEnabled) {
     await runScan();
   }
 }
-
-async function getWapiToken() {
-  if (_wapiToken && Date.now() < _wapiTokenExpiry - 60000) return _wapiToken;
-
-// Old Firebase auth removed — using Tevi token capture instead
 
 // ── Messenger API ─────────────────────────────────────────────────────
 
@@ -730,11 +841,8 @@ async function init() {
 
   await setupAlarms();
 
-  // Pre-auth (non-blocking)
-  getWapiToken().then(token => {
-    if (token) log('INFO', '[INIT] Auth OK');
-    else log('ERROR', '[INIT] Auth FAILED');
-  });
+  // Capture Tevi token via tab injection (non-blocking)
+  captureTeviToken();
 
   await syncOverlay({ botEnabled: false, pollTime: POLL });
 
