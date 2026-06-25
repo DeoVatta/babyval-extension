@@ -417,6 +417,45 @@
       return true;
     }
 
+    // INTERCEPT_SEND: monkey-patch fetch/XHR to capture Tevi's send-message API call
+    if (msg.type === 'INTERCEPT_SEND') {
+      (function() {
+        const _fetch = window.fetch;
+        const _xhrOpen = XMLHttpRequest.prototype.open;
+        const _xhrSend = XMLHttpRequest.prototype.send;
+        let captured = false;
+        function tryCapture(url, method, headers, body) {
+          if (captured) return;
+          if (url.includes('send') || url.includes('message') || url.includes('chat')) {
+            captured = true;
+            chrome.runtime.sendMessage({ type: 'API_SEND_PATTERN', url, method, headers, bodyFields: body });
+            l('[INTERCEPT] Captured: ' + method + ' ' + url.substring(url.indexOf('/wapi')));
+          }
+        }
+        window.fetch = async function(input, init) {
+          const url = typeof input === 'string' ? input : input?.url || '';
+          const method = (init?.method || 'GET').toUpperCase();
+          if (url.includes('wapi.flowstreamx') && method === 'POST') {
+            let hdrs = {}; if (init?.headers instanceof Headers) init.headers.forEach((v, k) => hdrs[k] = v);
+            else if (init?.headers) hdrs = { ...init.headers };
+            tryCapture(url, method, hdrs, init?.body);
+          }
+          return _fetch.apply(this, arguments);
+        };
+        XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+          this.__tevi_url = url; this.__tevi_method = method.toUpperCase();
+          return _xhrOpen.call(this, method, url, ...rest);
+        };
+        XMLHttpRequest.prototype.send = function(body) {
+          if (this.__tevi_url && this.__tevi_url.includes('wapi.flowstreamx')) tryCapture(this.__tevi_url, this.__tevi_method, {}, body);
+          return _xhrSend.call(this, body);
+        };
+        l('[INTERCEPT] Send capture active');
+      })();
+      sendResp({ ok: true });
+      return true;
+    }
+
     // PING
     if (msg.type === 'PING') {
       sendResp({ ok: true, slug: getSlug(), url: location.href });
@@ -424,5 +463,5 @@
     }
   });
 
-  l('v0.8 active — ' + location.href);
+  l('v0.9 active — ' + location.href);
 })();

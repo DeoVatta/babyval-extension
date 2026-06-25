@@ -1,100 +1,139 @@
 /**
- * API INTERCEPTOR — Tevi CS Bot (v0.1.0.3)
- * Monkey-patch fetch/XHR on tevi.com to auto-capture the real API endpoint
- * Stores discovered endpoint in chrome.storage.local — background.js uses it
+ * INTERCEPTOR v0.8 — Capture Tevi API send-message endpoint + auth
+ * Run ONCE on tevi.com to capture the exact API call used to send DMs
+ * Sends captured data to log server
  */
 
 (function() {
-  'use strict';
+  if (window.__TEVI_INTERCEPT__) return;
+  window.__TEVI_INTERCEPT__ = true;
 
-  const LOG_SERVER = 'http://localhost:3131';
-  const STORAGE_KEY = 'tevi_cs_api_state';
+  const LOG = 'http://localhost:3131';
 
-  function sendLog(msg, level = 'INFO') {
+  function sendLog(msg) {
     try {
-      fetch(`${LOG_SERVER}/log`, {
+      fetch(LOG + '/log', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: 'INTERCEPTOR', level, message: msg }),
+        body: JSON.stringify({ source: 'INTERCEPT', level: 'INFO', message: msg, ts: new Date().toISOString() }),
       }).catch(() => {});
     } catch {}
   }
 
-  function isConversationUrl(url) {
-    try {
-      const u = new URL(url, window.location.origin);
-      return u.hostname.includes('wapi.flowstreamx.com') &&
-             u.pathname.includes('conversation') &&
-             !u.pathname.includes('/read') &&
-             !u.pathname.includes('/send') &&
-             !u.pathname.includes('/message');
-    } catch { return false; }
+  function captureCookies() {
+    const needed = ['access_token', 'token', 'session', 'auth'];
+    const found = {};
+    for (const name of needed) {
+      const val = document.cookie.split(';').find(c => c.trim().startsWith(name + '='));
+      if (val) found[name] = val.trim();
+    }
+    return found;
   }
 
-  function saveEndpoint(url) {
-    try {
-      const u = new URL(url, window.location.origin);
-      const clean = u.pathname + '?' + u.search.split('&').filter(p =>
-        !p.startsWith('verify=')
-      ).join('&');
-      chrome.storage.local.get(STORAGE_KEY, (data) => {
-        const state = data[STORAGE_KEY] || {};
-        if (!state.discoveredEndpoint) {
-          state.discoveredEndpoint = clean;
-          state.discoveredAt = new Date().toISOString();
-          chrome.storage.local.set({ [STORAGE_KEY]: state });
-          sendLog(`[INTERCEPTOR] ✅ Endpoint discovered: ${clean}`, 'INFO');
-        }
-      });
-    } catch {}
+  function captureLocalStorage() {
+    const keys = ['token', 'accessToken', 'authToken', 'user', 'session', 'apiKey'];
+    const found = {};
+    for (const k of keys) {
+      try {
+        const v = localStorage.getItem(k) || sessionStorage.getItem(k);
+        if (v) found[k] = v;
+      } catch {}
+    }
+    return found;
   }
 
-  // ── Monkey-patch fetch — once ──────────────────────────────────────────
+  // Monkey-patch fetch
   const _fetch = window.fetch;
   window.fetch = async function(input, init) {
     const url = typeof input === 'string' ? input : input?.url || '';
-    const method = init?.method || 'GET';
+    const method = (init?.method || 'GET').toUpperCase();
 
-    if (url.includes('wapi.flowstreamx.com') && isConversationUrl(url)) {
-      sendLog(`[INTERCEPTOR] 🔍 ${method} ${url.substring(url.indexOf('/messenger'))}`, 'DEBUG');
-    }
+    // Log ALL wapi.flowstreamx calls
+    if (url.includes('wapi.flowstreamx')) {
+      const headers = init?.headers || {};
+      const headersObj = {};
+      if (headers instanceof Headers) {
+        headers.forEach((v, k) => headersObj[k] = v);
+      } else if (Array.isArray(headers)) {
+        headers.forEach(([k, v]) => headersObj[k] = v);
+      } else {
+        Object.assign(headersObj, headers);
+      }
 
-    const res = await _fetch.apply(this, arguments);
+      sendLog('[INTERCEPT] ' + method + ' ' + url.substring(url.indexOf('/wapi')) + ' HEADERS:' + JSON.stringify(headersObj).substring(0, 300));
 
-    // If this was a conversations GET, capture the endpoint
-    if (url.includes('wapi.flowstreamx.com') && isConversationUrl(url) && method === 'GET') {
-      saveEndpoint(url);
-      // Also try to read response body
+      // Capture response too
+      const res = await _fetch.apply(this, arguments);
       try {
         const clone = res.clone();
-        const json = await clone.json();
-        if (json?.data?.results) {
-          sendLog(`[INTERCEPTOR] ✅ Conversations response OK! count=${json.data.results.length}`, 'INFO');
-        } else if (json?.success === false) {
-          sendLog(`[INTERCEPTOR] ❌ Conversations response FAIL: ${json.message}`, 'ERROR');
+        const text = await clone.text();
+        if (text.length < 2000) {
+          sendLog('[INTERCEPT] RESP ' + method + ' ' + url.substring(url.indexOf('/wapi')) + ' → ' + text.substring(0, 500));
         }
       } catch {}
+      return res;
     }
 
-    return res;
+    return _fetch.apply(this, arguments);
   };
 
-  // ── Monkey-patch XMLHttpRequest ───────────────────────────────────────
-  const _open = XMLHttpRequest.prototype.open;
+  // Monkey-patch XHR send
+  const _xhrOpen = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function(method, url, ...rest) {
     this.__tevi_url = url;
-    this.__tevi_method = method;
-    return _open.call(this, method, url, ...rest);
+    this.__tevi_method = method.toUpperCase();
+    return _xhrOpen.call(this, method, url, ...rest);
   };
 
-  const _send = XMLHttpRequest.prototype.send;
+  const _xhrSend = XMLHttpRequest.prototype.send;
   XMLHttpRequest.prototype.send = function(body) {
-    if (this.__tevi_url && isConversationUrl(this.__tevi_url)) {
-      sendLog(`[INTERCEPTOR] 🔍 XHR ${this.__tevi_method} ${this.__tevi_url.substring(this.__tevi_url.indexOf('/messenger'))}`, 'DEBUG');
-      saveEndpoint(this.__tevi_url);
+    if (this.__tevi_url && this.__tevi_url.includes('wapi.flowstreamx')) {
+      sendLog('[INTERCEPT] XHR ' + this.__tevi_method + ' ' + this.__tevi_url.substring(this.__tevi_url.indexOf('/wapi')) + ' BODY:' + String(body).substring(0, 300));
     }
-    return _send.call(this, body);
+    return _xhrSend.call(this, body);
   };
 
-  sendLog('[INTERCEPTOR] ✅ Active — watching tevi.com API calls');
+  // Capture onload
+  const _xhrOnload = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'onload')?.get;
+  if (!_xhrOnload) {
+    XMLHttpRequest.prototype.addEventListener('load', function() {
+      if (this.__tevi_url && this.__tevi_url.includes('wapi.flowstreamx')) {
+        sendLog('[INTERCEPT] XHR RESP ' + this.__tevi_method + ' → ' + (this.responseText || '').substring(0, 500));
+      }
+    });
+  }
+
+  // Also capture WebSocket messages (Tevi might use WS for real-time)
+  if (window.WebSocket) {
+    const _ws = window.WebSocket;
+    window.WebSocket = function(url, ...rest) {
+      if (url && url.includes('wapi.flowstreamx')) {
+        sendLog('[INTERCEPT] WS CONNECT: ' + url);
+      }
+      const ws = new _ws(url, ...rest);
+      const _onmsg = ws.onmessage;
+      ws.onmessage = function(e) {
+        sendLog('[INTERCEPT] WS MSG: ' + String(e.data).substring(0, 300));
+        if (_onmsg) _onmsg.call(ws, e);
+      };
+      return ws;
+    };
+    window.WebSocket.CONNECTING = _ws.CONNECTING;
+    window.WebSocket.OPEN = _ws.OPEN;
+    window.WebSocket.CLOSING = _ws.CLOSING;
+    window.WebSocket.CLOSED = _ws.CLOSED;
+  }
+
+  const cookies = captureCookies();
+  const storage = captureLocalStorage();
+
+  sendLog('[INTERCEPT] Active on ' + location.href);
+  sendLog('[INTERCEPT] Cookies: ' + JSON.stringify(Object.keys(cookies)));
+  sendLog('[INTERCEPT] Storage keys: ' + JSON.stringify(Object.keys(storage)));
+  if (storage.token || storage.accessToken) {
+    sendLog('[INTERCEPT] TOKEN FOUND: ' + (storage.token || storage.accessToken));
+  }
+
+  // Send stored auth to log
+  chrome.runtime.sendMessage({ type: 'INTERCEPT_AUTH', cookies, storage }).catch(() => {});
 })();

@@ -1,17 +1,3 @@
-[2026-06-25T17:51:57.053Z] [BG] [ERROR]   @cinta_zaen [new] ❌ greeting failed
-[2026-06-25T17:51:57.085Z] [BG] [INFO]   @239537708 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:57.110Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:57.142Z] [BG] [ERROR]   @jacki20 [new] ❌ greeting failed
-[2026-06-25T17:51:57.157Z] [BG] [INFO]   @saifur_rizal508 [new→intro] "baru aja masuk live nya kakak"
-[2026-06-25T17:51:57.181Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:57.198Z] [BG] [ERROR]   @239537708 [new] ❌ greeting failed
-[2026-06-25T17:51:57.219Z] [BG] [INFO]   @Lelegeprek20 [new→intro] "kapan mulai live  nya kk"
-[2026-06-25T17:51:57.267Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:51:57.312Z] [BG] [ERROR]   @saifur_rizal508 [new] ❌ greeting failed
-[2026-06-25T17:51:57.380Z] [BG] [INFO]   @mencari_harta_karun [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:51:57.400Z] [BG] [ERROR] [DOM] No tevi tab open
 [2026-06-25T17:51:57.450Z] [BG] [ERROR]   @Lelegeprek20 [new] ❌ greeting failed
 [2026-06-25T17:51:57.502Z] [BG] [INFO]   @rahmanur106 [new→intro] "https://babyval.com/"
 [2026-06-25T17:51:57.526Z] [BG] [INFO]   @muhammad-ridwan599 [new→intro] "Kakk"
@@ -1998,3 +1984,17 @@ Chat langsung:..."
 [2026-06-25T19:11:03.740Z] [BG] [INFO] [QUEUE] Processing @byu_vibo (65 remaining)
 [2026-06-25T19:11:03.773Z] [BG] [ERROR] [QUEUE] Could not ready @byu_vibo — deferring (attempt 2/3)
 [2026-06-25T19:11:03.808Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T19:11:05.805Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T19:11:05.817Z] [BG] [ERROR] [POLL] No tevi tab — cannot process queue
+[2026-06-25T19:11:05.833Z] [BG] [INFO] [POLL] 100 total convs, queue=100, busy=false
+[2026-06-25T19:11:10.819Z] [BG] [INFO] [BG] SW v0.8 starting...
+[2026-06-25T19:11:14.415Z] [BG] [INFO] [BG] SW v0.8 starting...
+[2026-06-25T19:12:00.547Z] [CS] [INFO] [CS] v0.8 active — https://tevi.com/messages
+[2026-06-25T19:12:17.999Z] [BG] [INFO] [BG] SW v0.8 starting...
+[2026-06-25T19:12:20.512Z] [CS] [INFO] [CS] v0.8 active — https://tevi.com/messages
+[2026-06-25T19:13:43.718Z] [BG] [INFO] [BG] SW v0.8 starting...
+[2026-06-25T19:13:44.857Z] [BG] [INFO] [BG] SW v0.8 starting...
+[2026-06-25T19:13:48.165Z] [CS] [INFO] [CS] v0.8 active — https://tevi.com/messages
+[2026-06-25T19:15:09.578Z] [CS] [INFO] [CS] v0.8 active — https://tevi.com/messages
+[2026-06-25T19:17:05.341Z] [BG] [INFO] [BG] SW v0.8 starting...
+[2026-06-25T19:20:05.571Z] [BG] [INFO] [BG] SW v0.8 starting...

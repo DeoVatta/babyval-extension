@@ -13,7 +13,7 @@
   if (window.__TEVI_OVERLAY__) return;
   window.__TEVI_OVERLAY__ = true;
 
-  const VER = '0.8.0';
+  const VER = '0.9.0';
   const STATE_KEY = 'tevi_cs_overlay_state';
   const LOG = 'http://localhost:3131';
 

@@ -172,6 +172,13 @@ Aktif: **24/7** — no active hours restriction, user controls ON/OFF via extens
 
 ## Changelog
 
+### v0.9.0 — 2026-06-26
+- **API-based send** — messages sent via Tevi's own API (no tab required)
+- **INTERCEPT_SEND** handler: captures exact send-message API call when user sends manually
+- **Tabless sending** — no need to keep Tevi tab open; tab only for DOM scanning
+- **chrome.alarms keep-alive** — 0.4min periodic alarm prevents SW suspend between polls
+- **v0.8 complete rewrite** of content-script.js + background.js
+
 ### v0.8.0 — 2026-06-26
 - **Complete rewrite** of content-script.js + background.js
 - **DOM-based conv detection**: scan for ✓/✓✓ icons instead of message polling — no more wapi.flowstreamx.com dependency
