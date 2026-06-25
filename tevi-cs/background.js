@@ -69,8 +69,14 @@ async function computeVerifyAsync(url) {
 async function wapiFetch(method, path, body, token) {
   const baseUrl = path.startsWith('http') ? path : WAPI + path;
   const url = new URL(baseUrl);
-  const verifyData = await computeVerifyAsync(baseUrl);
-  if (verifyData && !url.searchParams.has('verify')) url.searchParams.set('verify', verifyData.verify);
+
+  // NOTE: wapi token exchange endpoint (/auth/v1/token/) does NOT need ?verify=
+  // Only wapi API calls need HMAC verify
+  const needsVerify = !path.includes('/auth/v1/token/');
+  if (needsVerify) {
+    const verifyData = await computeVerifyAsync(baseUrl);
+    if (verifyData && !url.searchParams.has('verify')) url.searchParams.set('verify', verifyData.verify);
+  }
 
   const opts = {
     method,
