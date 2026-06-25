@@ -75,11 +75,8 @@ async function wapiFetch(method, path, body, token) {
   const opts = {
     method,
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0.0.0 Safari/537.36',
-      'Accept': 'application/json, text/plain, */*',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Origin': 'https://tevi.com',
-      'Referer': 'https://tevi.com/',
     }
   };
   if (token) opts.headers['Authorization'] = 'Bearer ' + token;
@@ -179,6 +176,7 @@ async function getWapiToken() {
       device_name: 'Chrome',
     });
 
+    log('INFO', '[AUTH] wapiRes status=' + wapiRes.status + ' data=' + JSON.stringify(wapiRes.data).substring(0, 200));
     if (!wapiRes.data?.data?.access_token) throw new Error('wapi token exchange failed');
     _wapiToken = wapiRes.data.data.access_token;
     const exp = wapiRes.data.data.expires_in || 86400;
