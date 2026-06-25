@@ -495,7 +495,13 @@ async function apiGetConversation(convId) {
       `/messenger/v2/conversation/${convId}/`,
       null, token
     );
-    log('INFO', '[MSG] getConv status=' + res.status + ' conv=' + convId.substring(0, 8) + ' body=' + JSON.stringify(res.data).substring(0, 150));
+    log('INFO', '[MSG] getConv status=' + res.status + ' conv=' + convId.substring(0, 8) + ' body=' + JSON.stringify(res.data).substring(0, 300));
+    // Try trailing slash + conv_id param
+    if (res.status === 404) {
+      const res2 = await wapiFetch('GET', `/messenger/v2/conversation/${convId}/?conv_id=${convId}`, null, token);
+      log('INFO', '[MSG] getConv (fallback2) status=' + res2.status + ' body=' + JSON.stringify(res2.data).substring(0, 150));
+      if (res2.status === 200) return res2.data;
+    }
     return res.status === 200 ? res.data : null;
   } catch (e) {
     log('ERROR', '[MSG] getConv error: ' + e.message);
