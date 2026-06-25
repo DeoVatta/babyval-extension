@@ -24,11 +24,11 @@ Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Suki
 
 ```
 tevi-cs/
-├── manifest.json        # v0.9.10 — version + permissions
+├── manifest.json        # v0.9.11 — version + permissions
 ├── background.js        # Service Worker — scan, slot, edge function call
-├── content-script.js    # DOM scanner, message reader, intercept capture
+├── content-script.js    # Unified: DOM scanner, message reader, intercept capture, SNIFER
 ├── overlay.js           # Cat toggle panel
-├── sniffer.js           # Universal API sniffer (all domains)
+├── api-discovery.js     # Legacy discovery (superseded by CS sniffer)
 ├── interceptor.js       # (legacy) API interceptor
 ├── log-server.js        # Local HTTP log receiver (port 3131)
 ├── popup/
@@ -301,36 +301,32 @@ Kalau mau VCS bisa bayar di babyval.com
 
 ---
 
-## Status v0.9.10 (2026-06-26)
+## Status v0.9.11 (2026-06-26)
 
 ### Current State
 
-**Conv Detection:** ✅ DOM scan menemukan 20 items (MuiStack DIVs). **Slug extraction** masih gagal — regex perlu support relative URL.
+**Conv Detection:** ✅ DOM scan menemukan 20 items. **Slug extraction** masih dalam testing.
 
-**API Send:** ✅ `apiSend()` function ada. Butuh manual DM send untuk capture pattern.
+**Sniffer:** ✅ Unified ke content-script.js — auto-runs di startup, capture semua API call.
 
-**Sniffer:** ✅ Universal — capture semua domain Tevi.
+**API Send:** ✅ Fungsi ada. Butuh manual DM send untuk capture pattern.
 
-### v0.9.10 Fixes
-- `findConvItems()` priority dikembalikan ke anchor href (v0.8 strategy)
-- `activateIntercept()` universal — tidak hardcode `wapi.flowstreamx.com`
-- Relative URL regex fix — `/(?:tevi\.com)?\/@([^/?#]+)/`
+### v0.9.11 Fixes
+- **Sniffer merged into content-script.js** — unified system, tidak ada file terpisah
+- All versions synced: manifest, BG, CS
+- Sniffer reports to log-server (`[SNIFFER]`) + Supabase
 
 ### Changelog
+
+#### v0.9.11 — 2026-06-26
+- Unify sniffer into content-script.js (single system)
+- Remove standalone `sniffer.js` from manifest
+- Sync all file versions to v0.9.11
 
 #### v0.9.10 — 2026-06-26
 - Fix `findConvItems()` priority (anchor href first)
 - Universal API domain capture
-- Relative URL regex untuk slug extraction
-
-#### v0.9.9 — 2026-06-26
-- Universal API sniffer (all domains)
-- Self-capture loop prevention
-
-#### v0.9.8 — 2026-06-26
-- Scan debounce — `_scanInProgress` lock
-- Debug logs — `findConvItems` count
-- api-auto-probe endpoint
+- Relative URL regex for slug extraction
 
 #### v0.9 — 2026-06-26 (PROVEN WORK)
 - API-based send (tabless) via intercepted pattern
@@ -340,7 +336,6 @@ Kalau mau VCS bisa bayar di babyval.com
 #### v0.8 — 2026-06-26 (PROVEN WORK)
 - DOM conv detection via anchor href
 - `scanConvs()` dengan check icon + unread badge
-- `extractConvSlug()` dari anchor href
 
 ---
 
