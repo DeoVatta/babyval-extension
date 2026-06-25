@@ -102,69 +102,89 @@ async function wapiFetch(method, path, body, token) {
  * Called whenever we get a fresh/refreshed token
  */
 async function syncTokenToSupabase(tokenInfo) {
-  if (!tokenInfo?.access_token) return;
-  try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/sync_tevi_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
-      body: JSON.stringify({
-        p_uid: tokenInfo.uid,
-        p_token: tokenInfo.access_token,
-        p_refresh_token: tokenInfo.refresh_token || null,
-        p_expires_at: tokenInfo.expires_at || null,
-        p_display_name: tokenInfo.display_name || null,
-        p_username: MY_SLUG,
-      }),
-    });
-    if (res.ok) {
-      log('INFO', '[SUPABASE] Token synced for uid=' + tokenInfo.uid);
-    } else {
-      // Table might not have RPC, try upsert directly
-      await supabaseUpsertToken(tokenInfo);
-    }
-  } catch (e) {
-    log('WARN', '[SUPABASE] Token sync failed: ' + e.message);
-  }
+  // Direct upsert — no RPC needed, table has correct columns
+  await supabaseUpsertToken(tokenInfo);
 }
 
 async function supabaseUpsertToken(tokenInfo) {
+  // Table columns: id, token, token_type, user_id, username, expires_at, acquired_at, last_used_at, is_active, notes
+  // uid column does NOT exist — filter by username
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/tevi_auth_tokens?uid=eq.${tokenInfo.uid}&username=eq.${MY_SLUG}`, {
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-      },
-    });
-    const method = res.ok && (await res.text()) ? 'PATCH' : 'POST';
-    await fetch(`${SUPABASE_URL}/rest/v1/tevi_auth_tokens`, {
-      method: res.ok && (await res.clone().text()) ? 'PATCH' : 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-        'Upsert': 'true',
-      },
-      body: JSON.stringify([{
-        uid: tokenInfo.uid,
-        token: tokenInfo.access_token,
-        refresh_token: tokenInfo.refresh_token || null,
-        token_type: 'bearer',
-        user_id: MY_UID,
-        username: MY_SLUG,
-        expires_at: tokenInfo.expires_at || null,
-        updated_at: new Date().toISOString(),
-      }]),
-    });
-    log('INFO', '[SUPABASE] Token upserted for uid=' + tokenInfo.uid);
+    // Check if token exists for cutieval
+    const checkRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/tevi_auth_tokens?username=eq.${MY_SLUG}&is_active=eq.true&order=acquired_at.desc&limit=1`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Accept': 'application/json',
+        },
+      }
+    );
+    let existing = null;
+    if (checkRes.ok) {
+      const rows = await checkRes.json();
+      existing = rows && rows.length > 0 ? rows[0] : null;
+    }
+
+    if (existing) {
+      // Update existing token
+      const updateRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/tevi_auth_tokens?id=eq.${existing.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({
+            token: tokenInfo.access_token,
+            expires_at: tokenInfo.expires_at || null,
+            last_used_at: new Date().toISOString(),
+            is_active: true,
+          }),
+        }
+      );
+      if (updateRes.ok) {
+        log('INFO', '[SUPABASE] Token updated id=' + existing.id + ' uid=' + tokenInfo.uid);
+      } else {
+        const txt = await updateRes.text().catch(() => '');
+        log('WARN', '[SUPABASE] Token update failed: ' + txt.substring(0, 100));
+      }
+    } else {
+      // Insert new token
+      const insertRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/tevi_auth_tokens`,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify([{
+            token: tokenInfo.access_token,
+            token_type: 'Bearer',
+            user_id: tokenInfo.uid,
+            username: MY_SLUG,
+            expires_at: tokenInfo.expires_at || null,
+            acquired_at: new Date().toISOString(),
+            is_active: true,
+          }]),
+        }
+      );
+      if (insertRes.ok) {
+        log('INFO', '[SUPABASE] Token inserted uid=' + tokenInfo.uid);
+      } else {
+        const txt = await insertRes.text().catch(() => '');
+        log('WARN', '[SUPABASE] Token insert failed: ' + txt.substring(0, 100));
+      }
+    }
   } catch (e) {
-    log('WARN', '[SUPABASE] Token upsert failed: ' + e.message);
+    log('WARN', '[SUPABASE] Token upsert error: ' + e.message);
   }
 }
 
@@ -174,7 +194,7 @@ async function supabaseUpsertToken(tokenInfo) {
 async function getTokenFromSupabase() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/tevi_auth_tokens?username=eq.${MY_SLUG}&order=updated_at.desc&limit=1`,
+      `${SUPABASE_URL}/rest/v1/tevi_auth_tokens?username=eq.${MY_SLUG}&is_active=eq.true&order=acquired_at.desc&limit=1`,
       {
         headers: {
           'apikey': SUPABASE_ANON_KEY,
@@ -191,10 +211,10 @@ async function getTokenFromSupabase() {
         if (row.expires_at) {
           const exp = new Date(row.expires_at).getTime();
           if (exp > Date.now() + 60000) {
-            log('INFO', '[SUPABASE] Token from DB, expires=' + row.expires_at);
-            return { access_token: row.token, refresh_token: row.refresh_token, expires_at: row.expires_at, uid: row.uid };
+            log('INFO', '[SUPABASE] Token from DB expires=' + row.expires_at);
+            return { access_token: row.token, expires_at: row.expires_at, uid: row.user_id };
           } else {
-            log('INFO', '[SUPABASE] Token from DB EXPIRED, expires=' + row.expires_at);
+            log('INFO', '[SUPABASE] Token from DB EXPIRED expires=' + row.expires_at);
           }
         }
       }
@@ -206,10 +226,17 @@ async function getTokenFromSupabase() {
 }
 
 /**
- * Try to refresh Tevi token using stored refresh_token
+ * Try to refresh Tevi token using stored refresh_token from chrome.storage.local
  */
-async function refreshTeviToken(refreshToken) {
-  if (!refreshToken) return null;
+async function refreshTeviToken() {
+  // Read refresh_token from storage (captured from Tevi tab)
+  const stored = await sg(['tevi_token']);
+  const storedToken = stored.tevi_token;
+  const refreshToken = storedToken?.refresh_token;
+  if (!refreshToken) {
+    log('WARN', '[AUTH] No refresh_token in storage — need Tevi tab login');
+    return null;
+  }
   try {
     log('INFO', '[AUTH] Trying Tevi refresh_token...');
     const res = await fetch(WAPI + '/auth/v1/token/', {
@@ -235,7 +262,7 @@ async function refreshTeviToken(refreshToken) {
         expires_at: new Date(payload.exp * 1000).toISOString(),
         display_name: payload.display_name || null,
       };
-      log('INFO', '[AUTH] Tevi token refreshed OK, uid=' + payload.uid);
+      log('INFO', '[AUTH] Tevi token refreshed OK uid=' + payload.uid);
       await syncTokenToSupabase(tokenInfo);
       await ss({ tevi_token: tokenInfo });
       return tokenInfo;
@@ -271,7 +298,7 @@ async function getWapiToken() {
 
     // Priority 2: Try refresh with stored refresh_token
     if (storedToken.refresh_token) {
-      const refreshed = await refreshTeviToken(storedToken.refresh_token);
+      const refreshed = await refreshTeviToken();
       if (refreshed) {
         _wapiToken = refreshed.access_token;
         _wapiTokenExpiry = new Date(refreshed.expires_at).getTime();
