@@ -139,9 +139,15 @@ Pilih: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
 
 ## Active Hours
 
-Aktif: **17:00 - 05:00 WIB**
+Aktif: **24/7** — no active hours restriction, user controls ON/OFF via extension toggle.
 
 ## Changelog
+
+### v0.7.3 — 2026-06-26
+- **Fixed overlay sync**: `botEnabled` now written to overlay storage on every poll/toggle — cat panel always shows correct ON/OFF
+- **Fixed queueBusy freeze**: SW now resets `queueBusy` and clears stale queue on startup — bot no longer frozen after service worker wakes
+- **24/7 mode**: Active hours restriction removed — user controls ON/OFF freely via extension popup
+- **Fixed pollTime display**: poll time now correctly shown in overlay panel
 
 ### v0.7.2 — 2026-06-26
 - **Fixed tab staleness**: `navigateToConv` and `domSendWithConfirm` now get fresh tab every time — no more `[ALARM] No tab with id` errors

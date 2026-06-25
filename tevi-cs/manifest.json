@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.7.2",
-  "description": "Tevi CS Bot v0.7.2 — tab staleness fix, slow-laptop waits, slow typing, post-send DOM verification",
+  "version": "0.7.3",
+  "description": "Tevi CS Bot v0.7.3 — overlay sync fix, queueBusy reset, 24/7 mode (no active hours)",
   "author": "Devata",
   "permissions": [
     "alarms",

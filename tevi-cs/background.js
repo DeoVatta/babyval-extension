@@ -644,17 +644,17 @@ const BASE_DELAY = 8000; // base delay between queue tasks
 
 async function poll() {
   const start = Date.now();
-  const hour  = new Date().getHours();
-  const active = hour >= 17 || hour < 5;
 
   const state = await loadState();
   const cfg   = await loadConfig();
 
-  if (!active) {
-    log(`[POLL] Outside active hours (${hour}:00) — skipping`);
-    await saveState({ ...state, lastResult: { dry: true, time: new Date().toISOString() } });
-    return;
-  }
+  // Write botEnabled + activeHours to overlay storage for cat panel sync
+  const hour = new Date().getHours();
+  await setOverlay({
+    botEnabled: state.botEnabled,
+    activeHours: true,       // 24/7 mode
+    activeHoursRaw: hour,
+  });
 
   // ── First: check TRACKED convs (greeting sent, conv dropped from unread) ──
   const tracked = Object.entries(state.convMeta)
@@ -816,7 +816,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
         enabled: state.botEnabled,
         result: state.lastResult || {},
         uid, hasToken: !!token,
-        activeHours: new Date().getHours() >= 17 || new Date().getHours() < 5,
+        activeHours: true,    // 24/7 mode — always active
         queueLen: state.queue.length,
         queueBusy: state.queueBusy,
         stats: state.lastResult?.stats || {},
@@ -832,6 +832,7 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
   if (msg.type === 'TOGGLE') {
     setEnabled(msg.enabled).then(async () => {
+      await setOverlay({ botEnabled: msg.enabled });
       if (msg.enabled) {
         chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });
         log('[TOGGLE] ON — queue mode active');
@@ -894,7 +895,18 @@ chrome.runtime.onMessage.addListener((msg, _, send) => {
 
 // ── STARTUP ─────────────────────────────────────────────────────────────
 (async () => {
-  log('[SW] Tevi CS Bot v0.7.2 — tab staleness fix, slow-laptop waits, slow typing, dom verify');
+  log('[SW] Tevi CS Bot v0.7.3 — overlay sync, queueBusy reset, 24/7 mode');
+  // Reset stale queue state so bot isn't frozen after SW wakes
+  const prevState = await loadState();
+  if (prevState.queueBusy || prevState.queue.length > 0) {
+    log(`[START] Reset stale queue (busy=${prevState.queueBusy}, queue=${prevState.queue.length})`);
+    prevState.queueBusy = false;
+    prevState.queue = [];
+    await saveState(prevState);
+  }
+  // Write activeHours=true to overlay storage so cat panel shows correct mode
+  const hour = new Date().getHours();
+  await setOverlay({ activeHours: true, activeHoursRaw: hour });
   await loadToken();
   if (await isEnabled()) {
     chrome.alarms.create(ALARM, { periodInMinutes: POLL_MIN, delayInMinutes: 0.5 });

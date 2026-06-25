@@ -1,4 +1,3 @@
-[2026-06-25T17:47:07.602Z] [BG] [INFO] [API] ✅ 3 unread
 [2026-06-25T17:47:07.890Z] [BG] [INFO] [POLL] 3 unread — active=true
 [2026-06-25T17:47:07.946Z] [BG] [INFO] [API] ✅ 3 unread
 [2026-06-25T17:47:07.984Z] [BG] [INFO] [POLL] 3 unread — active=true
@@ -1998,3 +1997,4 @@ Chat langsung:..."
 [2026-06-25T18:20:09.078Z] [BG] [INFO] [QUEUE] Processing @kempong88 (93 remaining)
 [2026-06-25T18:20:28.845Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
 [2026-06-25T18:20:40.442Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.1 — fixed send button blocklist, greeting, slug fallback
+[2026-06-25T18:23:01.833Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.2 — tab staleness fix, slow-laptop waits, slow typing, dom verify

@@ -517,8 +517,8 @@
     } else {
       pdBot.innerHTML = '<span class="tc-badge off">OFF</span>';
     }
-    const ah = new Date().getHours() >= 17 || new Date().getHours() < 5;
-    pdMode.textContent = ah ? '🌙 Aktif' : '☀️ Tutup';
+    // 24/7 mode — always show Active (user controls ON/OFF via extension popup)
+    pdMode.textContent = '🌙 24/7';
     pdPoll.textContent = os.pollTime ? new Date(os.pollTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '—';
     const stats = st.lastResult?.stats || {};
     pdCount.textContent = `Intro:${stats.introSent ?? '—'} Done:${stats.doneConvs ?? '—'} CS:${stats.activeConvs ?? '—'}`;

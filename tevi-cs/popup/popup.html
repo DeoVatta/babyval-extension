@@ -289,9 +289,7 @@ body { width: 320px; max-height: 600px; background: #0f0f1a; color: #e0e0e0; fon
     $('lp').textContent = fmt(result?.time);
     $('uid').textContent = s.uid || '—';
     $('rulesCnt').textContent = cfg?.rulesCount ?? '—';
-    $('hrs').innerHTML = activeHours
-      ? '<span style="color:#00cc6a;font-weight:700">BUKA</span>'
-      : '<span style="color:#ff4757;font-weight:700">TUTUP</span>';
+    $('hrs').textContent = '24/7';
   }
 
   // ── RENDER RULES ─────────────────────────────────────────────────
