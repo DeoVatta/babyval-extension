@@ -19,6 +19,7 @@
   const STORAGE_KEY = 'tevi_api_catalog';
   const SUPABASE_URL = 'https://qjemyvydivekolywleji.supabase.co';
   const LOG_FUNC = SUPABASE_URL + '/functions/v1/cs-bot-logger';
+  const PROBE_FUNC = SUPABASE_URL + '/functions/v1/api-auto-probe';
 
   // ── Logging ────────────────────────────────────────────────────────
 
@@ -41,18 +42,26 @@
   // ── Log to Supabase (persistent, not just local) ──────────────────
   function logToSupabase(endpointData) {
     try {
-      // Send to the existing edge function with a special type
       fetch(LOG_FUNC, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer devata-token', // validated server-side
+          'Authorization': 'Bearer devata-token',
         },
         body: JSON.stringify({
           _type: 'api_discovery',
           ...endpointData,
           ts: new Date().toISOString(),
         }),
+      }).catch(() => {});
+      // Also try auto-probe endpoint directly
+      fetch(PROBE_FUNC, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer devata-token',
+        },
+        body: JSON.stringify(endpointData),
       }).catch(() => {});
     } catch {}
   }

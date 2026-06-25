@@ -72,7 +72,13 @@ Kalau mau VCS bisa bayar di babyval.com
 
 ---
 
-## Status v0.9.7 (2026-06-26) — READY TO TEST
+## Status v0.9.8 (2026-06-26) — READY TO TEST
+
+### v0.9.8 Fixes
+- **Scan debounce** — `_scanInProgress` lock prevents parallel scans (was causing `[SCAN] failed`)
+- **Debug logs** — content script now logs `findConvItems` count + first item class
+- **Probe auth** — sends actual AI key in Authorization header
+- **api-auto-probe endpoint** — `api-discovery.js` sends directly to both endpoints
 
 ### What's New: Fully Automated API Discovery
 

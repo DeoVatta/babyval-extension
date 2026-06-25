@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.9.7",
-  "description": "Tevi CS Bot v0.9.7 — Auto-probe API endpoints, log to Supabase, fully automated discovery",
+  "version": "0.9.8",
+  "description": "Tevi CS Bot v0.9.8 — Scan debounce, debug logs, probe auth fix, api-auto-probe endpoint",
   "author": "Devata",
   "permissions": [
     "alarms",

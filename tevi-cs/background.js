@@ -256,29 +256,26 @@ async function autoProbe() {
   log('INFO', '[PROBE] Starting API auto-probe...');
   try {
     const { authToken, apiHost } = await getStoredTeviAuth();
+    log('INFO', '[PROBE] auth=' + (authToken ? authToken.substring(0,10)+'...' : 'NONE') + ' host=' + (apiHost || 'none'));
+
+    // Get AI key for auth
+    const stored = await sg(['tevi_cs_secrets']);
+    const secrets = stored.tevi_cs_secrets || {};
+    const aiKey = secrets.aiKey || authToken || '';
 
     const res = await fetch(AUTO_PROBE_FUNC, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken || ''}`,
+        'Authorization': `Bearer ${aiKey}`,
       },
       body: JSON.stringify({ api_host: apiHost, access_token: authToken }),
     });
 
+    const text = await res.text().catch(() => '');
+    log('INFO', '[PROBE] Status=' + res.status + ' body=' + text.substring(0, 300));
     if (res.ok) {
-      const data = await res.json();
-      log('INFO', '[PROBE] Found ' + (data.found_count || 0) + ' endpoints, ' + (data.tokens?.length || 0) + ' tokens');
-      // Store found endpoints in catalog
-      if (data.found_endpoints?.length > 0) {
-        const catalog = await sg(['tevi_api_catalog']) || {};
-        const eps = catalog.tevi_api_catalog?.endpoints || {};
-        for (const ep of data.found_endpoints) {
-          // Already logged to Supabase by edge function
-        }
-      }
-    } else {
-      log('ERROR', '[PROBE] Failed: ' + res.status);
+      try { const d = JSON.parse(text); log('INFO', '[PROBE] Found ' + (d.found_count||0) + ' endpoints'); } catch {}
     }
   } catch (e) {
     log('ERROR', '[PROBE] Error: ' + e.message);
@@ -347,56 +344,68 @@ async function processConv(tabId, slug) {
 
 // ── Scan ───────────────────────────────────────────────────────────────
 
+let _scanInProgress = false;
+
 async function runScan(tabId) {
-  const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
-  if (!botEnabled) return;
+  if (_scanInProgress) { log('INFO', '[SCAN] Skipped — scan in progress'); return; }
+  _scanInProgress = true;
+  try {
+    const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
+    if (!botEnabled) { _scanInProgress = false; return; }
 
-  try { await chrome.tabs.update(tabId, { url: 'https://tevi.com/messages', active: true }); } catch {}
-  await sleep(3000);
-  await ensureCS(tabId);
-  await sleep(2000);
+    try { await chrome.tabs.update(tabId, { url: 'https://tevi.com/messages', active: true }); } catch {}
+    await sleep(3000);
+    await ensureCS(tabId);
+    await sleep(2000);
 
-  try { await chrome.tabs.sendMessage(tabId, { type: 'INTERCEPT_SEND' }); } catch {}
+    try { await chrome.tabs.sendMessage(tabId, { type: 'INTERCEPT_SEND' }); } catch {}
 
-  const scanResp = await chrome.tabs.sendMessage(tabId, { type: 'SCAN_CONVS' }).catch(() => null);
-  if (!scanResp?.ok) {
-    log('ERROR', '[SCAN] Scan failed');
-    return;
-  }
-
-  const raw = scanResp.convs || [];
-  log('INFO', '[SCAN] ' + raw.length + ' unreplied convs');
-
-  const filtered = [];
-  for (const conv of raw) {
-    const slug = conv.slug;
-    if (!slug || slug.toLowerCase() === MY_SLUG) continue;
-    const meta = await getMeta(slug);
-    if (meta?.status === 'processing') continue;
-    if ((meta?.navigateFailCount || 0) >= 3) continue;
-    if (await isImageCooldown(slug)) {
-      log('INFO', '[SCAN] Skip @' + slug + ' (image cooldown)');
-      continue;
+    const scanResp = await chrome.tabs.sendMessage(tabId, { type: 'SCAN_CONVS' }).catch(() => null);
+    if (!scanResp?.ok) {
+      log('ERROR', '[SCAN] Scan failed');
+      _scanInProgress = false;
+      return;
     }
-    filtered.push(conv);
-  }
 
-  log('INFO', '[SCAN] ' + filtered.length + ' after filter');
+    const raw = scanResp.convs || [];
+    log('INFO', '[SCAN] ' + raw.length + ' unreplied convs');
 
-  if (!filtered.length) {
+    const filtered = [];
+    for (const conv of raw) {
+      const slug = conv.slug;
+      if (!slug || slug.toLowerCase() === MY_SLUG) continue;
+      const meta = await getMeta(slug);
+      if (meta?.status === 'processing') continue;
+      if ((meta?.navigateFailCount || 0) >= 3) continue;
+      if (await isImageCooldown(slug)) {
+        log('INFO', '[SCAN] Skip @' + slug + ' (image cooldown)');
+        continue;
+      }
+      filtered.push(conv);
+    }
+
+    log('INFO', '[SCAN] ' + filtered.length + ' after filter');
+
+    if (!filtered.length) {
+      _scanInProgress = false;
+      await syncOverlay({ botEnabled: true, pollTime: 20 });
+      return;
+    }
+
+    const sent = await processConv(tabId, filtered[0].slug);
+
+    const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
+    st.lastResult = { conv: filtered[0].slug, ok: sent, ts: Date.now() };
+    st.lastScanAt = Date.now();
+    await ss({ tevi_cs_state: st });
+
     await syncOverlay({ botEnabled: true, pollTime: 20 });
-    return;
+    log('INFO', '[SCAN] Done: @' + filtered[0].slug + ' sent=' + sent);
+  } catch (e) {
+    log('ERROR', '[SCAN] Error: ' + e.message);
+  } finally {
+    _scanInProgress = false;
   }
-
-  const sent = await processConv(tabId, filtered[0].slug);
-
-  const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
-  st.lastResult = { conv: filtered[0].slug, ok: sent, ts: Date.now() };
-  st.lastScanAt = Date.now();
-  await ss({ tevi_cs_state: st });
-
-  await syncOverlay({ botEnabled: true, pollTime: 20 });
-  log('INFO', '[SCAN] Done: @' + filtered[0].slug + ' sent=' + sent);
 }
 
 // ── Overlay Sync ──────────────────────────────────────────────────────
@@ -441,7 +450,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
 // ── Tab Events ─────────────────────────────────────────────────────────
 
-let _lastTabId = null;
+let _tabLastId = null;
 
 chrome.tabs.onActivated.addListener(async activeInfo => {
   const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
@@ -452,8 +461,8 @@ chrome.tabs.onActivated.addListener(async activeInfo => {
     if (!tab.url || !tab.url.match(/tevi\.com\//)) return;
   } catch { return; }
 
-  if (activeInfo.tabId === _lastTabId) return;
-  _lastTabId = activeInfo.tabId;
+  if (activeInfo.tabId === _tabLastId) return;
+  _tabLastId = activeInfo.tabId;
 
   await ensureCS(activeInfo.tabId);
   await runScan(activeInfo.tabId);

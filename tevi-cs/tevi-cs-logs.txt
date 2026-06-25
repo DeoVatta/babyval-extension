@@ -1,94 +1,3 @@
-[2026-06-25T17:54:24.620Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.635Z] [BG] [ERROR]   @dodi-ty [new] ❌ greeting failed
-[2026-06-25T17:54:24.649Z] [BG] [INFO]   @dualipalupa [new→intro] "vcs CLOSED🚫Open lagi tgl 23 juni💕bisa "
-[2026-06-25T17:54:24.667Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.685Z] [BG] [ERROR]   @dualipalupa [new] ❌ greeting failed
-[2026-06-25T17:54:24.696Z] [BG] [INFO]   @adinata509 [new→intro] "vcs open tgl 23 juni💕bisa payment ke we"
-[2026-06-25T17:54:24.707Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.718Z] [BG] [ERROR]   @adinata509 [new] ❌ greeting failed
-[2026-06-25T17:54:24.729Z] [BG] [INFO]   @ERLANGGG02 [new→intro] "vcs tgl 23 juni💕bisa payment ke web htt"
-[2026-06-25T17:54:24.740Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.753Z] [BG] [ERROR]   @ERLANGGG02 [new] ❌ greeting failed
-[2026-06-25T17:54:24.765Z] [BG] [INFO]   @muhammad-farhan844 [new→intro] "vcs tgl 23 juni💕bisa payment ke web htt"
-[2026-06-25T17:54:24.777Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.795Z] [BG] [ERROR]   @muhammad-farhan844 [new] ❌ greeting failed
-[2026-06-25T17:54:24.805Z] [BG] [INFO]   @nadhera [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:54:24.816Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.825Z] [BG] [ERROR]   @nadhera [new] ❌ greeting failed
-[2026-06-25T17:54:24.836Z] [BG] [INFO]   @ikbal_crashco [new→intro] "oh 7menit 127k"
-[2026-06-25T17:54:24.848Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.858Z] [BG] [ERROR]   @ikbal_crashco [new] ❌ greeting failed
-[2026-06-25T17:54:24.885Z] [BG] [INFO]   @alfi_annor473 [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:54:24.930Z] [BG] [INFO]   @soala_gogo915 [new→intro] "hay"
-[2026-06-25T17:54:24.953Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:24.972Z] [BG] [ERROR]   @alfi_annor473 [new] ❌ greeting failed
-[2026-06-25T17:54:24.995Z] [BG] [INFO]   @banana400 [new→intro] "discord mana"
-[2026-06-25T17:54:25.015Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.036Z] [BG] [ERROR]   @banana400 [new] ❌ greeting failed
-[2026-06-25T17:54:25.055Z] [BG] [ERROR]   @adamm-r [new] ❌ greeting failed
-[2026-06-25T17:54:25.069Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.082Z] [BG] [ERROR]   @soala_gogo915 [new] ❌ greeting failed
-[2026-06-25T17:54:25.095Z] [BG] [INFO]   @adamm-r [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:54:25.111Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.122Z] [BG] [INFO]   @one_piece7878 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:54:25.138Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.153Z] [BG] [ERROR]   @one_piece7878 [new] ❌ greeting failed
-[2026-06-25T17:54:25.167Z] [BG] [INFO]   @2178665717s-space [new→intro] "https://babyval.com/"
-[2026-06-25T17:54:25.186Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.202Z] [BG] [ERROR]   @2178665717s-space [new] ❌ greeting failed
-[2026-06-25T17:54:25.219Z] [BG] [INFO]   @djembootttt [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:54:25.235Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.257Z] [BG] [ERROR]   @djembootttt [new] ❌ greeting failed
-[2026-06-25T17:54:25.272Z] [BG] [INFO]   @santuy02-santuy [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:54:25.289Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.306Z] [BG] [ERROR]   @santuy02-santuy [new] ❌ greeting failed
-[2026-06-25T17:54:25.321Z] [BG] [INFO]   @ethan_benjamin [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:54:25.343Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.355Z] [BG] [ERROR]   @ethan_benjamin [new] ❌ greeting failed
-[2026-06-25T17:54:25.373Z] [BG] [INFO]   @heruu56 [new→intro] "Eh kamu udah membership belum sih?"
-[2026-06-25T17:54:25.394Z] [BG] [INFO]   @ramdhy-setiaji [new→intro] "Siap beb"
-[2026-06-25T17:54:25.413Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.429Z] [BG] [ERROR]   @heruu56 [new] ❌ greeting failed
-[2026-06-25T17:54:25.443Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.460Z] [BG] [ERROR]   @ramdhy-setiaji [new] ❌ greeting failed
-[2026-06-25T17:54:25.471Z] [BG] [INFO]   @marfosa123 [new→intro] "slow j"
-[2026-06-25T17:54:25.504Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.528Z] [BG] [ERROR]   @marfosa123 [new] ❌ greeting failed
-[2026-06-25T17:54:25.544Z] [BG] [INFO]   @sempak1678 [new→intro] "Coba kirim screenshoot"
-[2026-06-25T17:54:25.556Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.571Z] [BG] [ERROR]   @sempak1678 [new] ❌ greeting failed
-[2026-06-25T17:54:25.588Z] [BG] [INFO]   @red-devil365 [new→intro] "Engga"
-[2026-06-25T17:54:25.609Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.631Z] [BG] [ERROR]   @red-devil365 [new] ❌ greeting failed
-[2026-06-25T17:54:25.649Z] [BG] [INFO]   @genos-x-garou [new→intro] "Langsung sekalian aja"
-[2026-06-25T17:54:25.668Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.684Z] [BG] [INFO]   @dood_stres [new→intro] "vcs available💕bisa payment ke web https"
-[2026-06-25T17:54:25.703Z] [BG] [ERROR]   @genos-x-garou [new] ❌ greeting failed
-[2026-06-25T17:54:25.721Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.748Z] [BG] [ERROR]   @dood_stres [new] ❌ greeting failed
-[2026-06-25T17:54:25.780Z] [BG] [INFO]   @TeviCoin [new→intro] "🎉 Kami telah memberikan Anda 1.0 bintan"
-[2026-06-25T17:54:25.834Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.884Z] [BG] [ERROR]   @TeviCoin [new] ❌ greeting failed
-[2026-06-25T17:54:25.919Z] [BG] [INFO]   @2338562072 [new→intro] "https://tevi.com/@2338562072"
-[2026-06-25T17:54:25.950Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:25.986Z] [BG] [ERROR]   @2338562072 [new] ❌ greeting failed
-[2026-06-25T17:54:26.018Z] [BG] [INFO]   @vercaa [new→intro] "oke kak sorry kemaren ke skip"
-[2026-06-25T17:54:26.067Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:26.104Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:26.167Z] [BG] [ERROR]   @vercaa [new] ❌ greeting failed
-[2026-06-25T17:54:26.198Z] [BG] [INFO]   @gel351 [new→intro] "emng vcs via apa"
-[2026-06-25T17:54:26.248Z] [BG] [ERROR]   @gel351 [new] ❌ greeting failed
-[2026-06-25T17:54:26.286Z] [BG] [INFO]   @jacki20 [new→intro] "vcs available💕
-bisa payment ke web http"
-[2026-06-25T17:54:26.321Z] [BG] [ERROR] [DOM] No tevi tab open
-[2026-06-25T17:54:26.337Z] [BG] [ERROR]   @jacki20 [new] ❌ greeting failed
-[2026-06-25T17:54:26.358Z] [BG] [INFO]   @saifur_rizal508 [new→intro] "baru aja masuk live nya kakak"
-[2026-06-25T17:54:26.384Z] [BG] [ERROR] [DOM] No tevi tab open
 [2026-06-25T17:54:26.402Z] [BG] [ERROR]   @saifur_rizal508 [new] ❌ greeting failed
 [2026-06-25T17:54:26.426Z] [BG] [INFO]   @mencari_harta_karun [new→intro] "vcs available💕
 bisa payment ke web http"
@@ -1998,3 +1907,94 @@ Chat langsung:..."
 [2026-06-25T21:03:15.479Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
 [2026-06-25T21:03:18.520Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
 [2026-06-25T21:03:20.792Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:03:23.886Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:03:23.988Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:24.013Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:24.062Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:03:24.869Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:24.931Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:24.944Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:03:35.388Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:03:39.399Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:03:39.416Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:39.440Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:39.449Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:03:55.794Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:03:59.414Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:03:59.438Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:59.450Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:03:59.467Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:04:15.541Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:04:18.965Z] [BG] [INFO] [BG] SW v0.9.6 starting...
+[2026-06-25T21:04:18.986Z] [BG] [INFO] [BG] [PROBE] Starting API auto-probe...
+[2026-06-25T21:04:19.876Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:04:20.878Z] [BG] [ERROR] [BG] [PROBE] Error: Failed to fetch
+[2026-06-25T21:04:23.193Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:04:24.198Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:04:24.210Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:04:24.222Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:04:24.243Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:04:24.254Z] [BG] [INFO] [BG] SW v0.9.6 ready — API auto-probe + Edge Function active
+[2026-06-25T21:04:27.262Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:04:27.277Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:04:27.291Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:04:39.689Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:04:44.125Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:04:44.144Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:04:44.164Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:04:44.180Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:05:00.105Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:05:04.075Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:05:04.088Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:05:04.105Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:05:04.120Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:05:19.928Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:05:26.757Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:05:27.850Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:05:27.909Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:05:27.936Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:05:40.850Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:05:44.135Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:05:44.149Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:05:44.161Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:05:44.182Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:06:01.703Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:06:04.748Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:06:04.845Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:06:04.896Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:06:04.932Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:06:21.354Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:06:24.102Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:06:24.161Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:06:24.201Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:06:24.230Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:06:40.484Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:06:44.146Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:06:44.171Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:06:44.197Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:06:44.212Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:07:00.393Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:07:04.169Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:07:04.188Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:07:04.243Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:07:04.265Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:07:20.392Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:07:24.079Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:07:24.094Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:07:24.108Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:07:24.123Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:07:40.940Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:07:44.065Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:07:44.079Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:07:44.091Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:07:44.106Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:08:00.739Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:08:04.272Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:08:04.369Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:08:04.390Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:08:04.424Z] [BG] [INFO] [BG] [SCAN] 0 after filter
+[2026-06-25T21:08:20.750Z] [CS] [INFO] [CS] v0.9.3 active — https://tevi.com/messages
+[2026-06-25T21:08:24.245Z] [CS] [INFO] [CS] [INTERCEPT] Send capture active
+[2026-06-25T21:08:24.339Z] [CS] [INFO] [CS] [SCAN] 0 unreplied convs
+[2026-06-25T21:08:24.384Z] [BG] [INFO] [BG] [SCAN] 0 unreplied convs
+[2026-06-25T21:08:24.421Z] [BG] [INFO] [BG] [SCAN] 0 after filter

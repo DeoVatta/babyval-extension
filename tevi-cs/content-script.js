@@ -257,6 +257,11 @@
 
   function scanConvs() {
     const items = findConvItems();
+    l('[SCAN-DBG] findConvItems returned ' + items.length + ' items');
+    if (items.length > 0) {
+      l('[SCAN-DBG] first item class="' + (items[0].el?.className || items[0].className || '') + '"');
+      l('[SCAN-DBG] first item tag="' + (items[0].el?.tagName || items[0].tagName || '') + '"');
+    }
     if (!items.length) return [];
 
     const currentSlug = getSlug();
