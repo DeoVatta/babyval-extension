@@ -45,17 +45,7 @@
   }
 
   function findConvItems() {
-    // Priority 1: data attribute (most reliable — Tevi's internal ID)
-    const byData = Array.from(document.querySelectorAll('[data-conv-id]'));
-    if (byData.length > 0) return byData.map(el => ({ el, strategy: 'data-conv-id' }));
-
-    // Priority 2: specific conversation class names
-    const byClass = Array.from(document.querySelectorAll(
-      '[class*="conversation-item"]'
-    ));
-    if (byClass.length > 0) return byClass.map(el => ({ el, strategy: 'conversation-item' }));
-
-    // Priority 3: links matching /@username/messages
+    // Priority 1: anchor links matching /@username/messages (v0.8 strategy — PROVEN WORK)
     const allLinks = Array.from(document.querySelectorAll('a[href*="/@"]'));
     const convLinks = allLinks.filter(a => {
       return a.href && a.href.match(/tevi\.com\/@[^/]+\/messages/);
@@ -64,9 +54,7 @@
       const seen = new Set();
       const containers = [];
       for (const a of convLinks) {
-        // Walk up to find the conv container
-        let el = a.closest('[class*="conversation"]');
-        if (!el) el = a.closest('li') || a.parentElement;
+        let el = a.closest('[class*="conversation"]') || a.closest('li') || a.parentElement;
         const key = el ? (el.dataset.convId || el.className || a.href) : a.href;
         if (!seen.has(key)) {
           seen.add(key);
@@ -75,6 +63,14 @@
       }
       if (containers.length > 0) return containers;
     }
+
+    // Priority 2: data attribute (Tevi's internal ID)
+    const byData = Array.from(document.querySelectorAll('[data-conv-id]'));
+    if (byData.length > 0) return byData.map(el => ({ el, strategy: 'data-conv-id' }));
+
+    // Priority 3: specific conversation class names
+    const byClass = Array.from(document.querySelectorAll('[class*="conversation-item"]'));
+    if (byClass.length > 0) return byClass.map(el => ({ el, strategy: 'conversation-item' }));
 
     // Priority 4: list items in conversation list
     const listItems = Array.from(document.querySelectorAll(
@@ -503,11 +499,16 @@
 
     function tryCapture(url, method, headers, body) {
       if (captured) return;
-      if (!url.includes('wapi.flowstreamx')) return;
-      if (!url.match(/send|message|chat/i)) return;
+      // Capture ALL tevi.com API calls (universal — no hardcoded domain)
+      // Tevi's API can be at any subdomain, so we check the hostname
+      let hostname = '';
+      try { hostname = new URL(url).hostname; } catch {}
+      const isTeviApi = hostname.includes('tevi.com') || hostname.includes('flowstreamx') || hostname.includes('wapi');
+      if (!isTeviApi) return;
+      // Must look like a message/chat/send API
+      if (!url.match(/send|message|chat|conversation/i)) return;
 
       captured = true;
-      // Parse JSON body
       let parsedBody = {};
       if (body && typeof body === 'string') {
         try { parsedBody = JSON.parse(body); } catch {}
@@ -515,7 +516,6 @@
         parsedBody = body;
       }
 
-      // Extract auth headers
       let authToken = '';
       if (headers) {
         if (typeof headers.get === 'function') {
@@ -533,14 +533,16 @@
         bodyFields: parsedBody,
         capturedAt: Date.now(),
       });
-      l('[INTERCEPT] Captured: ' + method + ' ' + url.substring(url.indexOf('/wapi')));
+      let domain = '';
+      try { domain = new URL(url).hostname; } catch {}
+      l('[INTERCEPT] Captured: ' + method + ' ' + domain + new URL(url).pathname);
     }
 
     window.fetch = async function(input, init) {
       const url = typeof input === 'string' ? input : input?.url || '';
       const method = (init?.method || 'GET').toUpperCase();
       const headers = init?.headers;
-      if (url.includes('wapi.flowstreamx') && method === 'POST') {
+      if (method === 'POST') {
         tryCapture(url, method, headers, init?.body);
       }
       return _fetch.apply(this, arguments);
@@ -553,13 +555,13 @@
     };
 
     XMLHttpRequest.prototype.send = function(body) {
-      if (this.__tevi_url) {
+      if (this.__tevi_url && this.__tevi_method === 'POST') {
         tryCapture(this.__tevi_url, this.__tevi_method, {}, body);
       }
       return _xhrSend.call(this, body);
     };
 
-    l('[INTERCEPT] Send capture active');
+    l('[INTERCEPT] Send capture active — universal (all tevi domains)');
   }
 
   // ── MESSENGER ───────────────────────────────────────────────────────
