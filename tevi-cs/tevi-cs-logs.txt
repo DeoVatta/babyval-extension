@@ -1040,3 +1040,8 @@ bisa payment k..."
 [2026-06-25T16:46:47.233Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
 [2026-06-25T16:46:47.254Z] [BG] [INFO] [DOM] → @jjjikj: "Halo aku Sukii, AI Assistant-nya Baby Va..."
 [2026-06-25T16:47:21.523Z] [CS] [INFO] [CS] [DOM_SEND] → @jjjikj (142 chars) busy=true
+[2026-06-25T16:49:32.998Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:49:33.194Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:49:33.210Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:49:33.236Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:49:33.250Z] [BG] [INFO] [DOM] → @jjjikj: "Halo aku Sukii, AI Assistant-nya Baby Va..."

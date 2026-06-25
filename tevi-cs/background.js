@@ -140,49 +140,49 @@ function getDefaultConfig() {
 function getDefaultRules() {
   return [
     // Priority 50: ABSOLUTE BLOCKS
-    { id: 'block_personal', priority: 50, type: 'keyword', active: true, match: 'alamat rumah,no hp,nomor hp,wa ,whatsapp,umur kamu,berapa umur,usia kamu,domisili,kota kamu,daerah kamu', reply: `Maaf ya, informasi pribadi tidak bisa aku berikan 💕\nUntuk layanan VCS bisa via babyval.com ya~` },
+    { id: 'block_personal', priority: 50, type: 'keyword', active: true, match: 'alamat rumah,no hp,nomor hp,wa ,whatsapp,umur kamu,berapa umur,usia kamu,domisili,kota kamu,daerah kamu', reply: `Informasi pribadi tidak diberikan.` },
 
     // Priority 45: OFFLINE / KETEMU — block and redirect to VCS
-    { id: 'offline_ketemu', priority: 45, type: 'keyword', active: true, match: 'ketemu,bertemu,langsung,offline,nemu,dateng,datang,meet up,nyambung,in person,temu muka', reply: `Maaf kak, Cuma bisa VCS aja ya 💕\nGabisa ketemu offline/offline.\nVCS di babyval.com aja yuk!` },
+    { id: 'offline_ketemu', priority: 45, type: 'keyword', active: true, match: 'ketemu,bertemu,langsung,offline,nemu,dateng,datang,meet up,nyambung,in person,temu muka', reply: `Cuma bisa VCS. Offline tidak tersedia.` },
 
-    // Priority 40: VCS STEPS (specific, higher than generic VCS)
-    { id: 'vcs_cara', priority: 40, type: 'keyword', active: true, match: 'cara vcs,cara payment,cara bayarnya,cara order,bagaimn cara,gimana cara,cara nya', reply: `Cara VCS:\n1. Buka babyval.com\n2. Pilih Video Call\n3. Pilih Durasi\n4. Lanjutkan pembayaran\n\nUdah gitu aja! Mudah kan 💕` },
+    // Priority 40: VCS STEPS
+    { id: 'vcs_cara', priority: 40, type: 'keyword', active: true, match: 'cara vcs,cara payment,cara bayarnya,cara order,bagaimn cara,gimana cara,cara nya', reply: `1. Buka babyval.com\n2. Pilih Video Call\n3. Pilih Durasi\n4. Bayar` },
 
     // Priority 35: DURASI 7 vs 10 MENIT
-    { id: 'durasi_7_10', priority: 35, type: 'keyword', active: true, match: 'beda 7 dan 10,beda 10 sama 7,7 menit 10 menit,10 menit 7 menit,bedanya apa 7,selisih 7 dan 10', reply: `Cuma beda durasi doang 💕\nTapi kalau mau squirt minimal 20 menit ya kak~` },
+    { id: 'durasi_7_10', priority: 35, type: 'keyword', active: true, match: 'beda 7 dan 10,beda 10 sama 7,7 menit 10 menit,10 menit 7 menit,bedanya apa 7,selisih 7 dan 10', reply: `Beda durasi aja. Squirt minimal 20 menit.` },
 
     // Priority 35: MASKER
-    { id: 'masker', priority: 35, type: 'keyword', active: true, match: 'buka masker,lepas masker,pake masker,tanpa masker', reply: `Kalau mau buka masker kasih tip 250rb ke ganknow.com/babyval/tip\nNanti masker Baby Val diganti sama penutup mata jadi kamu bisa tetep lihat mulutnya 💕` },
+    { id: 'masker', priority: 35, type: 'keyword', active: true, match: 'buka masker,lepas masker,pake masker,tanpa masker', reply: `Buka masker: tip 250rb ke ganknow.com/babyval/tip. Masker diganti penutup mata.` },
 
     // Priority 30: GENERIC VCS
-    { id: 'vcs', priority: 30, type: 'keyword', active: true, match: 'vcs,videocall,video call,vc ,telfon,telpon,call,meet,zoom', reply: `VCS available 💕\nBuka babyval.com → Video Call → Pilih Durasi → Bayar\nJangan lupa kirim bukti TF ke DM ya~` },
+    { id: 'vcs', priority: 30, type: 'keyword', active: true, match: 'vcs,videocall,video call,vc ,telfon,telpon,call,meet,zoom', reply: `VCS tersedia. babyval.com → Video Call → Durasi → Bayar.` },
 
     // Priority 25: MEMBERSHIP CTA
-    { id: 'chat_males', priority: 25, type: 'keyword', active: true, match: 'doang,aja sih,santai aja,cuma ngobrol,bsa ngobrol gk,sih gk,santai aja kak', reply: `Kalau mau chat sama Baby Val bisa membership di Tevi dulu ya 💕\nNanti Baby Val yang balas pesan kamu langsung~` },
+    { id: 'chat_males', priority: 25, type: 'keyword', active: true, match: 'doang,aja sih,santai aja,cuma ngobrol,bsa ngobrol gk,sih gk,santai aja kak', reply: `Chat langsung: membership Tevi.` },
 
     // Priority 20: PAYMENT
-    { id: 'payment', priority: 20, type: 'keyword', active: true, match: 'payment,bayar,tf,transfer,donasi,donate,harga,price,berapa,cost', reply: `Payment VCS:\nbabyval.com → Video Call → Pilih Durasi → Bayar\nTransfer ke rekening yang tertera, kirim bukti ke DM 💕` },
+    { id: 'payment', priority: 20, type: 'keyword', active: true, match: 'payment,bayar,tf,transfer,donasi,donate,harga,price,berapa,cost', reply: `babyval.com → Video Call → Durasi → Bayar. Transfer, kirim bukti ke DM.` },
 
     // Priority 20: JOIN MEMBERSHIP
-    { id: 'join_member', priority: 20, type: 'keyword', active: true, match: 'join,member,membership,subscribe,langganan,premium', reply: `Mau jadi member Baby Val?\nKunjungi: tevi.com/@cutieval\nPilih membership yang tersedia.\nSetelah join, kamu bisa chat langsung dengan Baby Val! 💕` },
+    { id: 'join_member', priority: 20, type: 'keyword', active: true, match: 'join,member,membership,subscribe,langganan,premium', reply: `tevi.com/@cutieval. Pilih membership yang tersedia.` },
 
     // Priority 15: ORDER / BUY
-    { id: 'order', priority: 15, type: 'keyword', active: true, match: 'jual,beli,jasa,order,pembelian,buy', reply: `Order di babyval.com aja ya kak 💕\nPilih layanan yang diinginkan, bayar, kirim bukti ke DM~` },
+    { id: 'order', priority: 15, type: 'keyword', active: true, match: 'jual,beli,jasa,order,pembelian,buy', reply: `babyval.com. Pilih layanan, bayar, kirim bukti.` },
 
     // Priority 15: KONTEN
-    { id: 'konten', priority: 15, type: 'keyword', active: true, match: 'foto,video,konten,pic,image,send,kirim,eksklusif', reply: `Konten eksklusif tersedia untuk member!\nJoin: tevi.com/@cutieval\nAtau cek di babyval.com 💕` },
+    { id: 'konten', priority: 15, type: 'keyword', active: true, match: 'foto,video,konten,pic,image,send,kirim,eksklusif', reply: `Konten untuk member. tevi.com/@cutieval atau babyval.com.` },
 
     // Priority 10: BOT IDENTITY
-    { id: 'bot_sukii', priority: 10, type: 'keyword', active: true, match: 'bot,sukii,siapa kamu,siapa ini,ai,assistant', reply: `Aku Sukii, AI Assistant-nya Baby Val 💕\nAku bantu informasi soal VCS dan membership aja ya kak~` },
+    { id: 'bot_sukii', priority: 10, type: 'keyword', active: true, match: 'bot,sukii,siapa kamu,siapa ini,ai,assistant', reply: `Sukii. Informan Baby Val.` },
 
     // Priority 5: GREETINGS / CASUAL
-    { id: 'terima_kasih', priority: 5, type: 'keyword', active: true, match: 'terima kasih,thanks,thx,makasih,sip,sipp,bagus,nice', reply: `Sama-sama kak! 💕 Ada yang mau ditanyain soal VCS atau membership?` },
+    { id: 'terima_kasih', priority: 5, type: 'keyword', active: true, match: 'terima kasih,thanks,thx,makasih,sip,sipp,bagus,nice', reply: `Sukii. Ada yang perlu ditanyakan soal VCS atau membership.` },
 
     // Priority 1: BLOCK INAPPROPRIATE
-    { id: 'block_inap', priority: 1, type: 'block', active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot,lubang', reply: `Maaf ya, topik itu di luar layanan yang bisa aku bantu 💕\nAku fokus bantu info VCS dan membership aja~` },
+    { id: 'block_inap', priority: 1, type: 'block', active: true, match: 'sexs,cari pacar,kelamin,nude,bugil,porno,sara,politik,judi,slot,lubang', reply: `Di luar layanan.` },
 
-    // Priority 0: FALLBACK — redirect to membership
-    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Kalau mau chat sama Baby Val langsung, membership dulu ya di Tevi 💕\nNanti Baby Val yang balas sendiri~` },
+    // Priority 0: FALLBACK
+    { id: 'fallback', priority: 0, type: 'fallback', active: true, match: '', reply: `Chat langsung dengan Baby Val: membership Tevi.` },
   ];
 }
 
@@ -209,7 +209,7 @@ async function aiEnrich(baseReply, message) {
   const key = sec?.aiKey;
   if (!key) return baseReply;
 
-  const SYSTEM = `Kamu Sukii, AI Assistant milik Baby Val. Ubah jawaban template ini jadi lebih natural dan conversational dalam Bahasa Indonesia. Pertahankan informasi pentingnya tapi buat lebih friendly dan sesuai konteks. Max 3 kalimat, pakai emoji 💕.`;
+  const SYSTEM = `Kamu Sukii, informan milik Baby Val. Jawaban: singkat, dingin, informatif. Tidak ramah, tidak ikut-ikutan. Tiap pesan langsung to the point. Bahasa Indonesia. Maks 2 kalimat.`;
 
   try {
     const resp = await fetch(`${AI_BASE}/messages`, {
@@ -353,7 +353,7 @@ async function poll() {
   const idleMs    = (cfg.behavior?.idleMinutes || 30) * 60 * 1000;
   const introWait = (cfg.behavior?.introWaitMinutes || 180) * 60 * 1000;
   const rules     = cfg.rules || [];
-  const greeting = `Halo aku Sukii, AI Assistant-nya Baby Val 💕\nKalau mau Chat sama Baby Val, membership dulu ya di Tevi\n\nKalau mau VCS bisa bayar di babyval.com`;
+  const greeting = `Sukii. Informan Baby Val.\nChat langsung: membership Tevi.\nVCS: babyval.com`;
 
   // ── PAYMENT PROOF DETECTION ───────────────────────────────────────────
   function isPaymentProof(msg) {
