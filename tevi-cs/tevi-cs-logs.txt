@@ -1,39 +1,3 @@
-[2026-06-25T17:50:44.950Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.2 — no 3h wait, loop greeting on max turns, Sukii-last-reply
-[2026-06-25T17:50:44.982Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
-[2026-06-25T17:50:45.045Z] [BG] [INFO] [SW] Was enabled — poll scheduled
-[2026-06-25T17:50:47.052Z] [BG] [DEBUG] [POLL] active=true
-[2026-06-25T17:50:47.865Z] [BG] [INFO] [API] ✅ 100 total convs
-[2026-06-25T17:50:47.879Z] [BG] [DEBUG] [API] first conv: ["id","type","deleted","last_activity_at","created_at","updated_at","is_thread_conversation","menu","me","my_settings","recipient","latest_message","stats"]
-[2026-06-25T17:50:47.905Z] [BG] [DEBUG] [API] first conv.last_msg.sender: {"id":"5313d718-58ec-475c-a8db-2d3d7540d36e","alias":"2057110230","name":"Kmp_enterpise","avatar":{"cover":"https://storage.googleapis.com/static.tevi.app/Channel/Images/android/26/06/25/e867b60c536b459fbcfaeceb475d5527.jpg","thumb":"https://storage.googleapis.com/static.tevi.app/Channel/Images/android/26/06/25/294dd8877aa448c790191658ca6fdad0.jpg"},"channel_slug":"kempong88","slug":"kempong88"}
-[2026-06-25T17:50:47.929Z] [BG] [INFO] [POLL] 100 unread — active=true
-[2026-06-25T17:50:47.940Z] [BG] [INFO]   @kempong88 [new→intro] "ntar kalo naek lg tinggal penasaranya aj"
-[2026-06-25T17:50:47.964Z] [BG] [INFO] [DOM] → @kempong88: "Sukii. Informan Baby Val.
-Chat langsung:..."
-[2026-06-25T17:50:47.973Z] [BG] [DEBUG] [DOM] Port error: Could not establish connection. Receiving end does not exist.
-[2026-06-25T17:50:48.051Z] [BG] [DEBUG] [DOM] Retrying after 3s...
-[2026-06-25T17:50:50.942Z] [BG] [DEBUG] [DOM] Port error: Could not establish connection. Receiving end does not exist.
-[2026-06-25T17:50:50.954Z] [BG] [DEBUG] [DOM] Injecting CS + retry...
-[2026-06-25T17:50:51.059Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:50:51.345Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
-[2026-06-25T17:50:53.378Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars) state=replying
-[2026-06-25T17:50:53.396Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @kempong88/messages...
-[2026-06-25T17:50:55.342Z] [BG] [DEBUG] [DOM] Port error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
-[2026-06-25T17:50:55.399Z] [BG] [DEBUG] [DOM] Hard refreshing + navigating...
-[2026-06-25T17:50:57.862Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
-[2026-06-25T17:50:57.878Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/kempong88/messages [state=idle]
-[2026-06-25T17:51:02.443Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@kempong88/messages [state=idle]
-[2026-06-25T17:51:03.181Z] [CS] [INFO] [CS] [DOM_SEND] → @kempong88 (74 chars) state=replying
-[2026-06-25T17:51:08.538Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @kempong88
-[2026-06-25T17:51:08.586Z] [CS] [INFO] [CS] [IDLE] Return to messages in 60s
-[2026-06-25T17:51:08.620Z] [BG] [INFO] [DOM] ✅ Sent (after hard refresh)
-[2026-06-25T17:51:08.647Z] [BG] [INFO]   @kempong88 [intro_sent] ✅ greeting sent
-[2026-06-25T17:51:08.720Z] [BG] [INFO]   @civic_putih [intro→done] payment proof — silent end
-[2026-06-25T17:51:08.748Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting for reply...
-[2026-06-25T17:51:08.772Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting for reply...
-[2026-06-25T17:51:08.794Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting for reply...
-[2026-06-25T17:51:08.816Z] [BG] [INFO]   @evan_669 [intro→CS] replied: "kalau Deket kamu mau tidak pip"
-[2026-06-25T17:51:08.843Z] [BG] [INFO] [DOM] → @evan_669: "Chat langsung dengan Baby Val: membershi..."
-[2026-06-25T17:51:09.193Z] [CS] [INFO] [CS] [DOM_SEND] → @evan_669 (47 chars) state=replying
 [2026-06-25T17:51:09.322Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @evan_669/messages...
 [2026-06-25T17:51:10.119Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
 [2026-06-25T17:51:10.139Z] [BG] [DEBUG] [DOM] Retrying after 3s...
@@ -1998,3 +1962,39 @@ Chat langsung:..."
 [2026-06-25T18:48:36.184Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
 [2026-06-25T18:48:44.845Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
 [2026-06-25T18:48:44.950Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:48:57.286Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:49:03.187Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:49:03.200Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:49:03.220Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:49:03.236Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:49:03.250Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:49:03.263Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:49:15.438Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:49:15.451Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring
+[2026-06-25T18:49:15.462Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:49:18.184Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:49:18.294Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:49:30.492Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:49:35.058Z] [BG] [INFO] [SW] Tevi CS Bot v0.7.3 — overlay sync, queueBusy reset, 24/7 mode
+[2026-06-25T18:49:37.577Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:49:37.610Z] [BG] [INFO] [QUEUE] Added 100 new convs → 100 total pending
+[2026-06-25T18:49:37.639Z] [BG] [INFO] [POLL] 100 total convs, queue=0, busy=false
+[2026-06-25T18:49:37.668Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:49:59.048Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:50:05.457Z] [BG] [INFO] [API] 100 total convs
+[2026-06-25T18:50:05.545Z] [BG] [INFO] [POLL] 100 total convs, queue=0, busy=false
+[2026-06-25T18:50:05.620Z] [BG] [INFO] [QUEUE] Added 100 new convs → 100 total pending
+[2026-06-25T18:50:05.701Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:50:17.537Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:50:17.554Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring (attempt 1/3)
+[2026-06-25T18:50:17.567Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:50:26.655Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:50:32.547Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:50:45.230Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:50:45.251Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring (attempt 1/3)
+[2026-06-25T18:50:45.266Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...
+[2026-06-25T18:50:54.018Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:51:00.246Z] [BG] [INFO] [QUEUE] Processing @kempong88 (100 remaining)
+[2026-06-25T18:51:15.010Z] [BG] [DEBUG] [WAIT] Page not ready after 15000ms for @kempong88
+[2026-06-25T18:51:15.038Z] [BG] [ERROR] [QUEUE] Could not ready @kempong88 — deferring (attempt 2/3)
+[2026-06-25T18:51:15.110Z] [BG] [DEBUG] [QUEUE] Waiting 15000ms before next task...

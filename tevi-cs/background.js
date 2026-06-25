@@ -422,41 +422,57 @@ async function getTeviTab() {
   return tabs.find(t => !t.url.includes('/settings')) || tabs[0] || null;
 }
 
-// ── NAVIGATE TO CONV ─────────────────────────────────────────────────────
+// Navigate using window.location.href from within the page context.
+// This is more reliable than chrome.tabs.update for SPA navigation.
 async function navigateToConv(slug) {
-  // ALWAYS get fresh tab — tabId goes stale after navigation
   const tab = await getTeviTab();
   if (!tab) return false;
   const tabId = tab.id;
-
   const targetUrl = `https://tevi.com/@${slug}/messages`;
 
-  // If already on correct URL and CS is ready, done
+  // Check if already on correct URL with CS ready
   try {
-    const r = await chrome.tabs.sendMessage(tabId, { type: 'PING' });
-    if (r?.ok && r?.url?.includes(`/@${slug}`)) return true;
+    const ping = await chrome.tabs.sendMessage(tabId, { type: 'PING' }, { timeoutMs: 3000 });
+    if (ping?.ok && ping?.url?.includes(`/@${slug}`)) return true;
   } catch {}
 
-  // Navigate to target
+  // Navigate from within the page — CSP-compliant for same-origin
   try {
-    await chrome.tabs.update(tabId, { url: targetUrl, active: true });
-  } catch { return false; }
-
-  // Wait for page to load — Tevi is heavy, slow laptop needs more time
-  // First: wait for tab URL to actually change
-  await sleep(5000);
-
-  // Second: try to get CS ready
-  let ready = await waitForPageReady(tabId, slug, 15000);
-  if (!ready) {
-    try {
-      await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
-      await sleep(3000);
-      ready = await waitForPageReady(tabId, slug, 15000);
-    } catch {}
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: (url) => { window.location.href = url; },
+      args: [targetUrl],
+    });
+  } catch (e) {
+    logD('[NAV] executeScript nav failed: ' + e.message);
   }
 
-  return ready;
+  // Wait for tab URL to change
+  await sleep(4000);
+
+  // Inject content script on new page
+  try {
+    await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
+  } catch {}
+
+  // Wait for input element to appear (CS is loaded via run_at:document_idle, but needs time)
+  await sleep(3000);
+
+  // Wait for input element
+  const maxWait = 25000;
+  const deadline = Date.now() + maxWait;
+  while (Date.now() < deadline) {
+    try {
+      const r = await chrome.tabs.sendMessage(tabId, { type: 'GET_DOM' }, { timeoutMs: 3000 });
+      if (r?.hasInput) {
+        logD('[NAV] ✅ Input found on @' + slug);
+        return true;
+      }
+    } catch {}
+    await sleep(2000);
+  }
+  logD('[NAV] ❌ Input not found after ' + maxWait + 'ms for @' + slug);
+  return false;
 }
 
 // ── PROCESS ONE CONVERSATION ─────────────────────────────────────────────
