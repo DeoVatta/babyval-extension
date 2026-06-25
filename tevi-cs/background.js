@@ -484,8 +484,8 @@ async function poll() {
     }
 
     // New user message in tracked conv
-    log(`  [tracked @${convId}] user replied: "${latestText.substring(0,30)}"`);
-    const slug = latest?.sender?.username || latest?.sender?.slug || convId;
+    log(`  [tracked @${tc.slug || convId}] user replied: "${latestText.substring(0,30)}"`);
+    const slug = tc.slug || convId;
     const newMeta = { ...state.convMeta[convId], userLastMsgAt: latestTime, lastText: latestText };
     state.convMeta[convId] = newMeta;
 
@@ -575,6 +575,7 @@ async function poll() {
         if (sent) {
           state.convMeta[convId] = {
             ...meta,
+            slug,
             stage: 'cs',
             turns: 1,
             lastText: text,
@@ -674,7 +675,7 @@ async function poll() {
     const sent = await domSend(greeting, slug);
     if (sent) {
       state.convMeta[convId] = {
-        stage: 'intro_sent', introAt: Date.now(),
+        slug, stage: 'intro_sent', introAt: Date.now(),
         senderUid, lastText: text, turns: 0,
         sukiiLastReplyAt: Date.now(),
         userLastMsgAt: msgTime,

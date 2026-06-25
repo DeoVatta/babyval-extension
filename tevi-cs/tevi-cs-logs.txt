@@ -1417,3 +1417,188 @@ Chat langsung:..."
 [2026-06-25T17:35:33.067Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
 [2026-06-25T17:35:33.906Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
 [2026-06-25T17:35:33.924Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:35:43.964Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:35:44.759Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:35:46.133Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:35:54.936Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:35:56.061Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:35:56.454Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:36:06.092Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:36:07.224Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:36:07.932Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:36:13.136Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:36:13.229Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:36:13.260Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:36:13.290Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:36:13.785Z] [BG] [INFO] [API] ✅ 4 unread
+[2026-06-25T17:36:13.799Z] [BG] [INFO] [POLL] 4 unread — active=true
+[2026-06-25T17:36:13.870Z] [BG] [INFO]   @civic_putih [new→intro] "vcs berapa"
+[2026-06-25T17:36:13.892Z] [BG] [INFO] [DOM] → @civic_putih: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:36:14.109Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
+[2026-06-25T17:36:14.159Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @civic_putih/messages...
+[2026-06-25T17:36:15.157Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:36:15.752Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
+[2026-06-25T17:36:18.335Z] [BG] [DEBUG] [DOM] Port error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
+[2026-06-25T17:36:18.368Z] [BG] [DEBUG] [DOM] Retrying after 3s...
+[2026-06-25T17:36:18.549Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:36:19.439Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
+[2026-06-25T17:36:21.087Z] [BG] [INFO] [API] ✅ 4 unread
+[2026-06-25T17:36:21.126Z] [BG] [INFO] [POLL] 4 unread — active=true
+[2026-06-25T17:36:21.264Z] [BG] [INFO]   @civic_putih [new→intro] "vcs berapa"
+[2026-06-25T17:36:21.480Z] [BG] [INFO] [DOM] → @civic_putih: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T17:36:21.501Z] [CS] [INFO] [CS] [DOM_SEND] Duplicate ignored (busy with civic_putih)
+[2026-06-25T17:36:21.520Z] [BG] [DEBUG] [DOM] Send failed: duplicate
+[2026-06-25T17:36:21.579Z] [BG] [DEBUG] [DOM] Retrying after 3s...
+[2026-06-25T17:36:21.667Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @civic_putih
+[2026-06-25T17:36:21.749Z] [CS] [INFO] [CS] [IDLE] Return to messages in 60s
+[2026-06-25T17:36:21.817Z] [BG] [INFO] [DOM] ✅ Sent to @civic_putih (retry)
+[2026-06-25T17:36:21.854Z] [BG] [INFO]   @civic_putih [intro_sent] ✅ greeting sent
+[2026-06-25T17:36:22.782Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (24m/180m)
+[2026-06-25T17:36:23.051Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (28m/180m)
+[2026-06-25T17:36:23.113Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (39m/180m)
+[2026-06-25T17:36:23.167Z] [BG] [INFO] [POLL] Done p=4 r=1 i=3 (9379ms)
+[2026-06-25T17:36:24.613Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @civic_putih/messages...
+[2026-06-25T17:36:24.663Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
+[2026-06-25T17:36:25.275Z] [BG] [DEBUG] [DOM] Port error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
+[2026-06-25T17:36:25.319Z] [BG] [DEBUG] [DOM] Injecting CS + retry...
+[2026-06-25T17:36:25.780Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:36:25.872Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
+[2026-06-25T17:36:28.293Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
+[2026-06-25T17:36:31.146Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:36:31.258Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
+[2026-06-25T17:36:32.320Z] [BG] [DEBUG] [DOM] Port error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T17:36:32.795Z] [BG] [DEBUG] [DOM] Hard refreshing + navigating...
+[2026-06-25T17:36:34.120Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:36:34.191Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/civic_putih/messages [state=idle]
+[2026-06-25T17:36:38.711Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@civic_putih/messages [state=idle]
+[2026-06-25T17:36:42.309Z] [CS] [INFO] [CS] [DOM_SEND] → @civic_putih (74 chars) state=replying
+[2026-06-25T17:36:44.677Z] [CS] [INFO] [CS] [DOM_SEND] ✅ Sent to @civic_putih
+[2026-06-25T17:36:44.877Z] [CS] [INFO] [CS] [IDLE] Return to messages in 60s
+[2026-06-25T17:36:45.683Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:36:45.945Z] [BG] [INFO] [DOM] ✅ Sent (after hard refresh)
+[2026-06-25T17:36:46.014Z] [BG] [INFO]   @civic_putih [intro_sent] ✅ greeting sent
+[2026-06-25T17:36:46.099Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (25m/180m)
+[2026-06-25T17:36:46.115Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (28m/180m)
+[2026-06-25T17:36:46.182Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (39m/180m)
+[2026-06-25T17:36:46.248Z] [BG] [INFO] [POLL] Done p=4 r=1 i=3 (29373ms)
+[2026-06-25T17:36:46.430Z] [BG] [INFO] [API] ✅ 4 unread
+[2026-06-25T17:36:46.443Z] [BG] [INFO] [POLL] 4 unread — active=true
+[2026-06-25T17:36:46.494Z] [BG] [DEBUG]   @civic_putih [intro_sent] waiting (0m/180m)
+[2026-06-25T17:36:46.502Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (25m/180m)
+[2026-06-25T17:36:46.512Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (28m/180m)
+[2026-06-25T17:36:46.523Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (39m/180m)
+[2026-06-25T17:36:46.532Z] [BG] [INFO] [POLL] Done p=4 r=0 i=4 (829ms)
+[2026-06-25T17:37:44.752Z] [CS] [INFO] [CS] [IDLE] → tevi.com/messages
+[2026-06-25T17:37:46.155Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:37:46.200Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:37:56.246Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:37:57.106Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:37:57.613Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:38:07.139Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:38:07.721Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:38:07.821Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:38:17.780Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:38:18.482Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:38:19.074Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:38:29.190Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:38:30.764Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:38:30.778Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:38:41.223Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:38:45.356Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:38:45.375Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:38:55.346Z] [CS] [INFO] [CS] [IDLE] Stopped page refresh
+[2026-06-25T17:39:07.740Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/@civic_putih/messages [state=idle]
+[2026-06-25T17:39:12.922Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:39:13.456Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:39:22.946Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:39:24.774Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:39:24.973Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:39:35.198Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:39:37.185Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:39:37.200Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:39:43.456Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:39:43.477Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:39:43.493Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:39:43.509Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:39:43.642Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:39:43.653Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:39:43.737Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (28m/180m)
+[2026-06-25T17:39:43.746Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (31m/180m)
+[2026-06-25T17:39:43.755Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (42m/180m)
+[2026-06-25T17:39:43.786Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (262ms)
+[2026-06-25T17:39:45.488Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:39:45.629Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:39:45.637Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:39:45.716Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (28m/180m)
+[2026-06-25T17:39:45.723Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (31m/180m)
+[2026-06-25T17:39:45.729Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (42m/180m)
+[2026-06-25T17:39:45.739Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (228ms)
+[2026-06-25T17:39:47.339Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:39:48.129Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:39:48.608Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:39:58.134Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:39:59.170Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:40:00.036Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:40:09.221Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:40:09.883Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:40:10.003Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:40:13.536Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:40:13.642Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:40:13.691Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:40:13.776Z] [BG] [DEBUG]   @rival964 [intro_sent] waiting (28m/180m)
+[2026-06-25T17:40:13.788Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (32m/180m)
+[2026-06-25T17:40:13.802Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (42m/180m)
+[2026-06-25T17:40:13.840Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (271ms)
+[2026-06-25T17:40:19.942Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:40:20.916Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:40:21.031Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:40:30.925Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:40:31.577Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:40:31.602Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:40:41.623Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:40:42.235Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:40:42.670Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:40:52.276Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:40:53.578Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:40:54.738Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:41:03.710Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:41:07.368Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:41:12.180Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:41:17.458Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:41:18.763Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:41:18.884Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:41:28.815Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:41:30.366Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:41:32.683Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:41:40.484Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:41:42.772Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:41:43.121Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:41:52.943Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:41:55.193Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:41:56.171Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:42:04.719Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:42:08.095Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:42:09.750Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:42:18.326Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:42:20.122Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:42:20.240Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:42:36.989Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:42:41.019Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:42:41.195Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:42:49.571Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:42:51.322Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:42:51.832Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:43:01.545Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:43:03.366Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:43:03.810Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:43:13.576Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:43:14.737Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:43:15.415Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:43:25.360Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:43:31.053Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:43:31.671Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
+[2026-06-25T17:43:42.576Z] [CS] [INFO] [CS] [IDLE] Refreshing messages page...
+[2026-06-25T17:43:55.239Z] [CS] [INFO] [CS] [IDLE] Starting page refresh every 10s
+[2026-06-25T17:43:55.589Z] [CS] [INFO] [CS] v0.6.0 active — https://tevi.com/messages [state=idle]
