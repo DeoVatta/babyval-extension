@@ -1012,3 +1012,31 @@ bisa payment k..."
 [2026-06-25T16:43:03.248Z] [BG] [INFO] [API] ✅ 0 unread
 [2026-06-25T16:43:03.266Z] [BG] [INFO] [POLL] 0 unread — active=true
 [2026-06-25T16:43:03.292Z] [BG] [INFO] [POLL] Done p=0 r=0 i=0 (1078ms)
+[2026-06-25T16:46:02.897Z] [BG] [INFO] [SW] Tevi CS Bot v0.5.4.0 — config-driven, loop greeting, payment proof silent
+[2026-06-25T16:46:02.938Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:46:02.954Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:46:02.978Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:46:03.132Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:46:03.142Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:46:03.161Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:46:03.169Z] [BG] [INFO] [DOM] → @jjjikj: "Halo aku Sukii, AI Assistant-nya Baby Va..."
+[2026-06-25T16:46:03.338Z] [CS] [INFO] [CS] [DOM_SEND] → @jjjikj (142 chars) busy=true
+[2026-06-25T16:46:03.364Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @jjjikj/messages...
+[2026-06-25T16:46:06.591Z] [BG] [ERROR] [DOM] Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+[2026-06-25T16:46:06.709Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:46:06.836Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:46:07.733Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (2291ms)
+[2026-06-25T16:46:08.029Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:46:08.046Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:46:08.080Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:46:08.100Z] [BG] [INFO] [DOM] → @jjjikj: "Halo aku Sukii, AI Assistant-nya Baby Va..."
+[2026-06-25T16:46:12.377Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
+[2026-06-25T16:46:12.387Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:46:12.396Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (6295ms)
+[2026-06-25T16:46:12.862Z] [CS] [INFO] [CS] v0.5.2.0 active — https://tevi.com/@jjjikj/messages
+[2026-06-25T16:46:34.666Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:46:47.179Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:46:47.215Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:46:47.233Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:46:47.254Z] [BG] [INFO] [DOM] → @jjjikj: "Halo aku Sukii, AI Assistant-nya Baby Va..."
+[2026-06-25T16:47:21.523Z] [CS] [INFO] [CS] [DOM_SEND] → @jjjikj (142 chars) busy=true

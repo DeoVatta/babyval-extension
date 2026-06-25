@@ -142,6 +142,9 @@ function getDefaultRules() {
     // Priority 50: ABSOLUTE BLOCKS
     { id: 'block_personal', priority: 50, type: 'keyword', active: true, match: 'alamat rumah,no hp,nomor hp,wa ,whatsapp,umur kamu,berapa umur,usia kamu,domisili,kota kamu,daerah kamu', reply: `Maaf ya, informasi pribadi tidak bisa aku berikan 💕\nUntuk layanan VCS bisa via babyval.com ya~` },
 
+    // Priority 45: OFFLINE / KETEMU — block and redirect to VCS
+    { id: 'offline_ketemu', priority: 45, type: 'keyword', active: true, match: 'ketemu,bertemu,langsung,offline,nemu,dateng,datang,meet up,nyambung,in person,temu muka', reply: `Maaf kak, Cuma bisa VCS aja ya 💕\nGabisa ketemu offline/offline.\nVCS di babyval.com aja yuk!` },
+
     // Priority 40: VCS STEPS (specific, higher than generic VCS)
     { id: 'vcs_cara', priority: 40, type: 'keyword', active: true, match: 'cara vcs,cara payment,cara bayarnya,cara order,bagaimn cara,gimana cara,cara nya', reply: `Cara VCS:\n1. Buka babyval.com\n2. Pilih Video Call\n3. Pilih Durasi\n4. Lanjutkan pembayaran\n\nUdah gitu aja! Mudah kan 💕` },
 
