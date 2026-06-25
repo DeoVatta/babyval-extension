@@ -237,61 +237,40 @@ async function domSend(text, slug) {
     if (!tabs.length) { logE('[DOM] No tevi tab open'); return false; }
     const tab = tabs[0];
     const tabId = tab.id;
-    const tabUrl = tab.url || '';
-    const expectedUrl = `https://tevi.com/@${slug}/messages`;
-
     log(`[DOM] → @${slug}: "${text.substring(0,40)}..."`);
 
-    async function trySend(attempt) {
+    async function trySend() {
       try {
         const resp = await chrome.tabs.sendMessage(tabId, { type: 'DOM_SEND', text, slug });
-        if (resp?.ok) return { ok: true };
-        logD(`[DOM] Attempt ${attempt} failed: ${resp?.reason}`);
-        return { ok: false, reason: resp?.reason };
-      } catch (e) {
-        logD(`[DOM] Attempt ${attempt} error: ${e.message}`);
-        return { ok: false, reason: e.message };
-      }
+        if (resp?.ok) return true;
+        logD(`[DOM] Send failed: ${resp?.reason}`); return false;
+      } catch (e) { logD(`[DOM] Port error: ${e.message}`); return false; }
     }
 
     // Attempt 1: direct
-    let r = await trySend(1);
-    if (r.ok) { log(`[DOM] ✅ Sent (direct)`); return true; }
+    if (await trySend()) { log(`[DOM] ✅ Sent to @${slug}`); return true; }
 
-    // Attempt 2: inject CS + wait + retry
-    logD(`[DOM] Retrying with CS injection...`);
+    // Attempt 2: CS may be navigating — wait and retry
+    logD(`[DOM] Retrying after 3s...`);
+    await sleep(3000);
+    if (await trySend()) { log(`[DOM] ✅ Sent to @${slug} (retry)`); return true; }
+
+    // Attempt 3: inject fresh CS + retry
+    logD(`[DOM] Injecting CS + retry...`);
     try {
       await chrome.scripting.executeScript({ target: { tabId }, files: ['content-script.js'] });
-      await sleep(1200);
-      r = await trySend(2);
-      if (r.ok) { log(`[DOM] ✅ Sent (after inject)`); return true; }
+      await sleep(2000);
+      if (await trySend()) { log(`[DOM] ✅ Sent (after inject)`); return true; }
     } catch (e) { logD(`[DOM] Inject failed: ${e.message}`); }
 
-    // Attempt 3: navigate to correct DM page + wait + retry
-    if (!tabUrl.includes(`/@${slug}/messages`)) {
-      logD(`[DOM] Navigating to @${slug}/messages...`);
-      try {
-        await chrome.tabs.update(tabId, { url: expectedUrl });
-        // Wait for navigation + content script load
-        await sleep(3000);
-        r = await trySend(3);
-        if (r.ok) { log(`[DOM] ✅ Sent (after nav)`); return true; }
-      } catch (e) { logD(`[DOM] Nav failed: ${e.message}`); }
-    }
-
-    // Attempt 4: hard refresh (reload tab) + wait + retry
-    logD(`[DOM] Hard refreshing tab...`);
+    // Attempt 4: hard refresh + navigate to DM + retry
+    logD(`[DOM] Hard refreshing + navigating...`);
     try {
       await chrome.tabs.reload(tabId, { bypassCache: true });
       await sleep(4000);
-      // Ensure we're on the right page after reload
-      const curTab = (await chrome.tabs.query({ active: true }))[0] || {};
-      if (!curTab.url?.includes(`/@${slug}/messages`)) {
-        await chrome.tabs.update(tabId, { url: expectedUrl });
-        await sleep(3000);
-      }
-      r = await trySend(4);
-      if (r.ok) { log(`[DOM] ✅ Sent (after hard refresh)`); return true; }
+      await chrome.tabs.update(tabId, { url: `https://tevi.com/@${slug}/messages` });
+      await sleep(3000);
+      if (await trySend()) { log(`[DOM] ✅ Sent (after hard refresh)`); return true; }
     } catch (e) { logD(`[DOM] Hard refresh failed: ${e.message}`); }
 
     logE(`[DOM] ❌ All attempts failed for @${slug}`);

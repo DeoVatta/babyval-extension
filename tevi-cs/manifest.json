@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.6.0",
-  "description": "Tevi CS Bot v0.6 — cute cat overlay, Sukii must be last replier, payment delay 6h, 24h rule",
+  "version": "0.6.1",
+  "description": "Tevi CS Bot v0.6.1 — idle/reply state machine, cold tone, Sukii-last-reply, auto-return",
   "author": "Devata",
   "permissions": [
     "alarms",

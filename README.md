@@ -1,198 +1,117 @@
-# babyval-extension
+# babyval-extension — Tevi CS Bot
 
-Edge/Chrome extension untuk otomatisasi Tevi CS (Customer Service) bot.
-
-> Port dari `babyval-autopilot/tevi-cs` (Node.js/Playwright) ke browser extension (MV3). Tidak perlu login flow, token capture lebih reliable, tidak ada Cloudflare issue.
-
-## Fitur
-
-- **Auto-reply DM** — Balas pesan masuk otomatis dengan template VCS/Casual
-- **5 Classifier** — Member ignore, VCS keyword, casual chat, long idle, first chat
-- **2-Tier Reply Rule** — Reply sekali, subsequent messages hanya mark read
-- **Active Hours** — Aktif jam 17:00 - 05:00, closed jam 05:00-17:00
-- **Poll Interval** — 3 menit via `chrome.alarms`
-- **Status Popup** — Toggle on/off, info last poll, conversation count
+Edge/Chrome MV3 extension untuk otomatisasi Tevi CS (Customer Service) bot @cutieval (UID=392388705).
 
 ## Arsitektur
 
 ```
-babyval-extension/
-├── CLAUDE.md              # Development rules
-├── README.md              # Dokumen ini
-├── tevi-cs/               # Extension Tevi CS Bot
-│   ├── manifest.json       # MV3 manifest
-│   ├── background.js      # Service Worker: polling, HMAC, API calls, logging
-│   ├── content-script.js  # Inject ke tevi.com: token capture + logging
-│   ├── overlay.js         # Floating overlay (right-bottom) — auto-appears on tevi.com
-│   ├── log-server.js      # Local HTTP server: receives logs → writes file
-│   ├── package.json       # Node dependencies (untuk log-server)
-│   ├── popup/
-│   │   ├── popup.html    # Status UI + diagnostic
-│   │   └── popup.js      # Popup logic + diagnose + view logs
-│   └── icons/            # Extension icons (16, 48, 128)
-└── [future extensions as sibling folders]
+tevi-cs/
+├── manifest.json       # MV3 manifest v0.6.1
+├── background.js      # Service Worker: polling, HMAC, API, state machine
+├── content-script.js  # DOM automation: idle/reply state machine
+├── overlay.js        # Cute cat overlay (sleep/alert/typing animation)
+├── popup/popup.html  # Rules editor UI
+├── log-server.js     # Local HTTP log receiver
+└── icons/
 ```
 
-## Remote Debugging System
+## State Machine
 
-Extension POST semua log ke `localhost:3131` (log-server.js) → saya (Claude) baca log untuk debug & fix.
-
-### Flow Debug:
 ```
-background.js (Service Worker)
-  → POST /log → log-server.js
-    → Write ke tevi-cs-logs.txt
-      → Saya Read file → Fix issues
+IDLE (tevi.com/messages)
+  ↓ poll detects unread
+REPLY (tevi.com/@slug/messages)
+  ↓ send message
+60s delay → return to IDLE
 ```
 
-### Log Server Endpoints:
+- **Idle**: di `tevi.com/messages` → deteksi pesan masuk via API polling (3 menit)
+- **Reply**: navigasi otomatis ke DM → ketik → kirim → 60 detik → auto-kembali
+- **Idle Check**: pastikan tidak ada pesan yang belum Sukii balas (dalam 24 jam terakhir)
+
+## Flow Bot
+
 ```
-POST /log    — Send single log entry
-POST /batch  — Send multiple entries
-GET  /logs   — Read recent logs (count=N param)
-GET  /logs?count=50 — Read last 50 lines
-GET  /health — Server health check
-GET  /clear  — Clear log file
+Pesan masuk → Greeting (intro_sent)
+  ↓ user balas (dalam 180 menit)
+CS mode → reply sesuai keyword rules
+  ↓ max turns (3) → loop greeting
+  ↓ idle 30 menit → done
+  ↓ payment proof detected → silent end
 ```
 
-### Popup Diagnostic:
-Popup punya button **🔍 Diagnose** yang menampilkan:
-1. Log server status
-2. Extension storage state
-3. Tevi tab status
-4. Token capture result
-5. Recent 10 log entries
+**Sukii Must Be Last Replier** — semua pesan harus Sukii terakhir balas, KECUALI:
+1. Membership — never touch
+2. Payment confirmed — 6 jam delay
+3. User diam >24 jam — boleh balas
 
-Semua dalam popup — kamu tidak perlu buka DevTools manual.
+## Keyword Rules (Cold/Informant Tone)
 
-## Perbedaan dengan tevi-cs (Node.js)
-
-| Aspek | tevi-cs | babyval-extension |
+| Priority | Trigger | Reply |
 |---|---|---|
-| Login | Playwright automation | Tidak perlu (browser session) |
-| Token capture | page.on('response') race | localStorage inject sync |
-| Cloudflare | Browser wait 20s | Tidak ada |
-| Poll mechanism | setInterval | chrome.alarms |
-| State | JSON file | chrome.storage.local |
-| Browser | Separate Chromium | Edge session sendiri |
+| 50 | Alamat, no HP, WA, umur | `Informasi pribadi tidak diberikan.` |
+| 45 | ketemu, offline | `Cuma bisa VCS. Offline tidak tersedia.` |
+| 40 | cara vcs, payment | `1. Buka babyval.com\n2. Pilih Video Call\n3. Pilih Durasi\n4. Bayar` |
+| 35 | beda 7 dan 10 menit | `Beda durasi aja. Squirt minimal 20 menit.` |
+| 35 | masker | `Buka masker: tip 250rb ke ganknow.com/babyval/tip.` |
+| 30 | vcs, videocall | `VCS tersedia. babyval.com → Video Call → Durasi → Bayar.` |
+| 25 | ngobrol aja | `Chat langsung: membership Tevi.` |
+| 20 | payment, transfer | `babyval.com → Video Call → Durasi → Bayar.` |
+| 20 | join member | `tevi.com/@cutieval. Pilih membership.` |
+| 15 | order, beli | `babyval.com. Pilih layanan, bayar, kirim bukti.` |
+| 15 | foto, video, konten | `Konten untuk member.` |
+| 10 | bot, sukii | `Sukii. Informan Baby Val.` |
+| 5 | terima kasih | `Sukii. Ada yang perlu ditanyakan.` |
+| 1 | inappropriate | `Di luar layanan.` |
+| 0 | fallback | `Chat langsung dengan Baby Val: membership Tevi.` |
 
-## Auth Strategy
+## Greeting
 
-Extension membaca `localStorage['user_logged_list']` dari tab Tevi yang sudah logged in:
-
-1. `chrome.scripting.executeScript` ke tab Tevi
-2. Baca dan parse localStorage → extract `access_token`
-3. Return token ke background
-4. Background: HMAC sign + fetch `wapi.flowstreamx.com`
-
-HMAC secret: `PRDKqnSNCKrMDF9hAt0PSJ6`
-HMAC algorithm: SHA-256 + Base64, signed string = `pathname + timestamp`
-
-## Classifier Logic
-
-| Condition | Action | Template |
-|---|---|---|
-| `is_member` (is_my_subscriber: true) | IGNORE | — |
-| `is_vcs_ask` (keyword VCS/private/call) | REPLY | VCS |
-| `is_first_chat` (new conv) | REPLY | VCS |
-| `is_long_idle` (>6hr) | REPLY | CASUAL |
-| `is_casual` (short/emoji/keyword) | REPLY | CASUAL |
-| `repliedOnce[convId]` exists | MARK READ ONLY | — |
-
-## Reply Templates
-
-**VCS:**
 ```
-vcs available💕
-bisa payment ke web https://babyval.com/
-➡️ Pilih videocall
-Jangan lupa kirim bukti tf ke dm
-
-AKU BALAS CHAT KHUSUS MEMBER ATAU SUDAH PAYMENT VCS
+Sukii. Informan Baby Val.
+Chat langsung: membership Tevi.
+VCS: babyval.com
 ```
 
-**CASUAL:**
-```
-Hai! 💕 Untuk request konten eksklusif atau VCS, bisa via:
-1. Join membership: tevi.com/@cutieval
-2. Payment VCS: babyval.com → pilih videocall
-Terima kasih! 🙏
-```
+## Auto-Recovery (DOM Send)
 
-## Setup & Installation
+1. Direct send
+2. CS injection + retry (3s wait)
+3. CS injection + retry (2s wait)
+4. Hard refresh + navigate + retry
 
-### 1. Start Log Server (WAJIB — untuk debugging)
+## Setup
+
+### 1. Start Log Server
 ```bash
 cd C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
-npm install  # atau: node log-server.js langsung
 node log-server.js
-# Server running on http://localhost:3131
 ```
 
-### 2. Load Extension di Edge
+### 2. Load Extension
 ```
-edge://extensions/
-→ Aktifkan "Developer mode"
-→ Klik "Load unpacked"
-→ Pilih folder: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
+edge://extensions/ → Developer mode → Load unpacked
+Pilih: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
 ```
 
 ### 3. Setup
-- Buka tab Tevi (`tevi.com`) dan login manual
-- Klik extension icon → popup
-- Klik **Aktifkan** toggle
-- Klik **🔍 Diagnose** untuk verify semuanya working
+1. Buka tab Tevi → login
+2. Extension icon → Keys tab → masukkan AI key + HMAC secret → Save
+3. Toggle ON
 
-### 4. Debug
-- Popup → **🔍 Diagnose** button: Full diagnostic report
-- Popup → **📋 View Logs** button: Last 50 log entries
-- Log file: `tevi-cs/tevi-cs-logs.txt`
+## Active Hours
 
-## Permissions
-
-| Permission | Alasan |
-|---|---|
-| `alarms` | Polling interval 3 menit (MV3 compliant) |
-| `storage` | State persistence (repliedOnce, config) |
-| `scripting` | Programmatic injection ke tab Tevi |
-| `activeTab` | Inject content script ke tab Tevi |
-| `host_permissions: wapi.flowstreamx.com` | API calls |
-| `host_permissions: tevi.com` | Tab access, inject script |
-
-## Bot Identity
-
-```js
-MY_UID=392388705
-MY_SLUG=cutieval
-MY_CHANNEL_ID=a605781b-dc88-441d-a3d0-654b075ec...
-```
-
-## Known Limitations
-
-- Browser harus terbuka (extension hanya jalan saat Edge aktif)
-- User harus logged in di tab Tevi
-- MV3 Service Worker max 30s execution — dipantau via alarms
-- Tidak support multiple account simultaneous
+Aktif: **17:00 - 05:00 WIB**
 
 ## Changelog
 
-### v0.2.0.0 — 2026-06-25
-- **Fully automated**: No manual buttons. Toggle ON → everything runs automatically
-- **Auto poll on startup**: SW polls immediately when enabled, with 3-min alarm interval
-- **Token recovery**: Auto-clear expired token → re-capture from tab
-- **Retry logic**: 3 retries with exponential backoff on poll failure
-- **No manual buttons**: Removed Poll, Probe, Diagnose, Logs, Clear Token, Restart SW
-- **Fixed API endpoint**: `/messenger/v2/rpc/get_recent_conversations` (was `/conversation/`)
-- **Minimal UI**: Toggle + Stats (Processed/Replied/Ignored) + Last Poll + Token UID
+### v0.6.1 — 2026-06-25
+- Idle/Reply state machine: auto-return to messages after 60s
+- Cold tone: semua reply dingin, informatif
+- Sukii-last-replier: skip reply jika Sukii sudah terakhir balas
+- Payment proof silent end
+- Overlay kucing: CSS animated cat
 
-### v0.1.0.3 — 2026-06-25
-- **FIX: API 404** — Endpoint path wrong: `/conversation/` → `/rpc/` (correct path: `/messenger/v2/rpc/get_recent_conversations`)
-- **Auto-discover interceptor**: interceptor.js monkey-patches fetch/XHR on tevi.com — auto-captures real endpoint
-- **Dual fallback**: Uses discovered endpoint first, falls back to known correct path
-
-### v0.1.0.2 — 2026-06-25
-- **Floating Overlay**: Right-bottom FAB button muncul otomatis di tevi.com, collapsible panel dengan toggle, stats, Poll button, Logs viewer
-- **Token Persistent**: Token disimpan ke `chrome.storage.local` — persist setelah SW restart, popup tidak lagi "No Token"
-
-### v0.1.0.1 — 2026-06-25
-- **Remote debugging system**: Extension POST logs ke localhost:3131 (log-server.js)
+### v0.6.0 — 2026-06-25
+- Cute cat overlay: sleep/alert/typing
+- Payment delay 6h, 24h rule

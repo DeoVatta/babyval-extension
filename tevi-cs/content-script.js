@@ -1,7 +1,8 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.5.2.0
- * DOM automation: type + send (visible)
- * Deduplicated: ignores duplicate DOM_SEND for same slug
+ * CONTENT SCRIPT — Tevi CS Bot v0.6.0
+ * State machine: IDLE (tevi.com/messages) ↔ REPLY (tevi.com/@slug/messages)
+ * After send → 60s delay → auto-return to messages list
+ * Deduplication + auto-navigation handled here
  */
 
 (function() {
@@ -10,10 +11,15 @@
   if (window.__TEVI_CS__) return;
   window.__TEVI_CS__ = true;
 
-  const LOG = 'http://localhost:3131';
-  let _busy = false; // Lock: prevents overlapping sends
+  const LOG       = 'http://localhost:3131';
+  const IDLE_URL  = 'https://tevi.com/messages';
+  const RETRY_AFTER_SEND_MS = 60000; // 1 minute
+
+  let _busy    = false;
   let _lastSlug = null;
-  let _lastMsg = null;
+  let _lastMsg  = null;
+  let _state    = 'idle'; // 'idle' | 'replying'
+  let _returnTimer = null;
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -22,6 +28,13 @@
     const s = window.getComputedStyle(el);
     return s.display !== 'none' && s.visibility !== 'hidden' && el.offsetWidth > 0 && el.offsetHeight > 0;
   }
+
+  function getSlug() {
+    const m = location.href.match(/tevi\.com\/@([^/]+)/);
+    return m ? m[1] : null;
+  }
+
+  function isIdle() { return location.href.includes('/messages') && !location.href.includes('/@'); }
 
   function findInput() {
     const sels = [
@@ -39,7 +52,6 @@
   }
 
   function findSendBtn() {
-    // Try specific selectors first
     const sels = [
       'button[type="submit"]',
       'button[aria-label*="Kirim" i]',
@@ -57,11 +69,6 @@
     return null;
   }
 
-  function getSlug() {
-    const m = location.href.match(/tevi\.com\/@([^/]+)/);
-    return m ? m[1] : null;
-  }
-
   function l(msg) {
     try {
       fetch(`${LOG}/log`, {
@@ -74,20 +81,13 @@
 
   async function typeText(inputEl, text) {
     inputEl.focus();
-    // Clear
     if (inputEl.tagName === 'TEXTAREA') { inputEl.value = ''; inputEl.dispatchEvent(new Event('input', { bubbles: true })); }
     else if (inputEl.tagName === 'DIV') { inputEl.textContent = ''; inputEl.innerHTML = ''; }
-
-    // Type char by char — fast
     for (let i = 0; i < text.length; i++) {
       const ch = text[i];
-      if (inputEl.tagName === 'TEXTAREA') {
-        inputEl.value += ch;
-      } else {
-        inputEl.textContent += ch;
-      }
+      if (inputEl.tagName === 'TEXTAREA') inputEl.value += ch;
+      else inputEl.textContent += ch;
       inputEl.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: ch === '\n' ? 'insertLineBreak' : 'insertText', data: ch }));
-      // Fast human-like delay
       let ms;
       if (ch === ' ') ms = 20 + Math.random() * 15;
       else if (ch === '.' || ch === ',') ms = 15 + Math.random() * 10;
@@ -100,11 +100,7 @@
 
   async function clickSend() {
     const btn = findSendBtn();
-    if (btn) {
-      btn.click();
-      return true;
-    }
-    // Fallback: Enter key
+    if (btn) { btn.click(); return true; }
     const inp = findInput();
     if (inp) {
       inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
@@ -124,13 +120,26 @@
     return null;
   }
 
+  function scheduleReturnToIdle() {
+    if (_returnTimer) clearTimeout(_returnTimer);
+    l(`[IDLE] Return to messages in ${RETRY_AFTER_SEND_MS / 1000}s`);
+    _returnTimer = setTimeout(async () => {
+      _state = 'idle';
+      if (!isIdle()) {
+        l(`[IDLE] → tevi.com/messages`);
+        window.location.href = IDLE_URL;
+      } else {
+        l(`[IDLE] → already on messages`);
+      }
+    }, RETRY_AFTER_SEND_MS);
+  }
+
   // ── MESSAGE LISTENER ───────────────────────────────────────────────────
   chrome.runtime.onMessage.addListener((msg, _, sendResp) => {
     if (msg.type === 'DOM_SEND') {
       const { text, slug } = msg;
       const currentSlug = getSlug();
 
-      // Deduplicate: ignore if already sending same message to same slug
       if (_busy && slug === _lastSlug && text === _lastMsg) {
         l(`[DOM_SEND] Duplicate ignored (busy with ${slug})`);
         sendResp({ ok: false, reason: 'duplicate', slug });
@@ -140,23 +149,23 @@
       _busy = true;
       _lastSlug = slug;
       _lastMsg = text;
-      l(`[DOM_SEND] → @${slug} (${text.length} chars) busy=${_busy}`);
+      _state = 'replying';
+      l(`[DOM_SEND] → @${slug} (${text.length} chars) state=${_state}`);
 
       (async () => {
         try {
-          // If on wrong page, warn and fail (no auto-navigate — tab navigation kills the port)
           if (currentSlug !== slug) {
-            l(`[DOM_SEND] Wrong page @${currentSlug} (need @${slug}) — skipping`);
-            _busy = false; sendResp({ ok: false, reason: 'wrong_page', slug, need: slug }); return;
+            l(`[DOM_SEND] Navigate to @${slug}/messages...`);
+            window.location.href = `https://tevi.com/@${slug}/messages`;
+            await waitForEl(() => findInput(), 15000);
+            await sleep(800);
           }
-
-          // Wait for DOM to settle after page load
-          await sleep(800);
 
           const input = await waitForEl(() => findInput(), 15000);
           if (!input) {
             l(`[DOM_SEND] ❌ Input not found`);
-            _busy = false; sendResp({ ok: false, reason: 'no_input', slug }); return;
+            _busy = false; _state = 'idle';
+            sendResp({ ok: false, reason: 'no_input', slug }); return;
           }
 
           await typeText(input, text);
@@ -165,13 +174,16 @@
           const sent = await clickSend();
           if (sent) {
             l(`[DOM_SEND] ✅ Sent to @${slug}`);
+            scheduleReturnToIdle();
             sendResp({ ok: true, slug });
           } else {
             l(`[DOM_SEND] ❌ Send failed`);
+            _busy = false; _state = 'idle';
             sendResp({ ok: false, reason: 'send_failed', slug });
           }
         } catch (e) {
           l(`[DOM_SEND] ❌ ${e.message}`);
+          _busy = false; _state = 'idle';
           sendResp({ ok: false, reason: e.message, slug });
         } finally {
           _busy = false;
@@ -181,10 +193,24 @@
     }
 
     if (msg.type === 'GET_DOM') {
-      sendResp({ slug: getSlug(), hasInput: !!findInput(), hasSendBtn: !!findSendBtn(), url: location.href });
+      sendResp({
+        slug: getSlug(),
+        hasInput: !!findInput(),
+        hasSendBtn: !!findSendBtn(),
+        url: location.href,
+        state: _state,
+        isIdle: isIdle(),
+      });
+      return true;
+    }
+
+    if (msg.type === 'CANCEL_RETURN') {
+      if (_returnTimer) { clearTimeout(_returnTimer); _returnTimer = null; }
+      l(`[DOM_SEND] Return-to-idle cancelled`);
+      sendResp({ ok: true });
       return true;
     }
   });
 
-  l(`v0.5.2.0 active — ${location.href}`);
+  l(`v0.6.0 active — ${location.href} [state=${_state}]`);
 })();
