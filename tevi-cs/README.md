@@ -2,7 +2,7 @@
 
 ## Apa Ini
 
-Bot CS (Customer Service) otomatis untuk akun **@cutieval** di Tevi.com.
+Bot CS (Customer Service) otomatis untuk akun **@cutieval** di Tevi.com (UID=392388705).
 
 Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Sukii") dengan topik yang sesuai — membership, VCS, payment, masker, dll. Semua chat logged ke Supabase.
 
@@ -18,9 +18,240 @@ Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Suki
 
 ---
 
-## AI Rules (Sukii v0.9.7)
+## Architecture
 
-### ✅ BOLEH DIJAWAB
+### Extension Structure (MV3)
+
+```
+tevi-cs/
+├── manifest.json        # v0.9.10 — version + permissions
+├── background.js        # Service Worker — scan, slot, edge function call
+├── content-script.js    # DOM scanner, message reader, intercept capture
+├── overlay.js           # Cat toggle panel
+├── sniffer.js           # Universal API sniffer (all domains)
+├── interceptor.js       # (legacy) API interceptor
+├── log-server.js        # Local HTTP log receiver (port 3131)
+├── popup/
+│   └── popup.html       # Extension popup UI (Rules/Behavior/Persona/Keys/API tabs)
+├── icons/
+└── supabase/
+    ├── config.toml
+    ├── functions/
+    │   ├── cs-bot-logger/    # AI + logging + API discovery handler
+    │   └── api-auto-probe/    # Auto-probe Tevi API endpoints
+    └── migrations/
+        ├── 20260606000101_cs_bot_schema.sql
+        └── 20260625205315_tevi_api_discovery.sql
+```
+
+### How It Works
+
+1. **Service Worker** (background.js) polling via `chrome.alarms` setiap 20 detik
+2. **Content Script** injects ke Tevi page — scan DOM untuk conv list + messages
+3. **INTERCEPT_SEND** — monkey-patch fetch/XHR untuk capture Tevi API send pattern
+4. **Supabase Edge Function** — handle AI call ke Olagon + log everything
+5. **apiSend()** — replay captured API request (tabless send)
+
+### Tech Stack
+
+| Component | Tech |
+|---|---|
+| Extension | Chrome MV3 (Service Worker) |
+| AI Gateway | Olagon (`gateway.olagon.site`) |
+| Database | Supabase (PostgreSQL) |
+| Edge Functions | Deno (Supabase) |
+| Auth | Cookie-based (Tevi login session) |
+
+---
+
+## CONV DETECTION — METODE YANG BEKERJA
+
+### Metode 1: DOM Anchor Link (PROVEN WORK v0.8)
+
+Tevi render conv list sebagai anchor links ke `/@username/messages`. Selector yang work:
+
+```javascript
+// Semua anchor href yang mengandung /@
+const allLinks = document.querySelectorAll('a[href*="/@"]');
+const convLinks = allLinks.filter(a => {
+  return a.href && a.href.match(/tevi\.com\/@[^/]+\/messages/);
+});
+// Support juga relative URL: /@username/messages
+const m = link.href.match(/(?:tevi\.com)?\/@([^/?#]+)/);
+```
+
+**Key insight:** Tevi pakai MUI (`MuiStack-root css-xxxx`) untuk conv items. Anchor ada di dalam MuiStack DIV.
+
+**Priority selector (v0.8 yang work):**
+1. `a[href*="/@"]` dengan href match `tevi.com/@username/messages` — **PRIORITY 1**
+2. `[data-conv-id]` — Tevi's internal ID
+3. `[class*="conversation-item"]`
+4. `ul[class*="list"] > li` (list item filter by @username in text)
+5. Fallback: `a[href*="/@"]` anywhere
+
+**Slug extraction dari anchor href:**
+```javascript
+// Support full URL dan relative URL
+const m = link.href.match(/(?:tevi\.com)?\/@([^/?#]+)/);
+if (m && m[1]) return m[1];
+```
+
+### Metode 2: API-Based (Tabless — PROVEN WORK v0.9)
+
+Tevi kirim pesan via HTTP API. Extension capture request pattern lalu replay.
+
+**Capture flow:**
+1. User kirim DM manual di Tevi
+2. `INTERCEPT_SEND` aktif (via content script message)
+3. Monkey-patch `window.fetch` + `XMLHttpRequest`
+4. Tangkap POST request ke API send endpoint
+5. Simpan pattern: `{ url, method, headers, bodyFields }`
+6. Service Worker replay dengan message baru
+
+**Kode capture (content-script.js):**
+```javascript
+function tryCapture(url, method, headers, body) {
+  // Universal — capture semua domain Tevi
+  let hostname = '';
+  try { hostname = new URL(url).hostname; } catch {}
+  const isTeviApi = hostname.includes('tevi.com') ||
+                    hostname.includes('flowstreamx') ||
+                    hostname.includes('wapi');
+  if (!isTeviApi) return;
+  if (!url.match(/send|message|chat|conversation/i)) return;
+
+  captured = true;
+  // Parse body
+  let parsedBody = {};
+  try { parsedBody = JSON.parse(body); } catch {}
+
+  // Simpan pattern
+  chrome.runtime.sendMessage({
+    type: 'API_SEND_PATTERN',
+    url, method,
+    headers: { Authorization: headers.Authorization || '' },
+    bodyFields: parsedBody,
+    capturedAt: Date.now(),
+  });
+}
+```
+
+**Kode replay (background.js):**
+```javascript
+async function apiSend(recipientSlug, text) {
+  const { apiSendPattern } = await sg(['apiSendPattern']);
+  if (!apiSendPattern) return false;
+
+  const bf = apiSendPattern.bodyFields || {};
+  const body = { message: text, recipient: recipientSlug };
+
+  const res = await fetch(apiSendPattern.url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ... },
+    body: JSON.stringify(body),
+    credentials: 'include', // PENTING: include cookies untuk auth
+  });
+
+  return res.ok;
+}
+```
+
+**KNOWN ISSUE:** Domain API Tevi tidak diketahui. v0.9 capture `wapi.flowstreamx.com`. v0.9.10 universal capture semua domain.
+
+### Metode 3: DOM Typing + Send (Fallback)
+
+Kalau API send tidak tersedia, fallback ke DOM manipulation:
+
+```javascript
+// 1. Find input
+const input = document.querySelector('textarea#_r_17_') ||
+              document.querySelector('div[contenteditable="true"]');
+
+// 2. Type with realistic delay
+for (const ch of text) {
+  input.textContent += ch;
+  input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+  await sleep(30 + Math.random() * 40);
+}
+
+// 3. Click send button
+const btn = findSendBtn();
+btn.click();
+
+// 4. Verify sent
+await sleep(2000);
+return messages.some(m => m.includes('Halo aku Sukii'));
+```
+
+### Metode 4: API Auto-Discovery (Sniffer)
+
+`sniffer.js` — universal fetch/XHR interceptor yang capture SEMUA API calls:
+
+- Monkey-patch `window.fetch` + `XMLHttpRequest`
+- Skip calls ke Supabase sendiri (avoid loop)
+- Report ke Supabase tables: `tevi_api_endpoints`, `tevi_auth_tokens`
+- Auto-detect domain Tevi yang sebenarnya
+
+---
+
+## MESSAGE READING — METODE
+
+### Dari DM Page (tevi.com/@username/messages)
+
+```javascript
+// 1. Find all message elements
+const msgEls = document.querySelectorAll('[class*="message"], [role="listitem"], div[class*="bubble"]');
+
+// 2. Filter USER messages only (not Sukii)
+function isFromUser(msgEl) {
+  const cls = msgEl.className.toLowerCase();
+  // Right-aligned = Sukii, Left-aligned = user
+  if (cls.includes('right') || cls.includes('outgoing')) return false;
+  if (cls.includes('left') || cls.includes('incoming')) return true;
+  // Check avatar
+  const avatar = msgEl.querySelector('[class*="avatar"]');
+  if (avatar && !avatar.textContent.includes('cutieval')) return true;
+  return false;
+}
+
+// 3. Get last N messages
+const userMsgs = msgEls
+  .filter(isFromUser)
+  .map(el => ({ text: el.textContent.trim(), hasImage: !!el.querySelector('img') }))
+  .slice(-4);
+```
+
+### Dari Conv List (tevi.com/messages)
+
+```javascript
+// Check last message icon: ✓ = Sukii replied, no icon = user last
+function hasRepliedIcon(convEl) {
+  const svgs = convEl.querySelectorAll('svg');
+  for (const svg of svgs) {
+    if (svg.outerHTML.includes('check-double')) return true;
+    if (svg.outerHTML.includes('icon-check')) return true;
+  }
+  return false;
+}
+
+// Unread = no check icon AND has unread badge
+const unread = !hasRepliedIcon(convEl) && hasUnreadBadge(convEl);
+```
+
+---
+
+## AI SYSTEM
+
+### Olagon Gateway
+
+- **URL:** `https://gateway.olagon.site/anthropic`
+- **Edge Function:** `https://qjemyvydivekolywleji.supabase.co/functions/v1/cs-bot-logger`
+- **Model:** `claude-sonnet-4-6`
+- **Rate Limit:** 20 calls/min per IP
+
+### AI Rules (Sukii v0.9.7)
+
+#### ✅ BOLEH DIJAWAB
 | Topik | Jawaban |
 |---|---|
 | Cara membership | Buka profile Baby Val → Join Membership |
@@ -33,7 +264,7 @@ Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Suki
 | Benefit membership | Masuk live gratis, konten terbuka, chat kapanpun |
 | Mau kasih tip | ganknow.com/babyval/tip |
 
-### ❌ TIDAK BOLEH DIJAWAB
+#### ❌ TIDAK BOLEH DIJAWAB
 | Topik | Jawaban |
 |---|---|
 | Alamat/no HP/WA | "Informasi pribadi tidak diberikan." |
@@ -41,11 +272,9 @@ Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Suki
 | Kirim konten langsung | "Konten untuk member." |
 | Chat tidak pantas | "Kalau mau chat sama Baby Val, membership dulu ya." |
 
-### 🧠 Psikologi — User Belum Pernah Bayar
+#### 🧠 Psikologi — User Belum Pernah Bayar
 Kalau user tanya offline/BO/ketemu tapi belum pernah payment:
 → **"Coba deh VCS dulu.. VCS aja belum emang bakal beneran bayar?"**
-
-Tujuannya tekanan halus agar user payment, tanpa bilang "tidak bisa ketemu".
 
 ---
 
@@ -72,88 +301,46 @@ Kalau mau VCS bisa bayar di babyval.com
 
 ---
 
-## Status v0.9.8 (2026-06-26) — READY TO TEST
+## Status v0.9.10 (2026-06-26)
 
-### v0.9.8 Fixes
-- **Scan debounce** — `_scanInProgress` lock prevents parallel scans (was causing `[SCAN] failed`)
-- **Debug logs** — content script now logs `findConvItems` count + first item class
-- **Probe auth** — sends actual AI key in Authorization header
-- **api-auto-probe endpoint** — `api-discovery.js` sends directly to both endpoints
+### Current State
 
-### What's New: Fully Automated API Discovery
+**Conv Detection:** ✅ DOM scan menemukan 20 items (MuiStack DIVs). **Slug extraction** masih gagal — regex perlu support relative URL.
 
-**不再需要用户手动操作。** Extension自动探测Tevi API。
+**API Send:** ✅ `apiSend()` function ada. Butuh manual DM send untuk capture pattern.
 
-**`api-auto-probe` Edge Function:**
-- Extension启动时自动探测已知API patterns
-- 测试所有可能的API host (`wapi.flowstreamx.com`, `api.tevi.com`, dll.)
-- 所有发现的endpoint → `tevi_api_endpoints` table
-- 所有发现的token → `tevi_auth_tokens` table
-- Conversations cache → `tevi_conversations_cache` table
+**Sniffer:** ✅ Universal — capture semua domain Tevi.
 
-**`api-discovery.js`:**
-- 捕获所有 `wapi.flowstreamx.com` API调用
-- 发现新endpoint时直接发送到Supabase (持久化)
-- 不再只依赖本地存储
-
-**`cs-bot-logger`:**
-- 支持 `_type: "api_discovery"` 事件
-- 自动存储endpoint到Supabase
-
-### Supabase Tables
-| Table | Description |
-|---|---|
-| `tevi_api_endpoints` | 所有发现的API endpoints |
-| `tevi_auth_tokens` | 所有捕获的auth token |
-| `tevi_conversations_cache` | Conversations列表缓存 |
-
-### Setup
-1. Reload extension
-2. 启动log server: `node log-server.js`
-3. 检查popup → API tab → 查看发现的endpoints
+### v0.9.10 Fixes
+- `findConvItems()` priority dikembalikan ke anchor href (v0.8 strategy)
+- `activateIntercept()` universal — tidak hardcode `wapi.flowstreamx.com`
+- Relative URL regex fix — `/(?:tevi\.com)?\/@([^/?#]+)/`
 
 ### Changelog
 
----
+#### v0.9.10 — 2026-06-26
+- Fix `findConvItems()` priority (anchor href first)
+- Universal API domain capture
+- Relative URL regex untuk slug extraction
 
-## Struktur Direktori
+#### v0.9.9 — 2026-06-26
+- Universal API sniffer (all domains)
+- Self-capture loop prevention
 
-```
-babyval-extension/
-├── README.md
-├── CLAUDE.md
-└── tevi-cs/
-    ├── manifest.json           # MV3 v0.9.5
-    ├── background.js          # Service Worker — scan, slot, edge function call
-    ├── content-script.js      # DOM — SCAN_CONVS, GET_MSGS, INTERCEPT_SEND
-    ├── api-discovery.js      # API capture — ALL wapi.flowstreamx calls → Supabase
-    ├── log-server.js        # Local HTTP log receiver (port 3131)
-    ├── popup/
-    │   └── popup.html     # Extension popup UI (Rules/Behavior/Persona/Keys/API tabs)
-    ├── icons/
-    └── supabase/
-        ├── config.toml
-        ├── functions/
-        │   ├── cs-bot-logger/    # AI + logging + API discovery handler
-        │   └── api-auto-probe/    # Auto-probe Tevi API endpoints
-        └── migrations/
-            ├── 20260606000101_cs_bot_schema.sql      # CS tables
-            └── 20260625205315_tevi_api_discovery.sql # API discovery tables
-    ├── overlay.js             # Cat overlay (optional)
-    ├── interceptor.js         # API capture untuk debugging
-    ├── log-server.js         # Local HTTP log receiver (port 3131)
-    ├── popup/
-    │   └── popup.html        # Extension popup UI
-    ├── icons/
-    └── supabase/
-        ├── config.toml
-        ├── functions/
-        │   └── cs-bot-logger/ # Edge function — AI + logging
-        └── migrations/
-            └── 20260606000101_cs_bot_schema.sql
+#### v0.9.8 — 2026-06-26
+- Scan debounce — `_scanInProgress` lock
+- Debug logs — `findConvItems` count
+- api-auto-probe endpoint
 
-Extension lain (jika ada) di-fork dari babyval-extension/ yang sama.
-```
+#### v0.9 — 2026-06-26 (PROVEN WORK)
+- API-based send (tabless) via intercepted pattern
+- `INTERCEPT_SEND` capture flow
+- `apiSend()` replay function
+
+#### v0.8 — 2026-06-26 (PROVEN WORK)
+- DOM conv detection via anchor href
+- `scanConvs()` dengan check icon + unread badge
+- `extractConvSlug()` dari anchor href
 
 ---
 
@@ -172,16 +359,14 @@ edge://extensions/
 → Pilih: C:\Users\Devata\Documents\GitHub\babyval-extension\tevi-cs
 ```
 
-### 3. Set AI Key
-Buka popup → tab **Keys** → masukkan AI key → **Save & Apply**
+### 3. Capture API Pattern (Wajib!)
+1. Buka Tevi.com/message
+2. Kirim 1 DM manual ke siapapun
+3. Lihat log `[INTERCEPT] Captured: POST domain.com/path`
+4. Pattern tersimpan di `chrome.storage.local.apiSendPattern`
 
-AI key: `<AI_KEY>` (simpan di popup Keys tab)
-
-### 4. Capture API Send Pattern
-1. Buka tab Tevi.com/messages
-2. Kirim DM manual ke seseorang
-3. Buka DevTools (F12) → Console → lihat log `[INTERCEPT] Captured:`
-4. Ini akan capture API endpoint untuk kirim pesan tanpa tab
+### 4. Set AI Key
+Buka popup → tab **Keys** → masukkan Olagon key → Save
 
 ### 5. Toggle ON
 Popup → toggle → ON
@@ -227,53 +412,69 @@ pwsh -Command "Get-Content 'tevi-cs-logs.txt' -Tail 30 -Wait"
 | amount | int | Nominal |
 | verified | bool | Sudah diverifikasi |
 
+### tevi_api_endpoints
+| Column | Type | Description |
+|---|---|---|
+| id | serial PK | Auto |
+| method | text | GET/POST/PUT/DELETE |
+| path | text | API path |
+| full_url | text | Full URL |
+| host | text | Domain |
+| sample_request | jsonb | Request body |
+| sample_response | jsonb | Response body |
+| status_code | int | HTTP status |
+| discovered_at | timestamptz | When discovered |
+
+### tevi_auth_tokens
+| Column | Type | Description |
+|---|---|---|
+| id | serial PK | Auto |
+| token | text | Auth token |
+| token_type | text | bearer/cookie/session |
+| user_id | text | Associated user ID |
+| username | text | Username |
+| expires_at | timestamptz | Expiry |
+
 ---
 
-## AI System
+## Debugging
 
-- **Gateway:** `https://gateway.olagon.site/anthropic`
-- **Edge Function:** `https://qjemyvydivekolywleji.supabase.co/functions/v1/cs-bot-logger`
-- **Model:** `claude-sonnet-4-6`
-- **Rate Limit:** 20 calls/min per IP (edge function)
-- **Fallback:** Keyword-based kalau AI gagal atau tidak ada key
+### Check Conv Detection
+Buka DevTools di Tevi.com/message → Console:
+```javascript
+document.querySelectorAll('a[href*="/messages"]').length
+document.querySelectorAll('[data-conv-id]').length
+document.querySelectorAll('[class*="conversation"]').length
+```
+
+### Check API Pattern
+```javascript
+chrome.storage.local.get('apiSendPattern', r => console.log(r));
+```
+
+### Check Sniffer Catalog
+```javascript
+chrome.storage.local.get('tevi_api_catalog', r => console.log(r));
+```
+
+### Common Issues
+
+| Issue | Cause | Fix |
+|---|---|---|
+| `findConvItems returned 0` | Wrong selector priority | Prioritas anchor href dulu |
+| `SCAN 0 unreplied` | Slug extraction fails | Check relative URL regex |
+| `No send pattern` | Belum kirim DM manual | Kirim 1 DM manual |
+| `[API] Failed` status=0 | CORS from SW | Use content script for API calls |
+| Edge crash | Extension memory | Kill edge: `Get-Process msedge | Stop-Process` |
 
 ---
 
-## Changelog
+## Version History
 
-### v0.9.7 — 2026-06-26
-- **FEAT: api-auto-probe edge function** — auto-probes common Tevi API patterns at SW init
-- **FEAT: Supabase `tevi_api_endpoints` table** — persistent endpoint storage
-- **FEAT: Supabase `tevi_auth_tokens` table** — persistent token storage
-- **FEAT: Supabase `tevi_conversations_cache` table** — conversations cache
-- **FEAT: api-discovery.js → Supabase logging** — discovered endpoints sent directly to Supabase
-- **FEAT: cs-bot-logger handles `_type: api_discovery`** — stores endpoints in Supabase
-
-### v0.9.6 — 2026-06-26
-- Critical fix: aiKey storage path (was always undefined)
-- Critical fix: apiSendPattern storage path
-- Critical fix: GET_STATUS hasToken field
-- Fix: Greeting pakai template static
-- Fix: Slug extraction dari href, bukan teks
-- Fix: CS version sync v0.9.3
-- Improve: Slot tracking with lastSlot
-- Edge function: greeting template fix
-
-### v0.9.4 — 2026-06-26
-- Edge function: User upsert (INSERT + UPDATE)
-- Edge function: payment_count increment on image
-- Edge function: first_seen_at for new users
-- Edge function: Auth validation
-- Edge function: Rate limit 20/min
-
-### v0.9.3 — 2026-06-26
-- Supabase Edge Function untuk AI + logging
-- AI training rules lengkap
-- Psychology trigger untuk non-payer
-- cs_users / cs_chat_logs / cs_payment_proofs tables
-
-### v0.9.2 — 2026-06-26
-- Olagon Gateway integration
-
-### v0.9.1 — 2026-06-26
-- DOM conv detection, 4-msg context, slot system, image cooldown
+| Version | Date | Status | Notes |
+|---|---|---|---|
+| v0.9.10 | 2026-06-26 | Dev | Universal capture, relative URL fix |
+| v0.9.9 | 2026-06-26 | Dev | Universal sniffer |
+| v0.9.8 | 2026-06-26 | Dev | Scan debounce, debug logs |
+| v0.9 | 2026-06-26 | **PROVEN** | API send tabless, INTERCEPT_SEND |
+| v0.8 | 2026-06-26 | **PROVEN** | DOM conv detection anchor href |

@@ -145,16 +145,28 @@
 
   function extractConvSlug(containerEl) {
     const el = containerEl.el || containerEl;
-    // Priority 1: From anchor href (MOST RELIABLE)
+    // Priority 1: From anchor href (MOST RELIABLE) — supports both full URL and relative
     const link = el.closest('a[href*="/@"]') || el.querySelector('a[href*="/@"]');
     if (link && link.href) {
-      const m = link.href.match(/tevi\.com\/@([^/?#]+)/);
+      // Full URL: tevi.com/@username or relative: /@username
+      const m = link.href.match(/(?:tevi\.com)?\/@([^/?#]+)/);
       if (m && m[1]) return m[1];
     }
     // Priority 2: From data attribute
     const dataSlug = el.dataset.username || el.dataset.slug || el.dataset.name || el.dataset.convId;
     if (dataSlug && dataSlug.length < 50 && dataSlug.match(/^[a-zA-Z0-9_]+$/)) {
       return dataSlug;
+    }
+    // Priority 3: walk up DOM to find anchor (supports relative href)
+    let parent = el;
+    for (let i = 0; i < 5; i++) {
+      if (!parent) break;
+      const anchors = parent.querySelectorAll('a[href*="/@"]');
+      for (const a of anchors) {
+        const m = a.href.match(/(?:tevi\.com)?\/@([^/?#]+)/);
+        if (m && m[1]) return m[1];
+      }
+      parent = parent.parentElement;
     }
     return null; // Don't guess from text content
   }
