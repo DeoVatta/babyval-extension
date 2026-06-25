@@ -472,10 +472,11 @@ async function apiGetConversations(filter = 'UNREAD', limit = 20) {
       `/messenger/v2/rpc/get_recent_conversations?limit=${limit}&filter=${filter}`,
       null, token
     );
+    log('INFO', '[MSG] getConvs status=' + res.status + ' count=' + (res.data?.data?.results?.length || 0) + ' data=' + JSON.stringify(res.data).substring(0, 100));
     if (res.status === 200 && res.data?.data?.results) {
       return res.data.data.results;
     }
-    log('ERROR', '[MSG] getConvs status=' + res.status);
+    log('ERROR', '[MSG] getConvs status=' + res.status + ' data=' + JSON.stringify(res.data).substring(0, 100));
     return null;
   } catch (e) {
     log('ERROR', '[MSG] getConvs error: ' + e.message);
@@ -494,6 +495,7 @@ async function apiGetConversation(convId) {
       `/messenger/v2/conversation/${convId}/`,
       null, token
     );
+    log('INFO', '[MSG] getConv status=' + res.status + ' conv=' + convId.substring(0, 8) + ' body=' + JSON.stringify(res.data).substring(0, 150));
     return res.status === 200 ? res.data : null;
   } catch (e) {
     log('ERROR', '[MSG] getConv error: ' + e.message);
