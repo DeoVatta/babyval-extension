@@ -463,8 +463,8 @@ async function poll() {
     .filter(([id, m]) => !m.done && (m.stage === 'intro_sent' || m.stage === 'cs'))
     .map(([id, m]) => ({ convId: id, ...m }));
 
-  for (const tracked of tracked) {
-    const { convId, stage, lastText, lastReply } = tracked;
+  for (const tc of tracked) {
+    const { convId, stage, lastText, lastReply } = tc;
     // Skip if already in this poll's unread convs
     if (convs.find(c => c.id === convId)) continue;
 

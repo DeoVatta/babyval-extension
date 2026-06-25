@@ -1245,3 +1245,19 @@ Chat langsung:..."
 [2026-06-25T17:16:59.851Z] [BG] [DEBUG]   @sugargula [intro_sent] waiting (9m/180m)
 [2026-06-25T17:16:59.859Z] [BG] [DEBUG]   @jjjikj [intro_sent] waiting (19m/180m)
 [2026-06-25T17:16:59.866Z] [BG] [INFO] [POLL] Done p=3 r=0 i=3 (116ms)
+[2026-06-25T17:19:04.397Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:19:04.439Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:19:04.448Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:19:06.389Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:19:06.524Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:19:06.532Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:19:34.392Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:19:34.819Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:19:34.827Z] [BG] [INFO] [POLL] 3 unread — active=true
+[2026-06-25T17:19:34.836Z] [BG] [ERROR] [ALARM] Cannot access 'tracked' before initialization
+[2026-06-25T17:19:43.977Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T17:19:43.984Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T17:19:43.993Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T17:19:45.992Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T17:19:46.120Z] [BG] [INFO] [API] ✅ 3 unread
+[2026-06-25T17:19:46.129Z] [BG] [INFO] [POLL] 3 unread — active=true
