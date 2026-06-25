@@ -1045,3 +1045,40 @@ bisa payment k..."
 [2026-06-25T16:49:33.210Z] [BG] [INFO] [POLL] 1 unread — active=true
 [2026-06-25T16:49:33.236Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
 [2026-06-25T16:49:33.250Z] [BG] [INFO] [DOM] → @jjjikj: "Halo aku Sukii, AI Assistant-nya Baby Va..."
+[2026-06-25T16:52:04.827Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T16:52:04.877Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:52:04.888Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:52:06.870Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:52:07.040Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:52:07.049Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:52:07.058Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:52:07.070Z] [BG] [INFO] [DOM] → @jjjikj: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T16:52:07.079Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
+[2026-06-25T16:52:07.089Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:52:07.094Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (184ms)
+[2026-06-25T16:52:07.580Z] [BG] [INFO] [SW] Tevi CS Bot v0.6.0 — sukii-last-reply, overlay cat, payment delay, 24h rule
+[2026-06-25T16:52:07.591Z] [BG] [INFO] [TOKEN] Loaded UID=392388705
+[2026-06-25T16:52:07.601Z] [BG] [INFO] [SW] Was enabled — poll scheduled
+[2026-06-25T16:52:09.619Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:52:09.740Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:52:09.770Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:52:09.790Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:52:09.808Z] [BG] [INFO] [DOM] → @jjjikj: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T16:52:09.825Z] [BG] [ERROR] [DOM] Error: Could not establish connection. Receiving end does not exist.
+[2026-06-25T16:52:09.846Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:52:09.866Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (200ms)
+[2026-06-25T16:52:17.246Z] [CS] [INFO] [CS] v0.5.2.0 active — https://tevi.com/messages
+[2026-06-25T16:52:37.622Z] [BG] [DEBUG] [POLL] active=true
+[2026-06-25T16:52:37.710Z] [BG] [INFO] [API] ✅ 1 unread
+[2026-06-25T16:52:37.724Z] [BG] [INFO] [POLL] 1 unread — active=true
+[2026-06-25T16:52:37.740Z] [BG] [INFO]   @jjjikj [new→intro] "g bisa yaa"
+[2026-06-25T16:52:37.750Z] [BG] [INFO] [DOM] → @jjjikj: "Sukii. Informan Baby Val.
+Chat langsung:..."
+[2026-06-25T16:52:37.814Z] [CS] [INFO] [CS] [DOM_SEND] → @jjjikj (74 chars) busy=true
+[2026-06-25T16:52:37.829Z] [CS] [INFO] [CS] [DOM_SEND] Navigate to @jjjikj/messages...
+[2026-06-25T16:52:38.081Z] [BG] [ERROR] [DOM] Error: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.
+[2026-06-25T16:52:38.099Z] [BG] [ERROR]   @jjjikj [new] ❌ greeting failed
+[2026-06-25T16:52:38.128Z] [BG] [INFO] [POLL] Done p=1 r=0 i=1 (415ms)
+[2026-06-25T16:52:39.177Z] [CS] [INFO] [CS] v0.5.2.0 active — https://tevi.com/@jjjikj/messages

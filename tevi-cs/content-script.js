@@ -144,12 +144,10 @@
 
       (async () => {
         try {
-          // Navigate if on wrong page
+          // If on wrong page, warn and fail (no auto-navigate — tab navigation kills the port)
           if (currentSlug !== slug) {
-            l(`[DOM_SEND] Navigate to @${slug}/messages...`);
-            window.location.href = `https://tevi.com/@${slug}/messages`;
-            await waitForEl(() => findInput(), 20000);
-            await sleep(800);
+            l(`[DOM_SEND] Wrong page @${currentSlug} (need @${slug}) — skipping`);
+            _busy = false; sendResp({ ok: false, reason: 'wrong_page', slug, need: slug }); return;
           }
 
           const input = await waitForEl(() => findInput(), 15000);
