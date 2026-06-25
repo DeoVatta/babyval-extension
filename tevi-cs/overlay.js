@@ -1,5 +1,5 @@
 /**
- * OVERLAY — Tevi CS Bot v0.6.0
+ * OVERLAY — Tevi CS Bot v0.8.0
  * Cute cat character with CSS animations
  * States: sleeping (idle) / alert (new msg) / typing (sukii typing)
  * Shares state via chrome.storage.local
@@ -8,10 +8,12 @@
 (function() {
   'use strict';
 
-  if (window.__TEVI_CS__) return;
-  window.__TEVI_CS__ = true;
+  // NOTE: Must NOT share __TEVI_CS__ guard with content-script.js
+  // Both scripts run on the same page; use separate flags so both initialize.
+  if (window.__TEVI_OVERLAY__) return;
+  window.__TEVI_OVERLAY__ = true;
 
-  const VER = '0.6.0';
+  const VER = '0.8.0';
   const STATE_KEY = 'tevi_cs_overlay_state';
   const LOG = 'http://localhost:3131';
 
@@ -546,9 +548,10 @@
 
     // 24/7 mode — always show Active (user controls ON/OFF via extension popup)
     pdMode.textContent = '🌙 24/7';
-    pdPoll.textContent = os.pollTime ? new Date(os.pollTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '—';
-    const stats = st.lastResult?.stats || {};
-    pdCount.textContent = `Intro:${stats.introSent ?? '—'} Done:${stats.doneConvs ?? '—'} CS:${stats.activeConvs ?? '—'}`;
+    pdPoll.textContent = os.pollTime ? `~${os.pollTime}s` : '—';
+    const lr = st.lastResult || {};
+    const lastTs = lr.ts ? new Date(lr.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+    pdCount.textContent = `Last:${lr.conv || '—'} ${lastTs}`;
   }
 
   // ── INITIAL ───────────────────────────────────────────────────────────────
