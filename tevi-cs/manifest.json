@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Tevi CS Bot",
-  "version": "0.9.21",
-  "description": "Tevi CS Bot v0.9.21 —",
+  "version": "0.9.22",
+  "description": "Tevi CS Bot v0.9.22 —",
   "author": "Devata",
   "permissions": [
     "alarms",

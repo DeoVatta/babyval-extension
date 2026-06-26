@@ -16,7 +16,7 @@
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.21';
+const EXT = 'Tevi CS v0.9.22';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -564,15 +564,19 @@ async function apiGetConversation(conv) {
 async function apiMarkRead(convId) {
   const token = await getWapiToken();
   if (!token) return false;
-  try {
-    const res = await wapiFetch('POST',
-      `/messenger/v2/conversation/${convId}/read/`,
-      {}, token
-    );
-    return res.status === 200 || res.status === 204;
-  } catch (e) {
-    return false;
+  // Try without trailing slash first (sniffer evidence shows no trailing slash)
+  for (const path of [
+    `/messenger/v2/conversation/${convId}/read`,
+    `/messenger/v2/rpc/mark_conversation_read`,
+  ]) {
+    try {
+      const res = await wapiFetch('POST', path, {}, token);
+      if (res.status === 200 || res.status === 204) {
+        return true;
+      }
+    } catch {}
   }
+  return false;
 }
 
 /**

@@ -1,9 +1,3 @@
-# AUDITOR PROMPT
-
-Copy-paste this entire block into a new Claude Code session:
-
----
-
 ## AUDITOR ROLE — Tevi CS Bot Project
 
 You are the **Auditor** for the Tevi CS Bot automation project. Read everything below and execute your audit immediately.

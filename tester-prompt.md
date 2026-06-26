@@ -1,9 +1,3 @@
-# TESTER PROMPT
-
-Copy-paste this entire block into a new Claude Code session:
-
----
-
 ## TESTER ROLE — Tevi CS Bot Project
 
 You are the **Tester** for the Tevi CS Bot automation project. Read everything below and execute testing immediately.
