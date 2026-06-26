@@ -1,19 +1,22 @@
 /**
- * BACKGROUND.JS — Tevi CS Bot v0.9.18
+ * BACKGROUND.JS — Tevi CS Bot v0.9.20
  *
  * Architecture: DIRECT API (no DOM, no tab navigation)
  * - Uses wapi.flowstreamx.com Messenger v2 API
  * - Auth: Firebase anonymous → wapi token exchange
  * - Conv detection: GET /messenger/v2/rpc/get_recent_conversations?filter=ALL
  * - Send: POST /messenger/v2/rpc/send_message (FLAT payload — no wrapper)
+ * - POST requests routed through browser tab (has cf_clearance cookie)
+ * - GET requests from Service Worker
  * - HMAC verify: HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+ts)
  * - Filter: skip own_conv, skip my_last_sender, skip no_unread, skip recent_done
- * - Debug logging per conv in filter loop
+ * - Round-robin: processes ALL filtered convs per scan cycle
+ * - AI Key: via popup Keys tab (chrome.storage.local)
  *
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.19';
+const EXT = 'Tevi CS v0.9.20';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -23,6 +26,7 @@ const EDGE_FUNC = SUPABASE_URL + '/functions/v1/cs-bot-logger';
 const WAPI = 'https://wapi.flowstreamx.com';
 const DEVICE_ID = 'tevi-cs-bot-' + Date.now();
 const WAPI_SIGN_KEY = 'PRDKqnSNCKrMDF9hAt0PSJ6';
+// ── AI Key (Olagon — from chrome.storage.local, set via popup Keys tab) ───
 
 // ── Storage helpers ───────────────────────────────────────────────────
 
@@ -65,7 +69,43 @@ async function computeVerifyAsync(url) {
 
 // ── HTTP Helpers ──────────────────────────────────────────────────────
 
-// ── HTTP Helper (standard fetch — works in Service Worker) ───────────────────
+// ── HTTP Helper (browser-tab context for POST — carries cf_clearance cookie) ─
+
+async function getTeviTab() {
+  try {
+    const tabs = await chrome.tabs.query({ url: 'https://tevi.com/*' });
+    return tabs.find(t => t.status === 'complete' && !t.url.includes('blank')) || tabs[0] || null;
+  } catch { return null; }
+}
+
+async function tabFetch(method, path, body, token) {
+  const tab = await getTeviTab();
+  if (!tab?.id) return { status: 0, data: 'NO_TEVI_TAB' };
+  const baseUrl = path.startsWith('http') ? path : WAPI + path;
+  const verifyData = await computeVerifyAsync(baseUrl);
+  const url = new URL(baseUrl);
+  if (verifyData && !url.searchParams.has('verify')) url.searchParams.set('verify', verifyData.verify);
+  const fullUrl = url.toString();
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (opts) => fetch(opts.url, {
+        method: opts.method,
+        headers: {
+          'Authorization': `Bearer ${opts.token}`,
+          'Content-Type': 'application/json',
+          'Origin': 'https://tevi.com',
+          'Referer': 'https://tevi.com/messages',
+        },
+        body: JSON.stringify(opts.body),
+      }).then(r => r.json().then(d => ({ status: r.status, data: d })).catch(() => ({ status: r.status, data: r.statusText }))),
+      args: [{ url: fullUrl, method, token: token || '', body: body || {} }],
+    });
+    return results[0]?.result || { status: 0, data: 'SCRIPT_ERROR' };
+  } catch (e) {
+    return { status: 0, data: 'TAB_FETCH_ERROR: ' + e.message };
+  }
+}
 
 async function wapiFetch(method, path, body, token) {
   const baseUrl = path.startsWith('http') ? path : WAPI + path;
@@ -78,6 +118,9 @@ async function wapiFetch(method, path, body, token) {
     const verifyData = await computeVerifyAsync(baseUrl);
     if (verifyData && !url.searchParams.has('verify')) url.searchParams.set('verify', verifyData.verify);
   }
+
+  // POST requests → route through browser tab (has cf_clearance cookie)
+  if (method === 'POST') return tabFetch(method, path, body, token);
 
   const opts = {
     method,
@@ -609,10 +652,9 @@ async function addImageCooldown(slug) {
 
 async function generateReply(slug, userMessages, slot, replyType) {
   const stored = await sg(['tevi_cs_secrets']);
-  const secrets = stored.tevi_cs_secrets || {};
-  const aiKey = secrets.aiKey;
+  const aiKey = stored.tevi_cs_secrets?.aiKey;
   if (!aiKey) {
-    log('ERROR', '[EDGE] No AI key — set AI key in popup Keys tab');
+    log('ERROR', '[EDGE] No AI key — set via popup Keys tab');
     return buildFallback(userMessages, slot, replyType);
   }
 
@@ -828,14 +870,27 @@ async function runScan() {
       return;
     }
 
-    const result = await processConv(filtered[0]);
+    // Process ALL filtered convs in round-robin order
+    let successCount = 0;
+    let failCount = 0;
+    for (const conv of filtered) {
+      try {
+        const result = await processConv(conv);
+        if (result) successCount++; else failCount++;
+        // Small delay between convs to avoid rate limit
+        await sleep(500);
+      } catch (e) {
+        log('ERROR', '[SCAN] processConv error @' + (conv.channel_slug || conv.recipient?.channel_slug || '?') + ': ' + e.message);
+        failCount++;
+      }
+    }
     const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
-    st.lastResult = { conv: filtered[0].channel_slug, ok: result, ts: Date.now() };
+    st.lastResult = { ok: successCount, fail: failCount, ts: Date.now() };
     st.lastScanAt = Date.now();
     await ss({ tevi_cs_state: st });
 
     await syncOverlay({ botEnabled: true, pollTime: 20, lastScan: Date.now() });
-    log('INFO', '[SCAN] Done: @' + (filtered[0].channel_slug || filtered[0].recipient?.channel_slug || '?') + ' sent=' + result);
+    log('INFO', '[SCAN] Done: success=' + successCount + ' fail=' + failCount + ' of ' + filtered.length);
   } catch (e) {
     log('ERROR', '[SCAN] Error: ' + e.message);
   } finally {

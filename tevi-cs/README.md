@@ -1,7 +1,7 @@
 # Tevi CS Bot — Sukii Assistant
 
-> **Status**: v0.9.16 — **SCAN + FETCH + SEND PIPELINE ACTIVE**
-> Bot mendeteksi DM unread → fetch pesan → generate reply → send. Conversation state management dengan retry logic.
+> **Status**: v0.9.20 — **ROUND-ROBIN + BROWSER CONTEXT + HARDCODED AI KEY**
+> Bot scan semua inbox unread → process semua dalam round-robin → reply via browser tab (cf_clearance cookie) → AI Olagon hardcoded.
 
 ## Apa Ini
 
@@ -42,13 +42,13 @@ tevi-cs/
         └── cs-bot-logger/    # AI + logging edge function
 ```
 
-### Processing Pipeline (v0.9.16)
+### Processing Pipeline (v0.9.20)
 
 ```
 1. SCAN (every 20s when ON)
-   GET /messenger/v2/rpc/get_recent_conversations?filter=UNREAD
+   GET /messenger/v2/rpc/get_recent_conversations?filter=ALL
    → Filter: skip own conv, skip 'processing', retry failed/old-done
-   → Pick first conv from filtered list
+   → Pick ALL convs from filtered list (ROUND-ROBIN)
 
 2. FETCH MESSAGES
    GET /messenger/v2/rpc/get_messages?conversation_id={uuid}&limit=50
@@ -57,20 +57,22 @@ tevi-cs/
 
 3. GENERATE REPLY (slot system)
    → Slot 1 = greeting, Slot 2-3 = AI context, Slot 4 = closing
-   → AI via Olagon gateway (if key configured)
+   → AI via Olagon gateway (hardcoded AI_KEY)
    → Fallback: keyword template matching
 
-4. SEND
+4. SEND (via browser tab — has cf_clearance cookie)
    POST /messenger/v2/rpc/send_message
-   Body: { body: { conversation_id, input_text, msg_type: "TEXT", parser: "PLAIN" } }
+   Body: { conversation_id, input_text, msg_type: "TEXT", parser: "PLAIN" }
    → On send fail: retry next scan cycle (convMeta status='failed')
 
 5. MARK READ
-   POST /messenger/v2/conversation/{uuid}/read/
+   POST /messenger/v2/conversation/{uuid}/read/  ← BROKEN 404, skip if needed
 
 6. UPDATE STATE
    setMeta(slug, { status: sent?'done':'failed', slot, lastReplyAt/failedAt })
 ```
+
+> **v0.9.20: All filtered convs processed per scan** — 500ms delay between each to avoid rate limit.
 
 ### Conversation State (convMeta)
 
@@ -315,7 +317,11 @@ Kalau mau VCS bisa bayar di babyval.com
 
 | Version | Date | Status | Notes |
 |---|---|---|---|
-| v0.9.16 | 2026-06-27 | **ACTIVE** | Reset State button in overlay, retry filter logic |
+| v0.9.20 | 2026-06-26 | **ACTIVE** | Round-robin all filtered convs + browser-tab POST (cf_clearance) + hardcoded AI key |
+| v0.9.19 | 2026-06-26 | Pushed | wapiFetch missing opts.body — 422 root cause |
+| v0.9.18 | 2026-06-26 | Pushed | Send payload flat (no wrapper) + filter=ALL call sites |
+| v0.9.17 | 2026-06-26 | Pushed | filter=ALL default + sender check debug logging |
+| v0.9.16 | 2026-06-27 | Pushed | Reset State button in overlay, retry filter logic |
 | v0.9.15 | 2026-06-27 | Pushed | Retry filter: skip done only if recentSuccess && !wasFailed |
 | v0.9.14 | 2026-06-26 | Pushed | Send payload: `{ body: { ... } }` wrapper confirmed |
 | v0.9.13 | 2026-06-26 | Pushed | RPC endpoints confirmed: get_messages, send_message |
