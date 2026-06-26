@@ -1,17 +1,19 @@
 /**
- * BACKGROUND.JS — Tevi CS Bot v0.9.12
+ * BACKGROUND.JS — Tevi CS Bot v0.9.17
  *
  * Architecture: DIRECT API (no DOM, no tab navigation)
- * - Uses wapi.flowstreamx.com Messenger v2 API (discovered via babyval-autopilot)
+ * - Uses wapi.flowstreamx.com Messenger v2 API
  * - Auth: Firebase anonymous → wapi token exchange
- * - Conv detection: GET /messenger/v2/rpc/get_recent_conversations?filter=UNREAD
- * - Send: POST /messenger/v2/message/
- * - HMAC verify signature: HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+ts)
+ * - Conv detection: GET /messenger/v2/rpc/get_recent_conversations?filter=ALL
+ * - Send: POST /messenger/v2/rpc/send_message
+ * - HMAC verify: HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+ts)
+ * - Filter: skip own_conv, skip my_last_sender, skip no_unread, skip recent_done
+ * - Debug logging per conv in filter loop (v0.9.17+)
  *
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.16';
+const EXT = 'Tevi CS v0.9.17';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -464,7 +466,7 @@ async function handleTeviToken(tokenInfo) {
 /**
  * Get conversations — returns array from /messenger/v2/rpc/get_recent_conversations
  */
-async function apiGetConversations(filter = 'UNREAD', limit = 20) {
+async function apiGetConversations(filter = 'ALL', limit = 20) {
   const token = await getWapiToken();
   if (!token) return null;
   try {
@@ -472,7 +474,7 @@ async function apiGetConversations(filter = 'UNREAD', limit = 20) {
       `/messenger/v2/rpc/get_recent_conversations?limit=${limit}&filter=${filter}`,
       null, token
     );
-    log('INFO', '[MSG] getConvs status=' + res.status + ' count=' + (res.data?.data?.results?.length || 0) + ' data=' + JSON.stringify(res.data).substring(0, 100));
+    log('INFO', '[MSG] getConvs filter=' + filter + ' status=' + res.status + ' count=' + (res.data?.data?.results?.length || 0));
     if (res.status === 200 && res.data?.data?.results) {
       return res.data.data.results;
     }
@@ -773,23 +775,49 @@ async function runScan() {
 
     log('INFO', '[SCAN] ' + convs.length + ' unread conversations total');
 
-    // Filter: skip own conv, skip already processed recently
-    // Always retry 'failed' (send actually failed), retry 'done' only if failedAt is recent (previous send was broken)
+    // Filter: skip own conv, skip already processed recently, skip convs where I sent last message
     const filtered = [];
     for (const conv of convs) {
-      const slug = conv.channel_slug || conv.recipient?.channel_slug || '';
-      if (!slug || slug.toLowerCase() === MY_SLUG) continue;
-      if (conv.stats?.unread_messages === 0) continue;
+      const slug = conv.channel_slug || conv.recipient?.channel_slug || '?';
+      const lastSender = conv.latest_message?.sender?.alias || conv.latest_message?.sender?.id || '?';
+      const unread = conv.stats?.unread_messages || 0;
+
+      // Skip: no slug
+      if (!conv.channel_slug && !conv.recipient?.channel_slug) {
+        log('INFO', '[FILTER] skip conv=' + conv.id?.substring(0,8) + ' reason=no_slug slug=' + slug);
+        continue;
+      }
+      // Skip: own conv
+      if (slug.toLowerCase() === MY_SLUG) {
+        log('INFO', '[FILTER] skip @' + slug + ' reason=my_own_slug sender=' + lastSender);
+        continue;
+      }
+      // Skip: I was the last sender (not inbox — follow-up from me)
+      if (lastSender === MY_UID) {
+        log('INFO', '[FILTER] skip @' + slug + ' reason=i_sent_last sender=' + lastSender + ' unread=' + unread);
+        continue;
+      }
+      // Skip: no unread
+      if (unread === 0) {
+        log('INFO', '[FILTER] skip @' + slug + ' reason=no_unread unread=0');
+        continue;
+      }
+      // Check convMeta
       const meta = await getMeta(slug);
-      if (meta?.status === 'processing') continue;
-      // Always retry failed (send broke before), only skip done if it was recent + successful
+      if (meta?.status === 'processing') {
+        log('INFO', '[FILTER] skip @' + slug + ' reason=processing');
+        continue;
+      }
       if (meta?.status === 'done') {
         const wasFailed = meta.failedAt && meta.failedAt > (meta.lastReplyAt || 0);
         const recentSuccess = (Date.now() - (meta.lastReplyAt || 0)) < 5 * 60 * 1000;
         if (recentSuccess && !wasFailed) {
-          continue; // Skip: recently successfully replied
+          log('INFO', '[FILTER] skip @' + slug + ' reason=done_recently');
+          continue;
         }
       }
+
+      log('INFO', '[FILTER] PASS @' + slug + ' unread=' + unread + ' sender=' + lastSender);
       filtered.push(conv);
     }
 
@@ -850,7 +878,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.16 starting (DIRECT API mode)...');
+  log('INFO', 'SW v0.9.17 starting (DIRECT API mode)...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
@@ -967,7 +995,7 @@ async function init() {
     await runScan();
   }
 
-  log('INFO', 'SW v0.9.16 ready — DIRECT API mode (no DOM, no tabs)');
+  log('INFO', 'SW v0.9.17 ready — DIRECT API mode (no DOM, no tabs)');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));

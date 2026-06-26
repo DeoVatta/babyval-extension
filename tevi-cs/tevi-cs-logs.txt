@@ -1,95 +1,3 @@
-[2026-06-26T00:16:07.226Z] [BG] [INFO] [BG] [MSG] channelLookup sugargula status=200 body={"success":true,"message":null,"data":{"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.co
-[2026-06-26T00:16:07.234Z] [BG] [INFO] [BG] [MSG] channel data: {"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.com/Images/Channel/DefaultCover/1.png","thumb":"https://static.tevicdn.com/Images/Channel/DefaultAvatar/1.png"},"privacy":"public","is_follo
-[2026-06-26T00:16:07.267Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/ status=401
-[2026-06-26T00:16:07.304Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/?page=1&size=50 status=401
-[2026-06-26T00:16:07.345Z] [BG] [INFO] [BG] [MSG] getConv legacy status=404 conv=a716ade6
-[2026-06-26T00:16:07.354Z] [BG] [ERROR] [BG] [PROC] Could not fetch conv @sugargula
-[2026-06-26T00:16:07.362Z] [BG] [INFO] [BG] [SCAN] Done: @undefined sent=false
-[2026-06-26T00:16:26.993Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
-[2026-06-26T00:16:27.001Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
-[2026-06-26T00:16:27.012Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T00:16:27.021Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T00:16:27.034Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/ status=401
-[2026-06-26T00:16:27.074Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/?page=1&size=50 status=401
-[2026-06-26T00:16:27.115Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/ status=401
-[2026-06-26T00:16:27.156Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/?page=1&size=50 status=401
-[2026-06-26T00:16:27.207Z] [BG] [INFO] [BG] [MSG] channelLookup sugargula status=200 body={"success":true,"message":null,"data":{"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.co
-[2026-06-26T00:16:27.217Z] [BG] [INFO] [BG] [MSG] channel data: {"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.com/Images/Channel/DefaultCover/1.png","thumb":"https://static.tevicdn.com/Images/Channel/DefaultAvatar/1.png"},"privacy":"public","is_follo
-[2026-06-26T00:16:27.249Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/ status=401
-[2026-06-26T00:16:27.290Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/?page=1&size=50 status=401
-[2026-06-26T00:16:27.338Z] [BG] [INFO] [BG] [MSG] getConv legacy status=404 conv=a716ade6
-[2026-06-26T00:16:27.351Z] [BG] [ERROR] [BG] [PROC] Could not fetch conv @sugargula
-[2026-06-26T00:16:27.362Z] [BG] [INFO] [BG] [SCAN] Done: @undefined sent=false
-[2026-06-26T00:16:47.006Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
-[2026-06-26T00:16:47.019Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
-[2026-06-26T00:16:47.033Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T00:16:47.051Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T00:16:47.075Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/ status=401
-[2026-06-26T00:16:47.119Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/?page=1&size=50 status=401
-[2026-06-26T00:16:47.170Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/ status=401
-[2026-06-26T00:16:47.220Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/?page=1&size=50 status=401
-[2026-06-26T00:16:47.274Z] [BG] [INFO] [BG] [MSG] channelLookup sugargula status=200 body={"success":true,"message":null,"data":{"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.co
-[2026-06-26T00:16:47.287Z] [BG] [INFO] [BG] [MSG] channel data: {"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.com/Images/Channel/DefaultCover/1.png","thumb":"https://static.tevicdn.com/Images/Channel/DefaultAvatar/1.png"},"privacy":"public","is_follo
-[2026-06-26T00:16:47.326Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/ status=401
-[2026-06-26T00:16:47.369Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/?page=1&size=50 status=401
-[2026-06-26T00:16:47.419Z] [BG] [INFO] [BG] [MSG] getConv legacy status=404 conv=a716ade6
-[2026-06-26T00:16:47.462Z] [BG] [ERROR] [BG] [PROC] Could not fetch conv @sugargula
-[2026-06-26T00:16:47.476Z] [BG] [INFO] [BG] [SCAN] Done: @undefined sent=false
-[2026-06-26T00:17:07.061Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
-[2026-06-26T00:17:07.080Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T00:17:07.100Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
-[2026-06-26T00:17:07.118Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T00:17:07.139Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/ status=401
-[2026-06-26T00:17:07.191Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:07.241Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/ status=401
-[2026-06-26T00:17:07.304Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:07.370Z] [BG] [INFO] [BG] [MSG] channelLookup sugargula status=200 body={"success":true,"message":null,"data":{"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.co
-[2026-06-26T00:17:07.387Z] [BG] [INFO] [BG] [MSG] channel data: {"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.com/Images/Channel/DefaultCover/1.png","thumb":"https://static.tevicdn.com/Images/Channel/DefaultAvatar/1.png"},"privacy":"public","is_follo
-[2026-06-26T00:17:07.419Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/ status=401
-[2026-06-26T00:17:07.465Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:07.516Z] [BG] [INFO] [BG] [MSG] getConv legacy status=404 conv=a716ade6
-[2026-06-26T00:17:07.528Z] [BG] [ERROR] [BG] [PROC] Could not fetch conv @sugargula
-[2026-06-26T00:17:07.540Z] [BG] [INFO] [BG] [SCAN] Done: @undefined sent=false
-[2026-06-26T00:17:28.017Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
-[2026-06-26T00:17:28.032Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T00:17:28.046Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
-[2026-06-26T00:17:28.057Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T00:17:28.071Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/ status=401
-[2026-06-26T00:17:28.117Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:28.167Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/ status=401
-[2026-06-26T00:17:28.210Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:28.267Z] [BG] [INFO] [BG] [MSG] channelLookup sugargula status=200 body={"success":true,"message":null,"data":{"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.co
-[2026-06-26T00:17:28.279Z] [BG] [INFO] [BG] [MSG] channel data: {"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.com/Images/Channel/DefaultCover/1.png","thumb":"https://static.tevicdn.com/Images/Channel/DefaultAvatar/1.png"},"privacy":"public","is_follo
-[2026-06-26T00:17:28.315Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/ status=401
-[2026-06-26T00:17:28.357Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:28.409Z] [BG] [INFO] [BG] [MSG] getConv legacy status=404 conv=a716ade6
-[2026-06-26T00:17:28.421Z] [BG] [ERROR] [BG] [PROC] Could not fetch conv @sugargula
-[2026-06-26T00:17:28.460Z] [BG] [INFO] [BG] [SCAN] Done: @undefined sent=false
-[2026-06-26T00:17:47.018Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
-[2026-06-26T00:17:47.031Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
-[2026-06-26T00:17:47.046Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T00:17:47.058Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T00:17:47.079Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/ status=401
-[2026-06-26T00:17:47.115Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:47.156Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/ status=401
-[2026-06-26T00:17:47.201Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:47.253Z] [BG] [INFO] [BG] [MSG] channelLookup sugargula status=200 body={"success":true,"message":null,"data":{"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.co
-[2026-06-26T00:17:47.263Z] [BG] [INFO] [BG] [MSG] channel data: {"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.com/Images/Channel/DefaultCover/1.png","thumb":"https://static.tevicdn.com/Images/Channel/DefaultAvatar/1.png"},"privacy":"public","is_follo
-[2026-06-26T00:17:47.301Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/ status=401
-[2026-06-26T00:17:47.338Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/?page=1&size=50 status=401
-[2026-06-26T00:17:47.386Z] [BG] [INFO] [BG] [MSG] getConv legacy status=404 conv=a716ade6
-[2026-06-26T00:17:47.397Z] [BG] [ERROR] [BG] [PROC] Could not fetch conv @sugargula
-[2026-06-26T00:17:47.408Z] [BG] [INFO] [BG] [SCAN] Done: @undefined sent=false
-[2026-06-26T00:18:07.025Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
-[2026-06-26T00:18:07.051Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
-[2026-06-26T00:18:07.061Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T00:18:07.073Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T00:18:07.097Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/ status=401
-[2026-06-26T00:18:07.139Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/2309894483/messages/?page=1&size=50 status=401
-[2026-06-26T00:18:07.182Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/ status=401
-[2026-06-26T00:18:07.221Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/5dc1655d-4387-49fc-85a8-0dc589fdbdf5/messages/?page=1&size=50 status=401
-[2026-06-26T00:18:07.276Z] [BG] [INFO] [BG] [MSG] channelLookup sugargula status=200 body={"success":true,"message":null,"data":{"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.co
-[2026-06-26T00:18:07.305Z] [BG] [INFO] [BG] [MSG] channel data: {"id":"310ad0d7-a7bb-4a77-a88f-33cda9e29513","slug":"sugargula","name":"sugargula","description":"Welcome to my Space. If you enjoy my content, please consider supporting what I do. Thank you.","html_description":null,"images":{"cover":"https://static.tevicdn.com/Images/Channel/DefaultCover/1.png","thumb":"https://static.tevicdn.com/Images/Channel/DefaultAvatar/1.png"},"privacy":"public","is_follo
 [2026-06-26T00:18:07.317Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/ status=401
 [2026-06-26T00:18:07.360Z] [BG] [INFO] [BG] [MSG] tryChannelMessages /tevi-chat/v1/channels/310ad0d7-a7bb-4a77-a88f-33cda9e29513/messages/?page=1&size=50 status=401
 [2026-06-26T00:18:07.402Z] [BG] [INFO] [BG] [MSG] getConv legacy status=404 conv=a716ade6
@@ -1998,3 +1906,95 @@
 [2026-06-26T01:11:25.233Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
 [2026-06-26T01:11:25.247Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
 [2026-06-26T01:11:25.264Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:11:45.227Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:11:45.237Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:11:45.247Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:12:05.227Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:12:05.240Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:12:05.250Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:12:25.217Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:12:25.230Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:12:25.243Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:12:45.236Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:12:45.244Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:12:45.255Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:13:05.225Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:13:05.235Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:13:05.243Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:13:25.214Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:13:25.227Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:13:25.239Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:13:45.218Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:13:45.228Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:13:45.238Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:14:05.229Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:14:05.243Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:14:05.253Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:14:25.208Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:14:25.219Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:14:25.230Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:14:45.226Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:14:45.239Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:14:45.249Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:15:05.237Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:15:05.246Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:15:05.256Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:15:25.240Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:15:25.250Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:15:25.262Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:15:45.230Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:15:45.243Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:15:45.254Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:16:05.241Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:16:05.251Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:16:05.262Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:16:25.320Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:16:25.340Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:16:25.373Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:16:45.217Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:16:45.227Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:16:45.237Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:17:05.228Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:17:05.239Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:17:05.249Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:17:25.251Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:17:25.262Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:17:25.272Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:17:45.256Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:17:45.266Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:17:45.275Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:18:05.254Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:18:05.263Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:18:05.274Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:18:25.211Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:18:25.222Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:18:25.232Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:18:30.912Z] [BG] [INFO] [BG] SW v0.9.16 starting (DIRECT API mode)...
+[2026-06-26T01:18:30.924Z] [BG] [WARN] [BG] [AUTH] No Tevi tab found
+[2026-06-26T01:18:30.935Z] [BG] [WARN] [BG] [AUTH] No token from Tevi tab — ensure Tevi tab is open
+[2026-06-26T01:18:30.947Z] [BG] [INFO] [BG] [AUTH] Using stored Tevi token (expires in 1429m)
+[2026-06-26T01:18:31.012Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:18:31.036Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:18:31.046Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:18:31.056Z] [BG] [INFO] [BG] SW v0.9.16 ready — DIRECT API mode (no DOM, no tabs)
+[2026-06-26T01:18:36.101Z] [BG] [INFO] [BG] [AUTH] Tevi token: uid=392388705 display=Cutieval
+[2026-06-26T01:18:36.188Z] [CS] [INFO] [CS] v0.9.14 active — https://tevi.com/messages
+[2026-06-26T01:18:36.204Z] [SNIFFER] [INFO] [SNIFFER] Active on undefined/messages
+[2026-06-26T01:18:36.240Z] [SNIFFER] [INFO] [SNIFFER] localStorage keys: 18
+[2026-06-26T01:18:36.255Z] [PERSIST_SNIFFER] [INFO] Persistent sniffer ACTIVE on https://tevi.com/messages
+[2026-06-26T01:18:36.271Z] [WS] [INFO] [WS] WS Interceptor active on https://tevi.com/messages
+[2026-06-26T01:18:36.343Z] [BG] [INFO] [BG] [SUPABASE] Token updated id=1 uid=392388705
+[2026-06-26T01:18:36.488Z] [BG] [INFO] [BG] [MSG] getConvs status=200 count=2 data={"success":true,"message":null,"data":{"limit":20,"count":2,"results":[{"id":"a716ade6-cd98-4727-993
+[2026-06-26T01:18:36.504Z] [BG] [INFO] [BG] [SCAN] 2 unread conversations total
+[2026-06-26T01:18:36.520Z] [BG] [INFO] [BG] [SCAN] 0 to process after filter
+[2026-06-26T01:18:41.115Z] [SNIFFER] [INFO] [SNIFFER] Sniffer active 5s — domains: NONE
+[2026-06-26T01:18:41.126Z] [SNIFFER] [INFO] [SNIFFER] NO API CALLS — Tevi may use WebSocket
+[2026-06-26T01:18:51.008Z] [BG] [INFO] [BG] [AUTH] Tevi token: uid=392388705 display=Cutieval
+[2026-06-26T01:18:51.053Z] [CS] [INFO] [CS] v0.9.14 active — https://tevi.com/messages
+[2026-06-26T01:18:51.067Z] [SNIFFER] [INFO] [SNIFFER] Active on undefined/messages
+[2026-06-26T01:18:51.078Z] [SNIFFER] [INFO] [SNIFFER] localStorage keys: 18
+[2026-06-26T01:18:51.100Z] [PERSIST_SNIFFER] [INFO] Persistent sniffer ACTIVE on https://tevi.com/messages
+[2026-06-26T01:18:51.111Z] [WS] [INFO] [WS] WS Interceptor active on https://tevi.com/messages
+[2026-06-26T01:18:51.227Z] [BG] [INFO] [BG] [SUPABASE] Token updated id=1 uid=392388705
+[2026-06-26T01:18:56.170Z] [SNIFFER] [INFO] [SNIFFER] Sniffer active 5s — domains: NONE
+[2026-06-26T01:18:56.180Z] [SNIFFER] [INFO] [SNIFFER] NO API CALLS — Tevi may use WebSocket
