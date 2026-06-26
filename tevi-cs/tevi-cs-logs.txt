@@ -1,7 +1,3 @@
-[2026-06-26T01:51:00.779Z] [BG] [INFO] [BG] [FILTER] skip @jak_cloud reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.789Z] [BG] [INFO] [BG] [FILTER] skip @civic_putih reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.798Z] [BG] [INFO] [BG] [FILTER] skip @kempong88 reason=no_unread unread=0
-[2026-06-26T01:51:00.809Z] [BG] [INFO] [BG] [FILTER] skip @rival964 reason=no_unread unread=0
 [2026-06-26T01:51:00.818Z] [BG] [INFO] [BG] [FILTER] PASS @sugargula unread=3 sender=2309894483
 [2026-06-26T01:51:00.829Z] [BG] [INFO] [BG] [FILTER] PASS @jjjikj unread=1 sender=1238748737
 [2026-06-26T01:51:02.388Z] [BG] [INFO] [BG] [MSG] getMessages status=200 conv=a716ade6
@@ -1998,3 +1994,7 @@ Kalau mau Chat
 [2026-06-26T03:29:25.977Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
 [2026-06-26T03:29:42.851Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444583s ago
 [2026-06-26T03:29:43.169Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:30:02.657Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:30:06.642Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444607s ago
+[2026-06-26T03:30:22.659Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:30:30.652Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444631s ago

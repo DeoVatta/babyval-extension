@@ -54,6 +54,8 @@ Tujuan:  Qualify lead → VCS/membership upsell → close payment
 
 ### Greeting (Slot 1 — Conv Baru)
 
+> **CRITICAL: Greeting is ALWAYS the fixed template below. AI never used for slot 1.**
+
 ```
 Hai! Aku Sukii, AI Assistant-nya Baby Val 💕
 
@@ -83,13 +85,15 @@ Yang mau lanjut, kabari aja ya!
 
 | Slot | Type | Trigger | Action |
 |------|------|---------|--------|
-| 1 | Greeting | Conv baru / slot 4 done | Full intro + VCS + membership info |
-| 2 | Reply (warm) | Conv lama, slot 1 sent | Context-aware, mulai upsell |
-| 3 | Reply (follow-up) | Conv lama, slot 2 sent | Push closer ke payment |
-| 4 | Reply (closing) | Conv lama, slot 3 sent | Direct CTA payment |
-| 5+ | Reset → Greeting | Slot 4 sent | Fresh start, ulangi greeting |
+| 1 | Greeting | Conv baru / last reply > 3h / slot 4 done | **Fixed template** (never AI) |
+| 2 | Reply (warm) | Slot 1 sent | Context-aware, mulai upsell |
+| 3 | Reply (follow-up) | Slot 2 sent | Push closer ke payment |
+| 4 | Reply (closing) | Slot 3 sent | Direct CTA payment |
+| 5+ | Reset → Greeting | Slot 4 sent / last reply > 3h | Fresh start |
 
 **Slot increment ONLY on confirmed sent** — failed sends tidak menggunakan slot.
+
+**3-hour cooldown:** Jika user chat lagi lebih dari 3 jam setelah balasan terakhir, slot reset ke greeting (fresh conversation).
 
 ---
 
