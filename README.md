@@ -8,25 +8,17 @@ Edge/Chrome MV3 extension untuk otomatisasi Tevi CS (Customer Service) bot @cuti
 babyval-extension/
 ├── README.md
 ├── CLAUDE.md
-└── tevi-cs/                        ← SEMUA file CS bot di sini
-    ├── manifest.json                 # MV3 manifest v0.9.5
-    ├── background.js               # Service Worker: scan, slot, Supabase edge function
-    ├── content-script.js           # DOM automation: PING, typing, send
-    ├── overlay.js                  # Cute cat overlay
-    ├── interceptor.js             # API intercept capture
-    ├── log-server.js              # Local HTTP log receiver
-    ├── auto-reloader.js           # CDP auto-reload dev helper
-    ├── popup/                     # Extension popup UI
-    │   └── popup.html
-    ├── icons/                     # Extension icons
-    ├── supabase/                  # Supabase backend (Edge Functions + migrations)
-    │   ├── config.toml
-    │   ├── functions/
-    │   │   └── cs-bot-logger/    # Edge function: AI (Olagon) + Supabase logging
-    │   └── migrations/
-    │       └── 20260606000101_cs_bot_schema.sql
-    ├── package.json
-    └── package-lock.json
+├── auditor-prompt.md
+├── tester-prompt.md
+├── session-sync.md
+├── supabase/                       # Supabase backend (Edge Functions + migrations)
+├── tevi-cs/                        # Chrome MV3 Extension (Service Worker)
+└── tevi-auto-dm/                   # Playwright permanent browser bot
+    ├── bot.js       # Main loop — scan, filter, reply
+    ├── api.js       # Playwright browser + API calls
+    ├── config.js    # Credentials, timing, active hours
+    ├── state.js     # JSON state management
+    └── README.md
 ```
 
 > Extension lain (jika ada) akan di-fork dari `babyval-extension/` yang sama, bukan di dalam `tevi-cs/`.

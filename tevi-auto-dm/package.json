@@ -1,0 +1,13 @@
+{
+  "name": "tevi-auto-dm",
+  "version": "1.0.0",
+  "description": "Tevi CS Bot — Playwright permanent browser + Direct API send",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dry": "node bot.js --dry"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}
