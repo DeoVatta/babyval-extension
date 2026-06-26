@@ -13,7 +13,7 @@
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.18';
+const EXT = 'Tevi CS v0.9.19';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -87,6 +87,7 @@ async function wapiFetch(method, path, body, token) {
     }
   };
   if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  if (body) opts.body = JSON.stringify(body);
 
   const res = await fetch(url.toString(), opts);
   let data;
