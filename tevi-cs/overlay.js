@@ -13,7 +13,7 @@
   if (window.__TEVI_OVERLAY__) return;
   window.__TEVI_OVERLAY__ = true;
 
-  const VER = '0.9.16';
+  const VER = '0.9.21';
   const STATE_KEY = 'tevi_cs_overlay_state';
   const LOG = 'http://localhost:3131';
 
@@ -359,10 +359,13 @@
       <span class="tc-bubble-tail" id="tcBubbleTail"></span>
     </div>
     <div class="tc-panel" id="tcPanel">
-      <div class="tc-ph">🐱 Sukii Status</div>
+      <div class="tc-ph">🐱 Sukii Bot <span id="tcVer" style="font-size:9px;font-weight:400;opacity:0.7;margin-left:4px">v0.9.21</span></div>
       <div class="tc-pb">
-        <div class="tc-pr"><span>Mode</span><span id="tcPdMode">—</span></div>
+        <div class="tc-pr"><span>Status</span><span id="tcPdStatus">—</span></div>
         <div class="tc-pr"><span>Poll</span><span id="tcPdPoll">—</span></div>
+        <div class="tc-pr"><span>Last Scan</span><span id="tcPdLastScan">—</span></div>
+        <div class="tc-pr"><span>Result</span><span id="tcPdResult">—</span></div>
+        <div class="tc-pr"><span>Consecutive Fails</span><span id="tcPdFails">0</span></div>
         <div class="tc-pf">
           <span>Counter</span>
           <span id="tcPdCount">Intro:— Done:— CS:—</span>
@@ -403,8 +406,11 @@
   const bText     = document.getElementById('tcBubbleText');
   const bTail     = document.getElementById('tcBubbleTail');
   const panel     = document.getElementById('tcPanel');
-  const pdMode    = document.getElementById('tcPdMode');
+  const pdStatus  = document.getElementById('tcPdStatus');
   const pdPoll    = document.getElementById('tcPdPoll');
+  const pdLastScan = document.getElementById('tcPdLastScan');
+  const pdResult  = document.getElementById('tcPdResult');
+  const pdFails   = document.getElementById('tcPdFails');
   const pdCount   = document.getElementById('tcPdCount');
   const toggleBtn = document.getElementById('tcToggleBtn');
 
@@ -503,8 +509,9 @@
   }
 
   function renderOverlay(os, st, cfg) {
-    // Read botEnabled from overlay state (SW writes here on every poll/toggle)
-    if (os.botEnabled) {
+    const botEnabled = os.botEnabled;
+
+    if (botEnabled) {
       dot.className = 'tc-dot G'; dot.textContent = 'Z';
       toggleBtn.textContent = 'ON';
       toggleBtn.className = 'tc-toggle-btn on';
@@ -514,11 +521,39 @@
       toggleBtn.className = 'tc-toggle-btn off';
     }
 
-    // Click toggle → write directly to storage (bypasses SW message channel)
+    // Bot state: healthy / warning / degraded
+    const cf = st.consecutiveFails || 0;
+    let stateText = '⚡ Active';
+    if (cf === 0) stateText = '⚡ Healthy';
+    else if (cf <= 2) stateText = '⚠ Warning';
+    else stateText = '🔴 Degraded';
+    pdStatus.textContent = stateText;
+
+    pdPoll.textContent = os.pollTime ? `~${os.pollTime}s` : '—';
+
+    // Last scan time
+    const lastScanTs = st.lastScanAt ? new Date(st.lastScanAt) : null;
+    pdLastScan.textContent = lastScanTs ? lastScanTs.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+
+    // Last result
+    const lr = st.lastResult || {};
+    if (lr.ts) {
+      pdResult.textContent = `✅${lr.ok || 0} ❌${lr.fail || 0}`;
+    } else {
+      pdResult.textContent = '—';
+    }
+
+    // Consecutive fails
+    pdFails.textContent = String(cf);
+    pdFails.style.color = cf === 0 ? '#4CAF50' : cf <= 2 ? '#FF9800' : '#F44336';
+
+    // Counter
+    pdCount.textContent = `Intro:— Done:— CS:—`;
+
+    // Click toggle → write directly to storage
     toggleBtn.onclick = async () => {
-      const newVal = !os.botEnabled;
+      const newVal = !botEnabled;
       await chrome.storage.local.set({ tevi_cs_toggle_req: { enabled: newVal, ts: Date.now() } });
-      // Optimistic update
       os.botEnabled = newVal;
       dot.className = newVal ? 'tc-dot G' : 'tc-dot N';
       dot.textContent = newVal ? 'Z' : '✕';
@@ -548,11 +583,7 @@
     }
 
     // 24/7 mode — always show Active (user controls ON/OFF via extension popup)
-    pdMode.textContent = '🌙 24/7';
-    pdPoll.textContent = os.pollTime ? `~${os.pollTime}s` : '—';
-    const lr = st.lastResult || {};
-    const lastTs = lr.ts ? new Date(lr.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
-    pdCount.textContent = `Last:${lr.conv || '—'} ${lastTs}`;
+    pdCount.textContent = `Intro:— Done:— CS:—`;
   }
 
   // ── RESET STATE ──────────────────────────────────────────────────────────

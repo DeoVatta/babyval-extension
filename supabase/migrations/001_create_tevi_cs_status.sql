@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS public.tevi_cs_status (id SERIAL PRIMARY KEY, bot_id TEXT NOT NULL UNIQUE, last_scan_at TIMESTAMPTZ, success_count INT DEFAULT 0, fail_count INT DEFAULT 0, consecutive_fails INT DEFAULT 0, bot_state TEXT DEFAULT 'healthy', version TEXT, updated_at TIMESTAMPTZ DEFAULT NOW());
