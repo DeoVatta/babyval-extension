@@ -22,7 +22,7 @@ module.exports = {
 
   // Timing
   POLL_INTERVAL_MS: 3 * 60 * 1000,    // 3 minutes
-  LOGIN_WAIT_MS: 13000,               // CF challenge wait
+  LOGIN_WAIT_MS: 20000,               // CF challenge wait (20s safe margin)
   NAV_WAIT_MS: 8000,                  // wait for API after page load
   SEND_DELAY_MS: 1000,                // delay between sends
 

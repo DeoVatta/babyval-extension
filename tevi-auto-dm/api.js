@@ -92,41 +92,71 @@ async function login() {
   if (await loginBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
     await loginBtn.click();
     LOG('[LOGIN] Banner clicked');
+    await _page.waitForTimeout(2000);
   }
-  await _page.waitForTimeout(2000);
 
-  // Click email button
+  // Click "with email" button in modal
   const emailBtn = _page.locator('button').filter({ hasText: /^with\s+email$/i }).first();
   await emailBtn.waitFor({ timeout: 10000 });
   await emailBtn.click();
   LOG('[LOGIN] Email button clicked');
   await _page.waitForTimeout(3000);
 
-  // Fill credentials
+  // Fill email — press Tab after to trigger validation
   const emailInput = _page.locator('input[type="email"], input[name="email"]').first();
   await emailInput.waitFor({ timeout: 10000 });
-  await emailInput.fill(cfg.EMAIL);
-  LOG('[LOGIN] Email filled');
+  await emailInput.click({ clickCount: 3 });
+  await emailInput.press('ControlOrMeta+a');
+  await emailInput.type(cfg.EMAIL, { delay: 50 });
+  await emailInput.press('Tab');
+  LOG('[LOGIN] Email filled: %s', cfg.EMAIL);
 
+  // Fill password — press Tab then Enter to submit
   const passInput = _page.locator('input[type="password"]').first();
   await passInput.waitFor({ timeout: 5000 });
-  await passInput.fill(cfg.PASSWORD);
+  await passInput.click({ clickCount: 3 });
+  await passInput.press('ControlOrMeta+a');
+  await passInput.type(cfg.PASSWORD, { delay: 50 });
   LOG('[LOGIN] Password filled');
 
-  // Submit
-  const submitBtn = _page.locator('button[type="submit"]').first();
-  await submitBtn.click().catch(() => _page.keyboard.press('Enter'));
-  LOG('[LOGIN] Submitted');
-  await _page.waitForTimeout(8000);
+  // Submit via Enter key — more reliable than click
+  await passInput.press('Enter');
+  LOG('[LOGIN] Submitted (Enter)');
+  await _page.waitForTimeout(10000);
 
-  // Wait for login to complete
+  // Wait for login to complete (banner disappears)
   for (let i = 0; i < 30; i++) {
     const visible = await _page.locator('#nav-login-banner-btn').isVisible({ timeout: 1000 }).catch(() => false);
-    if (!visible) { LOG('[LOGIN] Logged in after %ds ✅', i + 1); break; }
+    if (!visible) {
+      LOG('[LOGIN] Logged in after %ds ✅', i + 1);
+      return true;
+    }
     await _page.waitForTimeout(1000);
   }
 
-  return true;
+  // Fallback: try direct form submit via JS
+  LOG('[LOGIN] Banner still visible — trying JS submit...');
+  const submitted = await _page.evaluate(() => {
+    const form = document.querySelector('form');
+    if (form) { form.submit(); return true; }
+    const btn = document.querySelector('button[type="submit"]');
+    if (btn) { btn.click(); return true; }
+    return false;
+  });
+  await _page.waitForTimeout(5000);
+
+  if (submitted) {
+    for (let i = 0; i < 20; i++) {
+      const visible = await _page.locator('#nav-login-banner-btn').isVisible({ timeout: 1000 }).catch(() => false);
+      if (!visible) { LOG('[LOGIN] Logged in via JS submit ✅'); return true; }
+      await _page.waitForTimeout(1000);
+    }
+  }
+
+  // Take screenshot on failure
+  await _page.screenshot({ path: 'login-fail.png' });
+  LOG('[LOGIN] Failed — screenshot saved');
+  return false;
 }
 
 // ── CAPTURE TOKEN ────────────────────────────────────────────────────────────
