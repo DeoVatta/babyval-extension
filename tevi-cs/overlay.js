@@ -500,15 +500,16 @@
   // Poll storage for overlay state changes
   let lastPollKey = '';
   function pollOverlayState() {
-    chrome.storage.local.get([STATE_KEY, 'tevi_cs_state', 'tevi_cs_config'], d => {
+    chrome.storage.local.get([STATE_KEY, 'tevi_cs_state', 'tevi_cs_config', 'tevi_cs_status'], d => {
       const os = d[STATE_KEY] || {};
       const st = d['tevi_cs_state'] || {};
       const cfg = d['tevi_cs_config'] || {};
-      renderOverlay(os, st, cfg);
+      const botSt = d['tevi_cs_status'] || {};
+      renderOverlay(os, st, cfg, botSt);
     });
   }
 
-  function renderOverlay(os, st, cfg) {
+  function renderOverlay(os, st, cfg, botSt) {
     const botEnabled = os.botEnabled;
 
     if (botEnabled) {
@@ -521,8 +522,8 @@
       toggleBtn.className = 'tc-toggle-btn off';
     }
 
-    // Bot state: healthy / warning / degraded
-    const cf = st.consecutiveFails || 0;
+    // Bot state from tevi_cs_status
+    const cf = (botSt.consecutive_fails || botSt.consecutiveFails || 0);
     let stateText = '⚡ Active';
     if (cf === 0) stateText = '⚡ Healthy';
     else if (cf <= 2) stateText = '⚠ Warning';
@@ -532,16 +533,13 @@
     pdPoll.textContent = os.pollTime ? `~${os.pollTime}s` : '—';
 
     // Last scan time
-    const lastScanTs = st.lastScanAt ? new Date(st.lastScanAt) : null;
+    const lastScanTs = (botSt.last_scan_at || botSt.lastScanAt || st.lastScanAt) ? new Date(botSt.last_scan_at || botSt.lastScanAt || st.lastScanAt) : null;
     pdLastScan.textContent = lastScanTs ? lastScanTs.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
 
     // Last result
-    const lr = st.lastResult || {};
-    if (lr.ts) {
-      pdResult.textContent = `✅${lr.ok || 0} ❌${lr.fail || 0}`;
-    } else {
-      pdResult.textContent = '—';
-    }
+    const ok = botSt.success_count || st.lastResult?.ok || 0;
+    const fail = botSt.fail_count || st.lastResult?.fail || 0;
+    pdResult.textContent = ok > 0 || fail > 0 ? `✅${ok} ❌${fail}` : '—';
 
     // Consecutive fails
     pdFails.textContent = String(cf);

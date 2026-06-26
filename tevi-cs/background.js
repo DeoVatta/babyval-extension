@@ -916,31 +916,20 @@ async function syncOverlay(state) {
   await ss({ tevi_cs_overlay_state: { ...state, updatedAt: Date.now() } });
 }
 
-// ── Supabase Bot Status (CEO Monitoring) ─────────────────────────────
-// Syncs bot health to Supabase so CEO can monitor from anywhere
+// ── Bot Status (Local — read by Overlay) ─────────────────────────────
+// Writes bot health to chrome.storage.local — overlay reads this directly
+// No external dependency needed
 async function syncBotStatus(successCount, failCount, consecutiveFails) {
-  try {
-    const payload = {
-      bot_id: MY_SLUG,
-      last_scan_at: new Date().toISOString(),
-      success_count: successCount,
-      fail_count: failCount,
-      consecutive_fails,
-      bot_state: consecutiveFails === 0 ? 'healthy' : consecutiveFails >= 3 ? 'degraded' : 'warning',
-      version: '0.9.20',
-    };
-    // Upsert via POST with resolution=merge-duplicates
-    await fetch(`${SUPABASE_URL}/rest/v1/tevi_cs_status`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates',
-      },
-      body: JSON.stringify(payload),
-    }).catch(() => {});
-  } catch {}
+  const state = consecutiveFails === 0 ? 'healthy' : consecutiveFails >= 3 ? 'degraded' : 'warning';
+  await ss({ tevi_cs_status: {
+    bot_id: MY_SLUG,
+    last_scan_at: Date.now(),
+    success_count: successCount,
+    fail_count: failCount,
+    consecutive_fails: consecutiveFails,
+    bot_state: state,
+    version: '0.9.21',
+  }});
 }
 
 // ── Alarms ─────────────────────────────────────────────────────────────
