@@ -11,7 +11,7 @@
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.15';
+const EXT = 'Tevi CS v0.9.16';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -850,7 +850,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.15 starting (DIRECT API mode)...');
+  log('INFO', 'SW v0.9.16 starting (DIRECT API mode)...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
@@ -967,7 +967,7 @@ async function init() {
     await runScan();
   }
 
-  log('INFO', 'SW v0.9.15 ready — DIRECT API mode (no DOM, no tabs)');
+  log('INFO', 'SW v0.9.16 ready — DIRECT API mode (no DOM, no tabs)');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));

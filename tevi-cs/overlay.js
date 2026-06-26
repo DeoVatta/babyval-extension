@@ -13,7 +13,7 @@
   if (window.__TEVI_OVERLAY__) return;
   window.__TEVI_OVERLAY__ = true;
 
-  const VER = '0.9.1';
+  const VER = '0.9.16';
   const STATE_KEY = 'tevi_cs_overlay_state';
   const LOG = 'http://localhost:3131';
 
@@ -367,6 +367,7 @@
           <span>Counter</span>
           <span id="tcPdCount">Intro:— Done:— CS:—</span>
         </div>
+        <button id="tcResetBtn" style="margin-top:6px;width:100%;background:#ff475722;border:1px solid #ff475744;border-radius:8px;padding:5px 8px;color:#ff4757;font-size:10px;font-weight:700;cursor:pointer">🗑 Reset State</button>
       </div>
     </div>
     <div class="tc-cat" id="tcCat">
@@ -553,6 +554,25 @@
     const lastTs = lr.ts ? new Date(lr.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
     pdCount.textContent = `Last:${lr.conv || '—'} ${lastTs}`;
   }
+
+  // ── RESET STATE ──────────────────────────────────────────────────────────
+  document.getElementById('tcResetBtn').addEventListener('click', async () => {
+    if (!confirm('Reset semua conversation state? Bot akan lupa semua conversations yang sudah diproses.')) return;
+    try {
+      await chrome.runtime.sendMessage({ type: 'RESET_STATE' });
+      const btn = document.getElementById('tcResetBtn');
+      btn.textContent = '✅ Resetted!';
+      btn.style.color = '#00cc6a';
+      btn.style.borderColor = '#00cc6a44';
+      btn.style.background = '#00cc6a22';
+      setTimeout(() => {
+        btn.textContent = '🗑 Reset State';
+        btn.style.color = '#ff4757';
+        btn.style.borderColor = '#ff475744';
+        btn.style.background = '#ff475722';
+      }, 2000);
+    } catch(e) { alert('Reset gagal: ' + e.message); }
+  });
 
   // ── INITIAL ───────────────────────────────────────────────────────────────
   pollOverlayState();
