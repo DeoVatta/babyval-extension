@@ -16,7 +16,7 @@
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.20';
+const EXT = 'Tevi CS v0.9.21';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -843,6 +843,12 @@ async function runScan() {
         log('INFO', '[FILTER] skip @' + slug + ' reason=no_unread unread=0');
         continue;
       }
+      // Skip: last message older than 24 hours
+      const createdAt = conv.latest_message?.created_at;
+      if (createdAt && (Date.now() - createdAt) > 24 * 60 * 60 * 1000) {
+        log('INFO', '[FILTER] skip @' + slug + ' reason=older_than_24h createdAt=' + new Date(createdAt).toISOString());
+        continue;
+      }
       // Check convMeta
       const meta = await getMeta(slug);
       if (meta?.status === 'processing') {
@@ -887,10 +893,16 @@ async function runScan() {
     const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
     st.lastResult = { ok: successCount, fail: failCount, ts: Date.now() };
     st.lastScanAt = Date.now();
+    if (failCount > 0 && successCount === 0) {
+      st.consecutiveFails = (st.consecutiveFails || 0) + 1;
+    } else {
+      st.consecutiveFails = 0;
+    }
     await ss({ tevi_cs_state: st });
+    await syncBotStatus(successCount, failCount, st.consecutiveFails || 0);
 
     await syncOverlay({ botEnabled: true, pollTime: 20, lastScan: Date.now() });
-    log('INFO', '[SCAN] Done: success=' + successCount + ' fail=' + failCount + ' of ' + filtered.length);
+    log('INFO', '[SCAN] Done: success=' + successCount + ' fail=' + failCount + ' of ' + filtered.length + (st.consecutiveFails > 2 ? ' ⚠️ ALERT: ' + st.consecutiveFails + 'x consecutive fails' : ''));
   } catch (e) {
     log('ERROR', '[SCAN] Error: ' + e.message);
   } finally {
@@ -902,6 +914,33 @@ async function runScan() {
 
 async function syncOverlay(state) {
   await ss({ tevi_cs_overlay_state: { ...state, updatedAt: Date.now() } });
+}
+
+// ── Supabase Bot Status (CEO Monitoring) ─────────────────────────────
+// Syncs bot health to Supabase so CEO can monitor from anywhere
+async function syncBotStatus(successCount, failCount, consecutiveFails) {
+  try {
+    const payload = {
+      bot_id: MY_SLUG,
+      last_scan_at: new Date().toISOString(),
+      success_count: successCount,
+      fail_count: failCount,
+      consecutive_fails,
+      bot_state: consecutiveFails === 0 ? 'healthy' : consecutiveFails >= 3 ? 'degraded' : 'warning',
+      version: '0.9.20',
+    };
+    // Upsert via POST with resolution=merge-duplicates
+    await fetch(`${SUPABASE_URL}/rest/v1/tevi_cs_status`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates',
+      },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+  } catch {}
 }
 
 // ── Alarms ─────────────────────────────────────────────────────────────
@@ -920,7 +959,17 @@ async function setupAlarms() {
 }
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === 'tevi_cs_keepalive') return;
+  if (alarm.name === 'tevi_cs_keepalive') {
+    // Heartbeat: if lastScan is older than 3x poll interval, bot may be stuck
+    const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
+    const lastScan = st.lastScanAt || 0;
+    const staleMs = POLL * 1000 * 3;
+    if (Date.now() - lastScan > staleMs && st.botEnabled) {
+      log('ERROR', '[HEARTBEAT] Bot stale! lastScan=' + new Date(lastScan).toISOString() + ' stale=' + Math.round((Date.now() - lastScan) / 1000) + 's ago');
+      await syncBotStatus(0, 0, (st.consecutiveFails || 0) + 1).catch(() => {});
+    }
+    return;
+  }
   if (alarm.name !== 'tevi_cs_poll') return;
 
   const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
@@ -932,7 +981,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.18 starting (DIRECT API mode)...');
+  log('INFO', 'SW v0.9.21 starting (DIRECT API mode)...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;

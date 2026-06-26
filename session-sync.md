@@ -2,7 +2,8 @@
 
 > **Project**: babyval-extension / tevi-cs/
 > **Goal**: Fully automated CS bot for @cutieval (UID=392388705) on Tevi.com
-> **Status**: v0.9.20 — P0 issues remaining before stable
+> **Status**: v0.9.21 — P0 issues remaining before stable
+> **P0**: Verify [MSG] Sent OK in logs, set AI key, Supabase table tevi_cs_status
 > **Updated**: 2026-06-26
 
 ---
@@ -247,11 +248,10 @@ tevi_auth_tokens  -- token, user_id, username, expires_at, is_active
 
 | Version | Commit | Key Changes |
 |---------|--------|-------------|
+| 0.9.21 | — | 24h filter + heartbeat (stale detection) + syncBotStatus (Supabase monitoring) |
 | 0.9.20 | 1e3a270 | tabFetch + round-robin |
 | 0.9.19 | 6f33861 | wapiFetch body fix |
 | 0.9.18 | — | filter=ALL + flat payload |
-| 0.9.17 | — | sender check + debug logging |
-| 0.9.16 | — | Reset State button |
 
 ---
 
