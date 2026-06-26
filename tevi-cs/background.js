@@ -539,18 +539,21 @@ async function apiSendMessage(convId, text) {
   const token = await getWapiToken();
   if (!token) return false;
   try {
-    // ✅ CORRECT: /rpc/send_message, input_text (not text), msg_type (not type)
-    const res = await wapiFetch('POST', '/messenger/v2/rpc/send_message', {
-      conversation_id: convId,
-      input_text: text,
-      msg_type: 'TEXT',
-      parser: 'PLAIN',
+    // ✅ CORRECT: /rpc/send_message
+    // API error says "body: Field required" — payload goes INSIDE a body wrapper
+    let res = await wapiFetch('POST', '/messenger/v2/rpc/send_message', {
+      body: {
+        conversation_id: convId,
+        input_text: text,
+        msg_type: 'TEXT',
+        parser: 'PLAIN',
+      },
     }, token);
     if (res.status === 200 || res.status === 201) {
-      log('INFO', '[MSG] Sent OK conv=' + convId.substring(0, 8) + ' text=' + text.substring(0, 30));
+      log('INFO', '[MSG] Sent OK (body wrapper) conv=' + convId.substring(0, 8));
       return true;
     }
-    log('ERROR', '[MSG] Send failed status=' + res.status + ' body=' + JSON.stringify(res.data).substring(0, 100));
+    log('ERROR', '[MSG] Send failed status=' + res.status + ' body=' + JSON.stringify(res.data).substring(0, 150));
     return false;
   } catch (e) {
     log('ERROR', '[MSG] Send error: ' + e.message);
