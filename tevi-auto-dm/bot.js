@@ -206,8 +206,16 @@ Biar aku bisa kasih harga yang pas, chat aja via dm ya 💕`;
 }
 
 // ── AI REPLY ─────────────────────────────────────────────────────────────────
+/**
+ * generateReply — builds reply text.
+ *
+ * CRITICAL: greeting (slot 1) is ALWAYS the fixed template below.
+ * AI is NEVER used for slot 1 — template is intentional.
+ *
+ * Slot 2-4 → AI if key set, else fallback keyword template.
+ */
 async function generateReply(slug, userMessages, slot, replyType) {
-  // Slot 1 always uses greeting template (AI too generic for welcome)
+  // ── GREETING: ALWAYS fixed template. NEVER touch. ──
   if (replyType === 'greeting') {
     return buildGreeting();
   }
@@ -241,49 +249,36 @@ async function generateReply(slug, userMessages, slot, replyType) {
 
 // ── SLOT DECISION ─────────────────────────────────────────────────────────────
 /**
- * decideSlot — based on conversation state from last poll.
+ * decideSlot — based on conversation state.
+ *
  * Slot increments AFTER confirmed sent (not before).
+ * If last reply was > 3 hours ago → reset to greeting.
  *
  * Flow:
- *   conv baru → slot 1 (greeting, full intro)
- *   conv lama slot 1 sent → slot 2 (warm reply, context-aware)
- *   conv lama slot 2 sent → slot 3 (follow-up, push closer)
- *   conv lama slot 3 sent → slot 4 (closing, direct CTA)
- *   conv lama slot 4 sent → reset to slot 1 (greeting ulang, fresh start)
+ *   conv baru / last reply > 3h ago → slot 1 (greeting, template only)
+ *   slot 1 sent → slot 2 (warm reply)
+ *   slot 2 sent → slot 3 (follow-up, push closer)
+ *   slot 3 sent → slot 4 (closing, direct CTA)
+ *   slot 4 sent → slot 1 (greeting, cooldown reset)
  */
 async function decideSlot(slug) {
-  const st = state.loadState();
-  const userSlot = st.repliedOnce[`_slot_${slug}`] || 0;
+  const { slot } = state.getSlotInfo(slug);
+  const needsReset = state.shouldResetSlot(slug);
 
-  let newSlot, replyType;
-
-  if (userSlot === 0) {
-    // First time this conv → greeting
-    newSlot = 1;
-    replyType = 'greeting';
-  } else if (userSlot >= 4) {
-    // Slot 4 full → reset to greeting (fresh conversation start)
-    newSlot = 1;
-    replyType = 'greeting';
-  } else {
-    // Continue conversation
-    newSlot = userSlot + 1;
-    replyType = 'reply';
+  if (slot === 0 || needsReset) {
+    log('[SLOT] @%s slot=%s needsReset=%s → greeting', slug, slot, needsReset);
+    return { type: 'greeting', slot: 1 };
   }
 
-  return { type: replyType, slot: newSlot };
-}
+  if (slot >= 4) {
+    // Slot 4 full — reset to greeting
+    log('[SLOT] @%s slot=%s (full) → greeting', slug, slot);
+    return { type: 'greeting', slot: 1 };
+  }
 
-// ── INCREMENT SLOT AFTER SENT ────────────────────────────────────────────────
-/**
- * commitSlot — call AFTER send confirmed. Increments slot permanently.
- * Called only on success — no wasted turns on failed sends.
- */
-function commitSlot(slug) {
-  const st = state.loadState();
-  const current = st.repliedOnce[`_slot_${slug}`] || 0;
-  st.repliedOnce[`_slot_${slug}`] = current + 1;
-  state.saveState(st);
+  const newSlot = slot + 1;
+  log('[SLOT] @%s slot=%s → %s', slug, slot, newSlot);
+  return { type: 'reply', slot: newSlot };
 }
 
 // ── FILTER CONVS ─────────────────────────────────────────────────────────────
@@ -372,10 +367,9 @@ async function processConv(conv) {
   const sent = await api.sendMessage(convId, reply);
 
   if (sent.ok) {
-    // ✅ CONFIRMED SENT — only now increment slot
-    commitSlot(slug);
-    const st = state.loadState();
-    state.markReplied(convId, st);
+    // ✅ CONFIRMED SENT — only now commit slot + mark replied
+    state.commitSlot(slug);
+    state.markReplied(convId);
     await api.markRead(convId);
     log('[PROC] @%s sent=true ✅ slot=%s', slug, slot);
     return true;

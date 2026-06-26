@@ -1,60 +1,3 @@
-[2026-06-26T01:50:20.838Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T01:50:22.562Z] [BG] [INFO] [BG] [MSG] getMessages status=200 conv=a716ade6
-[2026-06-26T01:50:22.570Z] [BG] [INFO] [BG] [PROC] @sugargula → slot=1 type=reply msgs=4 img=false
-[2026-06-26T01:50:22.581Z] [BG] [ERROR] [BG] [EDGE] No AI key — set AI key in popup Keys tab
-[2026-06-26T01:50:22.590Z] [BG] [INFO] [BG] [PROC] @sugargula reply: Chat langsung dengan Baby Val: membership Tevi.
-[2026-06-26T01:50:22.625Z] [BG] [ERROR] [BG] [MSG] Send failed status=422 body={"success":false,"message":"1 validation errors, first error: \"body\": Field required","code":"validation_error","data":[{"type":"missing","loc":["bo
-[2026-06-26T01:50:22.635Z] [BG] [INFO] [BG] [PROC] @sugargula sent=false
-[2026-06-26T01:50:22.645Z] [BG] [INFO] [BG] [SCAN] Done: @sugargula sent=false
-[2026-06-26T01:50:40.693Z] [BG] [INFO] [BG] [MSG] getConvs filter=ALL status=200 count=20
-[2026-06-26T01:50:40.736Z] [BG] [INFO] [BG] [SCAN] 20 unread conversations total
-[2026-06-26T01:50:40.756Z] [BG] [INFO] [BG] [FILTER] skip @jak_cloud reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:40.804Z] [BG] [INFO] [BG] [FILTER] skip @civic_putih reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:40.848Z] [BG] [INFO] [BG] [FILTER] skip @kempong88 reason=no_unread unread=0
-[2026-06-26T01:50:40.875Z] [BG] [INFO] [BG] [FILTER] skip @rival964 reason=no_unread unread=0
-[2026-06-26T01:50:40.897Z] [BG] [INFO] [BG] [FILTER] PASS @sugargula unread=3 sender=2309894483
-[2026-06-26T01:50:40.923Z] [BG] [INFO] [BG] [FILTER] PASS @jjjikj unread=1 sender=1238748737
-[2026-06-26T01:50:40.948Z] [BG] [INFO] [BG] [FILTER] skip @evan_669 reason=no_unread unread=0
-[2026-06-26T01:50:40.958Z] [BG] [INFO] [BG] [FILTER] skip @Qaz20 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:40.969Z] [BG] [INFO] [BG] [FILTER] skip @guines484 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:40.979Z] [BG] [INFO] [BG] [FILTER] skip @teknik_bu reason=no_unread unread=0
-[2026-06-26T01:50:40.991Z] [BG] [INFO] [BG] [FILTER] skip @user6032682438248 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.003Z] [BG] [INFO] [BG] [FILTER] skip @4279725502 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.015Z] [BG] [INFO] [BG] [FILTER] skip @miracleboyyzz reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.023Z] [BG] [INFO] [BG] [FILTER] skip @bidinisreal reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.033Z] [BG] [INFO] [BG] [FILTER] skip @suzeep reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.041Z] [BG] [INFO] [BG] [FILTER] skip @MEKOOMCN reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.049Z] [BG] [INFO] [BG] [FILTER] skip @alann17529 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.072Z] [BG] [INFO] [BG] [FILTER] skip @radar_86 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.081Z] [BG] [INFO] [BG] [FILTER] skip @aa_andi_a.s reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.092Z] [BG] [INFO] [BG] [FILTER] skip @mister_up reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:50:41.101Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T01:50:41.112Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
-[2026-06-26T01:50:42.687Z] [BG] [INFO] [BG] [MSG] getMessages status=200 conv=a716ade6
-[2026-06-26T01:50:42.697Z] [BG] [INFO] [BG] [PROC] @sugargula → slot=1 type=reply msgs=4 img=false
-[2026-06-26T01:50:42.706Z] [BG] [ERROR] [BG] [EDGE] No AI key — set AI key in popup Keys tab
-[2026-06-26T01:50:42.716Z] [BG] [INFO] [BG] [PROC] @sugargula reply: Chat langsung dengan Baby Val: membership Tevi.
-[2026-06-26T01:50:42.773Z] [BG] [ERROR] [BG] [MSG] Send failed status=422 body={"success":false,"message":"1 validation errors, first error: \"body\": Field required","code":"validation_error","data":[{"type":"missing","loc":["bo
-[2026-06-26T01:50:42.782Z] [BG] [INFO] [BG] [PROC] @sugargula sent=false
-[2026-06-26T01:50:42.791Z] [BG] [INFO] [BG] [SCAN] Done: @sugargula sent=false
-[2026-06-26T01:51:00.574Z] [BG] [INFO] [BG] [MSG] getConvs filter=ALL status=200 count=20
-[2026-06-26T01:51:00.584Z] [BG] [INFO] [BG] [FILTER] skip @evan_669 reason=no_unread unread=0
-[2026-06-26T01:51:00.594Z] [BG] [INFO] [BG] [FILTER] skip @Qaz20 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.604Z] [BG] [INFO] [BG] [SCAN] 20 unread conversations total
-[2026-06-26T01:51:00.613Z] [BG] [INFO] [BG] [FILTER] skip @guines484 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.623Z] [BG] [INFO] [BG] [FILTER] skip @teknik_bu reason=no_unread unread=0
-[2026-06-26T01:51:00.651Z] [BG] [INFO] [BG] [FILTER] skip @user6032682438248 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.660Z] [BG] [INFO] [BG] [FILTER] skip @4279725502 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.669Z] [BG] [INFO] [BG] [FILTER] skip @miracleboyyzz reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.678Z] [BG] [INFO] [BG] [FILTER] skip @bidinisreal reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.702Z] [BG] [INFO] [BG] [FILTER] skip @suzeep reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.710Z] [BG] [INFO] [BG] [FILTER] skip @MEKOOMCN reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.720Z] [BG] [INFO] [BG] [FILTER] skip @alann17529 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.730Z] [BG] [INFO] [BG] [FILTER] skip @radar_86 reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.741Z] [BG] [INFO] [BG] [FILTER] skip @aa_andi_a.s reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.749Z] [BG] [INFO] [BG] [FILTER] skip @mister_up reason=i_sent_last sender=392388705 unread=0
-[2026-06-26T01:51:00.759Z] [BG] [INFO] [BG] [SCAN] 2 to process after filter
-[2026-06-26T01:51:00.770Z] [BG] [INFO] [BG] [PROC] Processing conv=a716ade6 @sugargula (unread=3)
 [2026-06-26T01:51:00.779Z] [BG] [INFO] [BG] [FILTER] skip @jak_cloud reason=i_sent_last sender=392388705 unread=0
 [2026-06-26T01:51:00.789Z] [BG] [INFO] [BG] [FILTER] skip @civic_putih reason=i_sent_last sender=392388705 unread=0
 [2026-06-26T01:51:00.798Z] [BG] [INFO] [BG] [FILTER] skip @kempong88 reason=no_unread unread=0
@@ -1998,3 +1941,60 @@ Kalau mau Chat
 [2026-06-26T03:19:02.645Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
 [2026-06-26T03:19:18.652Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782443959s ago
 [2026-06-26T03:19:22.645Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:19:42.658Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782443983s ago
+[2026-06-26T03:19:42.676Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:20:03.242Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:20:06.640Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444007s ago
+[2026-06-26T03:20:22.657Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:20:30.655Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444031s ago
+[2026-06-26T03:20:42.650Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:20:54.645Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444055s ago
+[2026-06-26T03:21:02.669Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:21:18.659Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444079s ago
+[2026-06-26T03:21:22.654Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:21:42.652Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444103s ago
+[2026-06-26T03:21:42.665Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:22:02.654Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:22:06.651Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444127s ago
+[2026-06-26T03:22:22.658Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:22:30.658Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444151s ago
+[2026-06-26T03:22:42.654Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:22:54.646Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444175s ago
+[2026-06-26T03:23:02.648Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:23:18.663Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444199s ago
+[2026-06-26T03:23:22.640Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:23:42.699Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444223s ago
+[2026-06-26T03:23:42.834Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:24:05.105Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:24:06.666Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444247s ago
+[2026-06-26T03:24:22.851Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:24:30.661Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444271s ago
+[2026-06-26T03:24:42.696Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:24:54.884Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444295s ago
+[2026-06-26T03:25:03.574Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:25:18.947Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444319s ago
+[2026-06-26T03:25:22.662Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:25:46.261Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444344s ago
+[2026-06-26T03:25:47.013Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:26:03.741Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:26:07.536Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444367s ago
+[2026-06-26T03:26:22.900Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:26:31.121Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444391s ago
+[2026-06-26T03:26:42.959Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:26:54.714Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444415s ago
+[2026-06-26T03:27:02.899Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:27:18.649Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444439s ago
+[2026-06-26T03:27:22.645Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:27:42.660Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444463s ago
+[2026-06-26T03:27:42.687Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:28:02.657Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:28:06.654Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444487s ago
+[2026-06-26T03:28:25.423Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:28:30.838Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444511s ago
+[2026-06-26T03:28:43.372Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:28:54.660Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444535s ago
+[2026-06-26T03:29:04.112Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:29:18.653Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444559s ago
+[2026-06-26T03:29:25.977Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
+[2026-06-26T03:29:42.851Z] [BG] [ERROR] [BG] [HEARTBEAT] Bot stale! lastScan=1970-01-01T00:00:00.000Z stale=1782444583s ago
+[2026-06-26T03:29:43.169Z] [BG] [INFO] [BG] [SCAN] Outside active hours (UTC 3) — skipping
