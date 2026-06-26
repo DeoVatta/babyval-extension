@@ -1,17 +1,6 @@
 /**
- * BOT — Tevi Auto-DM Bot v1.0.0
- * Permanent Playwright browser + Direct API send + AI fallback
- *
- * Flow:
- * 1. Launch browser once, login once
- * 2. Capture wapi token from browser context
- * 3. Every poll cycle:
- *    a. GET /get_recent_conversations?filter=ALL
- *    b. Filter: skip own conv, skip my last-sender, skip no_unread, skip >24h, skip subscribers
- *    c. For each conv: GET messages → decide slot → generate AI/template reply
- *    d. POST /send_message via browser context (has cf_clearance cookie)
- *    e. POST /mark_read
- * 4. Sleep 3 min → repeat
+ * BOT — Tevi Auto-DM Bot v1.0.1
+ * Permanent Playwright browser + Direct API send + AI + Full conversation flow
  */
 const api = require('./api');
 const state = require('./state');
@@ -21,11 +10,11 @@ const LOG_FILE = cfg.LOG_PATH;
 
 function log(msg, ...args) {
   const ts = new Date().toISOString();
-  const line = args.length
-    ? `[${ts}] [BOT] ${msg.replace(/%s/g, () => String(args.shift()))}\n  args: ${JSON.stringify(args)}`
+  const formatted = args.length
+    ? `[${ts}] [BOT] ${msg.replace(/%s/g, () => String(args.shift()))}`
     : `[${ts}] [BOT] ${msg}`;
-  console.log(line);
-  try { require('fs').appendFileSync(LOG_FILE, line + '\n'); } catch {}
+  console.log(formatted);
+  try { require('fs').appendFileSync(LOG_FILE, formatted + '\n'); } catch {}
 }
 
 // ── ACTIVE HOURS ─────────────────────────────────────────────────────────────
@@ -34,37 +23,195 @@ function isWithinActiveHours() {
   if (cfg.ACTIVE_HOURS_START < cfg.ACTIVE_HOURS_END) {
     return hour >= cfg.ACTIVE_HOURS_START && hour < cfg.ACTIVE_HOURS_END;
   }
-  // Spans midnight
   return hour >= cfg.ACTIVE_HOURS_START || hour < cfg.ACTIVE_HOURS_END;
 }
 
-// ── FALLBACK REPLY (keyword matching) ────────────────────────────────────────
-function buildFallback(messages, slot, replyType) {
-  if (replyType === 'greeting') {
-    return `Halo aku Sukii, AI Assistant-nya Baby Val 💕
-Kalau mau Chat sama Baby Val, membership dulu ya di Tevi
+// ── PERSONA: SUKII ────────────────────────────────────────────────────────────
+// Sukii adalah AI Assistant yang friendly, helpful, tapi straight-to-the-point.
+// Tone: casual Indonesian dengan emoji. Tidak terlalu formal, tidak terlalu kaku.
+// Tujuannya: qualify lead → VCS/membership upsell → close payment.
+const PERSONA = {
+  name: 'Sukii',
+  role: 'AI Assistant Baby Val',
+  tagline: 'Kontak pertama antara kamu dan Baby Val 💕',
+  greeting: {
+    first: `Hai! Aku Sukii, AI Assistant-nya Baby Val 💕
 
-Kalau mau VCS bisa bayar di babyval.com`;
-  }
+Akhir-akhir ini aku lagi sering ditanya soal VCS dan membership, jadi aku here untuk bantu kalian yang serius!
+
+**VCS (Video Call)**
+Baby Val tersedia untuk VCS via Private Room Tevi. Tapi karena banyak yang cancel di tengah jalan, sekarang prosesnya lewat web biar jelas:
+
+1. babyval.com → Video Call
+2. Pilih durasi
+3. Bayar (Dana / OVO / Transfer)
+4. Kirim bukti tf ke dm ini
+
+**Membership**
+Benefit: masuk live gratis, konten terbuka, chat kapanpun. Bisa start dari Tevi langsung — tevi.com/@cutieval
+
+Yang mau lanjut, kabari aja ya!`,
+  },
+};
+
+// ── REPLY ENGINE ──────────────────────────────────────────────────────────────
+
+/**
+ * buildGreeting — slot 1. Complete welcome message with all info.
+ * Tidak pakai AI, langsung fixed template (karena AI terlalu generic).
+ */
+function buildGreeting() {
+  return PERSONA.greeting.first;
+}
+
+/**
+ * buildFallback — keyword-based reply untuk slot 2-4.
+ * Menggunakan conversation context untuk decide response depth.
+ */
+function buildFallback(messages, slot, replyType) {
   const last = (messages[messages.length - 1]?.text || '').toLowerCase();
-  if (last.match(/foto|video|konten|porn|sexy|bugil|xxx|ngentot|coli/i)) return 'Konten untuk member.';
-  if (last.match(/vcs|videocall|video call|private room/i)) return 'VCS via Private Room Tevi. babyval.com → Video Call → Durasi → Bayar.';
-  if (last.match(/payment|transfer|bayar|order|bayarnya|dana|ovo/i)) return 'Payment via babyval.com. Dana/OVO/transfer. babyval.com → VCS → Bayar.';
-  if (last.match(/member|membership|join|benefit/i)) return 'Benefit: masuk live gratis, konten terbuka, chat kapanpun. tevi.com/@cutieval';
-  if (last.match(/alamat|nomor hp|no hp|wa|whatsapp|line|telegram/i)) return 'Informasi pribadi tidak diberikan.';
-  if (last.match(/ketemu|offline|bertemu|ngumpul|jumpa|bo/i)) return 'Coba deh VCS dulu.. VCS aja belum emang bakal beneran bayar?';
-  if (last.match(/terima kasih|thanks|makasih|thx|tq/i)) return 'Sukii. Ada yang perlu ditanyakan?';
-  if (last.match(/masker|topeng/i)) return 'Boleh open masker. Tambah 350k.';
-  if (last.match(/full open|buka semua/i)) return 'Buka semua kecuali masker. Buka masker tambah 350k.';
-  if (last.match(/tip|donasi|ganknow/i)) return 'Tip: ganknow.com/babyval/tip';
-  if (last.match(/bot|sukii|siapa kamu|apa kamu/i)) return 'Sukii. Informan Baby Val.';
-  if (last.match(/cara (membership|member|join)/i)) return 'Buka profile Baby Val → Join Membership';
-  if (last.match(/cara vcs|cara (bayar|payment)/i)) return 'babyval.com → Video Call → Durasi → Bayar';
-  return 'Chat langsung dengan Baby Val: membership Tevi.';
+  const hasEmoji = /[\U0001F300-\U0001F9FF]/.test(last);
+  const msgCount = messages.length;
+
+  // ── TOPIC: KONTEN/PORN
+  if (last.match(/foto|video|konten|porn|sexy|bugil|xxx|ngentot|coli|g写道?|memek/i)) {
+    return 'Konten untuk member. Buka profile Baby Val → Join Membership ya! 💕';
+  }
+
+  // ── TOPIC: VCS REQUEST
+  if (last.match(/vcs|videocall|video call|private room|priv\s*room/i)) {
+    if (slot === 2) {
+      return `VCS tersedia! 💕 Prosesnya gampang:
+
+babyval.com → Video Call → Pilih Durasi → Bayar → Kirim bukti tf ke dm ini
+
+Boleh tanya dulu, prefer hari & jam apa?`;
+    }
+    return `VCS via Private Room Tevi ya. babyval.com → Video Call → Durasi → Bayar → Kirim bukti tf.`;
+  }
+
+  // ── TOPIC: PAYMENT
+  if (last.match(/payment|transfer|bayar|order|bayarnya|dana|ovo|gcash|payment|janji|dp/i)) {
+    if (slot === 2) {
+      return `Ready untuk VCS 💕
+
+babyval.com → Video Call
+Durasi ada 15 / 30 / 60 menit
+Bayarnya: Dana / OVO / Transfer
+
+Kirim bukti tf ke dm ini, aku bantu arrange next step.`;
+    }
+    return `Payment via babyval.com. Dana / OVO / Transfer. babyval.com → Video Call → Bayar.`;
+  }
+
+  // ── TOPIC: MEMBERSHIP / JOIN
+  if (last.match(/member|membership|join|benefit|langganan/i)) {
+    return `Membership Tevi benefit-nya lengkap 💕
+
+✓ Masuk live room gratis
+✓ Konten terbuka semua
+✓ Chat kapanpun sama Baby Val
+
+Buka tevi.com/@cutieval → Join Membership. Gampang!`;
+  }
+
+  // ── TOPIC: INFO PRIBADI (TIDAK BOLEH)
+  if (last.match(/alamat|nomor hp|no hp|wa|whatsapp|line|telegram|no\.?\s*hp|nomor\s*(hp|wa|aktif)|umur|usia/i)) {
+    return 'Informasi pribadi tidak diberikan ya 🙏 Tapi VCS bisa arrange — babyval.com aja ya!';
+  }
+
+  // ── TOPIC: KETEMU OFFLINE
+  if (last.match(/ketemu|offline|bertemu|ngumpul|jumpa|bo\b|book|kondangan/i)) {
+    if (slot === 2) {
+      return 'Offline nggak tersedia ya. Tapi VCS bisa arrange — biar keliatan langsung. babyval.com aja dulu? 💕';
+    }
+    return 'Coba deh VCS dulu.. VCS aja belum emang bakal beneran bayar? 😅';
+  }
+
+  // ── TOPIC: MASKER
+  if (last.match(/masker|topeng|half\s*mask/i)) {
+    return 'Boleh open masker 💕 Tambah 350k dari harga VCS biasa ya.';
+  }
+
+  // ── TOPIC: FULL OPEN
+  if (last.match(/full open|buka semua|open\s*full/i)) {
+    return 'Open semua kecuali masker. Buka masker tambah 350k ya 💕';
+  }
+
+  // ── TOPIC: TIP / DONASI
+  if (last.match(/tip|donasi|ganknow|send\s*money/i)) {
+    return 'Makasih! Bisa lewat ganknow: ganknow.com/babyval/tip 💕';
+  }
+
+  // ── TOPIC: BOT / SUKII
+  if (last.match(/bot|sukii|siapa kamu|apa kamu|kamu\s*(orang|beneran|tuhan|cewek|bp)|kamuis/i)) {
+    return 'Aku Sukii, AI Assistant-nya Baby Val 💕 Aku handle dm kalian di sini. Ada yang bisa aku bantu?';
+  }
+
+  // ── TOPIC: CARA BAYAR / VCS
+  if (last.match(/cara\s*vcs|cara\s*bayar|cara\s*payment|cara\s*join/i)) {
+    return 'babyval.com → Video Call → Pilih Durasi → Bayar (Dana/OVO/Transfer) → Kirim bukti tf ke dm 💕';
+  }
+
+  // ── TOPIC: THX / TERIMA KASIH
+  if (last.match(/terima kasih|thanks|makasih|thx|tq|sipp|sip|ok thanks|okeh/i)) {
+    if (slot === 2) {
+      return 'Sama-sama! 💕 Kalau udah siap VCS atau join membership, kabari aku ya!';
+    }
+    return 'Sukii here 💕 Ada yang mau ditanya lagi?';
+  }
+
+  // ── TOPIC: HARGA / DURASI
+  if (last.match(/harga|berapa|durasi|durasi\s*berapa|rate|i[nf]fo\s*harga|cost|fee/i)) {
+    return `Durasi VCS:
+• 15 menit
+• 30 menit
+• 60 menit
+
+Biar aku bisa kasih harga yang pas, chat aja via dm ya 💕`;
+  }
+
+  // ── TOPIC: READY / SERIUS
+  if (last.match(/ready|serius|sip|oke\s*(oke|sip)|ya\s*(iya|ya\s*bener)|lets?\s*go|gaskeun/i)) {
+    if (slot >= 3) {
+      return `Sip! babyval.com → Video Call → Durasi → Bayar → Kirim bukti tf ke dm ini. Aku arrange dari sana 💕`;
+    }
+    return 'Sipp! 💕 Langsung aja ke babyval.com → Video Call ya!';
+  }
+
+  // ── TOPIC: STALKING / KENALAN
+  if (last.match(/stalking|stalk|kenal|tau|guesta/i)) {
+    return 'Hehe, kenalan boleh 💕 Aku Sukii, AI-nya Baby Val. Ada yang mau ditanya?';
+  }
+
+  // ── TOPIC: EMOJI ONLY / HI / SALAM
+  if (hasEmoji && last.length < 20) {
+    return 'Hai! 💕 Aku Sukii. Mau tanya soal VCS atau membership? Langsung aja ya!';
+  }
+
+  if (last.match(/^hai$|^hi$|^halo$|^hello$|^hey$/i) || last.length < 5) {
+    return 'Hai! 💕 Aku Sukii, AI-nya Baby Val. Ada yang bisa aku bantu?';
+  }
+
+  // ── TOPIC: SIBUK / OFFLINE STATUS
+  if (last.match(/sibuk|offline|gabisa|busy|nanti|sometime/i)) {
+    return 'Sipp, kabari aja kalau udah siap 💕 babyval.com buat arrange VCS ya!';
+  }
+
+  // ── DEFAULT — casual conversation
+  if (slot === 2) {
+    return 'Hmm, mau tanya soal VCS atau membership? Aku bisa bantu jelasin 💕 Atau langsung ke babyval.com aja ya!';
+  }
+  return 'Chat langsung sama Baby Val: membership Tevi dulu ya! 💕 tevi.com/@cutieval';
 }
 
 // ── AI REPLY ─────────────────────────────────────────────────────────────────
 async function generateReply(slug, userMessages, slot, replyType) {
+  // Slot 1 always uses greeting template (AI too generic for welcome)
+  if (replyType === 'greeting') {
+    return buildGreeting();
+  }
+
   if (!cfg.AI_KEY) {
     log('[EDGE] No AI key — using fallback');
     return buildFallback(userMessages, slot, replyType);
@@ -92,17 +239,54 @@ async function generateReply(slug, userMessages, slot, replyType) {
   }
 }
 
-// ── SLOT ─────────────────────────────────────────────────────────────────────
+// ── SLOT DECISION ─────────────────────────────────────────────────────────────
+/**
+ * decideSlot — based on conversation state from last poll.
+ * Slot increments AFTER confirmed sent (not before).
+ *
+ * Flow:
+ *   conv baru → slot 1 (greeting, full intro)
+ *   conv lama slot 1 sent → slot 2 (warm reply, context-aware)
+ *   conv lama slot 2 sent → slot 3 (follow-up, push closer)
+ *   conv lama slot 3 sent → slot 4 (closing, direct CTA)
+ *   conv lama slot 4 sent → reset to slot 1 (greeting ulang, fresh start)
+ */
 async function decideSlot(slug) {
   const st = state.loadState();
-  const userSlot = (st.repliedOnce[`_slot_${slug}`] || 0) + 1;
-  const type = userSlot >= 4 ? 'greeting' : 'reply';
-  st.repliedOnce[`_slot_${slug}`] = userSlot;
-  state.saveState(st);
-  return { type, slot: userSlot };
+  const userSlot = st.repliedOnce[`_slot_${slug}`] || 0;
+
+  let newSlot, replyType;
+
+  if (userSlot === 0) {
+    // First time this conv → greeting
+    newSlot = 1;
+    replyType = 'greeting';
+  } else if (userSlot >= 4) {
+    // Slot 4 full → reset to greeting (fresh conversation start)
+    newSlot = 1;
+    replyType = 'greeting';
+  } else {
+    // Continue conversation
+    newSlot = userSlot + 1;
+    replyType = 'reply';
+  }
+
+  return { type: replyType, slot: newSlot };
 }
 
-// ── FILTER ───────────────────────────────────────────────────────────────────
+// ── INCREMENT SLOT AFTER SENT ────────────────────────────────────────────────
+/**
+ * commitSlot — call AFTER send confirmed. Increments slot permanently.
+ * Called only on success — no wasted turns on failed sends.
+ */
+function commitSlot(slug) {
+  const st = state.loadState();
+  const current = st.repliedOnce[`_slot_${slug}`] || 0;
+  st.repliedOnce[`_slot_${slug}`] = current + 1;
+  state.saveState(st);
+}
+
+// ── FILTER CONVS ─────────────────────────────────────────────────────────────
 function filterConvs(convs, botState) {
   const now = Date.now();
   const result = [];
@@ -114,27 +298,21 @@ function filterConvs(convs, botState) {
     const createdAt = conv.latest_message?.created_at;
     const isSubscriber = conv.recipient?.is_my_subscriber;
 
-    // Skip own conv
     if (slug.toLowerCase() === cfg.MY_SLUG.toLowerCase()) {
       log('[FILTER] skip @%s reason=my_own', slug); continue;
     }
-    // Skip my last-sender (not incoming DM)
     if (lastSender === cfg.MY_UID) {
-      log('[FILTER] skip @%s reason=i_sent_last sender=%s', slug, lastSender); continue;
+      log('[FILTER] skip @%s reason=i_sent_last', slug); continue;
     }
-    // Skip no unread
     if (unread === 0) {
       log('[FILTER] skip @%s reason=no_unread', slug); continue;
     }
-    // Skip > 24h old
     if (createdAt && (now - createdAt) > 24 * 60 * 60 * 1000) {
-      log('[FILTER] skip @%s reason=older_than_24h createdAt=%s', slug, new Date(createdAt).toISOString()); continue;
+      log('[FILTER] skip @%s reason=older_than_24h', slug); continue;
     }
-    // Skip subscribers
     if (isSubscriber) {
       log('[FILTER] skip @%s reason=is_subscriber', slug); continue;
     }
-    // Skip recently replied
     if (state.wasRecentlyReplied(conv.id, botState)) {
       log('[FILTER] skip @%s reason=done_recently', slug); continue;
     }
@@ -155,7 +333,11 @@ function extractUserMessages(messages) {
       return senderAlias !== cfg.MY_UID;
     })
     .slice(-cfg.MAX_MSGS)
-    .map(m => ({ text: m.text || '', hasImage: !!(m.images && m.images.length > 0) }));
+    .map(m => ({
+      text: m.text || '',
+      hasImage: !!(m.images && m.images.length > 0),
+      createdAt: m.created_at,
+    }));
 }
 
 // ── PROCESS ONE CONVERSATION ─────────────────────────────────────────────────
@@ -166,7 +348,6 @@ async function processConv(conv) {
 
   log('[PROC] Processing conv=%s @%s unread=%s', convId.substring(0, 8), slug, unread);
 
-  // Get full messages
   const messages = await api.getMessages(convId);
   if (!messages || messages.length === 0) {
     log('[PROC] @%s no messages fetched', slug);
@@ -175,7 +356,7 @@ async function processConv(conv) {
 
   const userMsgs = extractUserMessages(messages);
   if (userMsgs.length === 0) {
-    log('[PROC] @%s no user messages', slug);
+    log('[PROC] @%s no user messages — mark read', slug);
     await api.markRead(convId);
     return true;
   }
@@ -191,18 +372,21 @@ async function processConv(conv) {
   const sent = await api.sendMessage(convId, reply);
 
   if (sent.ok) {
+    // ✅ CONFIRMED SENT — only now increment slot
+    commitSlot(slug);
     const st = state.loadState();
     state.markReplied(convId, st);
     await api.markRead(convId);
-    log('[PROC] @%s sent=true ✅', slug);
+    log('[PROC] @%s sent=true ✅ slot=%s', slug, slot);
     return true;
   } else {
     log('[PROC] @%s sent=false status=%s', slug, sent.status);
+    // Slot NOT incremented — same message on next scan
     return false;
   }
 }
 
-// ── MAIN POLL ────────────────────────────────────────────────────────────────
+// ── POLL ─────────────────────────────────────────────────────────────────────
 async function poll() {
   log('[POLL] Fetching conversations...');
 
@@ -225,10 +409,9 @@ async function poll() {
     try {
       const ok = await processConv(conv);
       if (ok) success++; else fail++;
-      // Small delay between convs
       await new Promise(r => setTimeout(r, cfg.SEND_DELAY_MS));
     } catch (e) {
-      log('[POLL] processConv error @%s: %s', conv.channel_slug || conv.recipient?.channel_slug, e.message);
+      log('[POLL] processConv error: %s', e.message);
       fail++;
     }
   }
@@ -246,24 +429,20 @@ const DRY_RUN = process.argv.includes('--dry');
 
 async function main() {
   log('==========================================');
-  log('TEVI AUTO-DM v1.0.0 %s', DRY_RUN ? '(DRY RUN)' : '(LIVE)');
+  log('TEVI AUTO-DM v1.0.1 %s', DRY_RUN ? '(DRY RUN)' : '(LIVE)');
   log('Active hours: 17:00-05:00 WIB | UTC: %s-%s', cfg.ACTIVE_HOURS_START, cfg.ACTIVE_HOURS_END);
   log('Current UTC hour: %s | In active hours: %s', new Date().getUTCHours(), isWithinActiveHours());
   log('==========================================');
 
-  // Launch browser
   const ok = await api.ensureBrowser();
   if (!ok) { log('[FATAL] Browser failed'); process.exit(1); }
 
-  // Login
   const loginOk = await api.login();
   if (!loginOk) { log('[FATAL] Login failed'); await api.shutdown(); process.exit(1); }
 
-  // Capture token
   const tokenOk = await api.captureToken();
   if (!tokenOk) { log('[FATAL] Token capture failed'); await api.shutdown(); process.exit(1); }
 
-  // Main loop
   let pollCount = 0;
   while (true) {
     pollCount++;
@@ -272,7 +451,6 @@ async function main() {
 
     log('\n[LOOP] Poll #%d UTC=%s inHours=%s — %s', pollCount, utcHour, inHours, new Date().toISOString());
 
-    // Reconnect if browser disconnected
     if (!api.isConnected()) {
       log('[WARN] Browser disconnected — reconnecting...');
       const reOk = await api.ensureBrowser();

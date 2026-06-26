@@ -46,4 +46,7 @@ module.exports = {
 
   // Max messages to fetch per conv
   MAX_MSGS: 4,
+
+  // Max reply slot before reset (slot 1-4, then reset to greeting)
+  MAX_SLOT: 4,
 };
