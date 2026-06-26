@@ -1,19 +1,19 @@
 /**
- * BACKGROUND.JS — Tevi CS Bot v0.9.17
+ * BACKGROUND.JS — Tevi CS Bot v0.9.18
  *
  * Architecture: DIRECT API (no DOM, no tab navigation)
  * - Uses wapi.flowstreamx.com Messenger v2 API
  * - Auth: Firebase anonymous → wapi token exchange
  * - Conv detection: GET /messenger/v2/rpc/get_recent_conversations?filter=ALL
- * - Send: POST /messenger/v2/rpc/send_message
+ * - Send: POST /messenger/v2/rpc/send_message (FLAT payload — no wrapper)
  * - HMAC verify: HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+ts)
  * - Filter: skip own_conv, skip my_last_sender, skip no_unread, skip recent_done
- * - Debug logging per conv in filter loop (v0.9.17+)
+ * - Debug logging per conv in filter loop
  *
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.17';
+const EXT = 'Tevi CS v0.9.18';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -541,18 +541,16 @@ async function apiSendMessage(convId, text) {
   const token = await getWapiToken();
   if (!token) return false;
   try {
-    // ✅ CORRECT: /rpc/send_message
-    // API error says "body: Field required" — payload goes INSIDE a body wrapper
+    // REAL browser payload from sniff-v6 (flat, no wrapper):
+    // {"conversation_id":"...","input_text":"...","msg_type":"TEXT","parser":"PLAIN"}
     let res = await wapiFetch('POST', '/messenger/v2/rpc/send_message', {
-      body: {
-        conversation_id: convId,
-        input_text: text,
-        msg_type: 'TEXT',
-        parser: 'PLAIN',
-      },
+      conversation_id: convId,
+      input_text: text,
+      msg_type: 'TEXT',
+      parser: 'PLAIN',
     }, token);
     if (res.status === 200 || res.status === 201) {
-      log('INFO', '[MSG] Sent OK (body wrapper) conv=' + convId.substring(0, 8));
+      log('INFO', '[MSG] Sent OK conv=' + convId.substring(0, 8));
       return true;
     }
     log('ERROR', '[MSG] Send failed status=' + res.status + ' body=' + JSON.stringify(res.data).substring(0, 150));
@@ -766,7 +764,7 @@ async function runScan() {
     }
 
     // Get UNREAD conversations
-    const convs = await apiGetConversations('UNREAD', 20);
+    const convs = await apiGetConversations('ALL', 20);
     if (!convs) {
       log('ERROR', '[SCAN] Failed to get conversations');
       _scanInProgress = false;
@@ -836,7 +834,7 @@ async function runScan() {
     await ss({ tevi_cs_state: st });
 
     await syncOverlay({ botEnabled: true, pollTime: 20, lastScan: Date.now() });
-    log('INFO', '[SCAN] Done: @' + filtered[0].channel_slug + ' sent=' + result);
+    log('INFO', '[SCAN] Done: @' + (filtered[0].channel_slug || filtered[0].recipient?.channel_slug || '?') + ' sent=' + result);
   } catch (e) {
     log('ERROR', '[SCAN] Error: ' + e.message);
   } finally {
@@ -878,7 +876,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.17 starting (DIRECT API mode)...');
+  log('INFO', 'SW v0.9.18 starting (DIRECT API mode)...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
@@ -982,7 +980,7 @@ async function init() {
       return true;
     }
     if (msg.type === 'TEST_CONVS') {
-      apiGetConversations('UNREAD', 5).then(convs => {
+      apiGetConversations('ALL', 5).then(convs => {
         sendResp({ ok: !!convs, count: convs ? convs.length : 0, convs: (convs || []).slice(0, 3).map(c => ({ slug: c.channel_slug, unread: c.stats?.unread_messages, id: c.id })) });
       });
       return true;
@@ -995,7 +993,7 @@ async function init() {
     await runScan();
   }
 
-  log('INFO', 'SW v0.9.17 ready — DIRECT API mode (no DOM, no tabs)');
+  log('INFO', 'SW v0.9.18 ready — DIRECT API mode (no DOM, no tabs)');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));
