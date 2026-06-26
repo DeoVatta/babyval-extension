@@ -1,5 +1,8 @@
 # Tevi CS Bot — Sukii Assistant
 
+> **Status**: v0.9.16 — **SCAN + FETCH + SEND PIPELINE ACTIVE**
+> Bot mendeteksi DM unread → fetch pesan → generate reply → send. Conversation state management dengan retry logic.
+
 ## Apa Ini
 
 Bot CS (Customer Service) otomatis untuk akun **@cutieval** di Tevi.com (UID=392388705).
@@ -20,30 +23,72 @@ Bot scan semua DM masuk yang belum dibalas, terus balas pakai AI (persona: "Suki
 
 ## Architecture
 
-### Extension Structure (MV3)
+### Extension Structure (v0.9.16)
 
 ```
 tevi-cs/
-├── manifest.json        # v0.9.12 — version + permissions
-├── background.js        # Service Worker — DIRECT API mode, no DOM/tabs
-├── content-script.js   # Token capture from Tevi localStorage + sniffer
-├── overlay.js          # Cat toggle panel
+├── manifest.json        # v0.9.16 — Chrome MV3 Service Worker
+├── background.js        # Service Worker — DIRECT API mode
+│                          Pipeline: scan → getMessages → generateReply → sendMessage → markRead
+├── content-script.js   # Token capture + persistent sniffer + WS interceptor
+├── overlay.js          # Cat toggle panel + Reset State button (v0.9.16)
 ├── api-discovery.js    # Legacy (deprecated)
-├── interceptor.js      # Legacy (deprecated)
-├── log-server.js      # Local HTTP log receiver (port 3131)
+├── log-server.js       # Local HTTP log receiver (port 3131)
+├── version.js          # Single source of truth version config
 ├── popup/
-│   └── popup.html    # Extension popup UI
+│   └── popup.html      # Extension popup UI (tabs: Rules/Behavior/Persona/Keys/API)
 └── supabase/
     └── functions/
-        ├── cs-bot-logger/    # AI + logging edge function
-        └── api-auto-probe/    # Auto-probe endpoints
+        └── cs-bot-logger/    # AI + logging edge function
+```
+
+### Processing Pipeline (v0.9.16)
+
+```
+1. SCAN (every 20s when ON)
+   GET /messenger/v2/rpc/get_recent_conversations?filter=UNREAD
+   → Filter: skip own conv, skip 'processing', retry failed/old-done
+   → Pick first conv from filtered list
+
+2. FETCH MESSAGES
+   GET /messenger/v2/rpc/get_messages?conversation_id={uuid}&limit=50
+   → Filter: skip messages from MY_UID (392388705)
+   → Extract last 4 user messages
+
+3. GENERATE REPLY (slot system)
+   → Slot 1 = greeting, Slot 2-3 = AI context, Slot 4 = closing
+   → AI via Olagon gateway (if key configured)
+   → Fallback: keyword template matching
+
+4. SEND
+   POST /messenger/v2/rpc/send_message
+   Body: { body: { conversation_id, input_text, msg_type: "TEXT", parser: "PLAIN" } }
+   → On send fail: retry next scan cycle (convMeta status='failed')
+
+5. MARK READ
+   POST /messenger/v2/conversation/{uuid}/read/
+
+6. UPDATE STATE
+   setMeta(slug, { status: sent?'done':'failed', slot, lastReplyAt/failedAt })
+```
+
+### Conversation State (convMeta)
+
+```javascript
+// chrome.storage.local.convMeta: { [slug]: { status, slot, lastReplyAt, failedAt, convId } }
+status: 'processing' | 'done' | 'failed'
+
+// Retry logic (v0.9.15+):
+// - Always retry 'failed'
+// - Skip 'done' ONLY IF: recentSuccess (<5min) AND !wasFailed
+// - wasFailed = failedAt > lastReplyAt (previous send actually broke)
 ```
 
 ---
 
 ## Auth System
 
-### METHOD 1: Tevi localStorage Token Capture (v0.9.12 — WORKING)
+### METHOD 1: Tevi localStorage Token Capture (v0.9.12+ — WORKING)
 
 **Discovery**: Tevi menyimpan auth token di `localStorage['user_logged_list']`.
 
@@ -72,101 +117,72 @@ const payload = JSON.parse(atob(token.split('.')[1]));
 // payload.uid, payload.exp, payload.anonymous
 ```
 
-**CS capture code** (content-script.js):
-```javascript
-function captureTeviToken() {
-  try {
-    const raw = localStorage.getItem('user_logged_list');
-    if (!raw) return null;
-    const entries = JSON.parse(raw);
-    for (const [uid, entry] of Object.entries(entries)) {
-      if (!entry?.access_token) continue;
-      const payload = JSON.parse(atob(entry.access_token.split('.')[1]));
-      const isExpired = payload.exp * 1000 < Date.now();
-      if (!isExpired && !payload.anonymous) {
-        return { uid, access_token: entry.access_token,
-                 refresh_token: entry.refresh_token,
-                 expires_at: new Date(payload.exp * 1000).toISOString() };
-      }
-    }
-  } catch {}
-  return null;
-}
-```
-
-### METHOD 2: Supabase Token Store (v0.9.12 — FALLBACK)
+### METHOD 2: Supabase Token Store (v0.9.12+ — FALLBACK)
 
 **Table**: `tevi_auth_tokens`
 
 **Columns**: `id`, `token`, `token_type`, `user_id`, `username`, `expires_at`, `acquired_at`, `last_used_at`, `is_active`, `notes`
 
-**BG syncs token ke Supabase setiap dapat fresh token**:
-```javascript
-// On fresh token capture
-await fetch(SUPABASE_URL + '/rest/v1/tevi_auth_tokens', {
-  method: 'POST',
-  headers: { 'apikey': ANON_KEY, 'Content-Type': 'application/json' },
-  body: JSON.stringify([{
-    token: access_token,
-    token_type: 'Bearer',
-    user_id: uid,
-    username: 'cutieval',
-    expires_at: expires_at,
-    acquired_at: new Date().toISOString(),
-    is_active: true,
-  }])
-});
+### METHOD 3: Token Refresh (v0.9.12+ — FALLBACK)
+
+**Endpoint**: `POST https://wapi.flowstreamx.com/auth/v1/token/` — **NO `?verify=` HMAC needed**
+
+---
+
+## Messenger API v2 (v0.9.14+ — WORKING)
+
+**Base**: `https://wapi.flowstreamx.com`
+**Auth**: `Authorization: Bearer <wapi_token>` + `?verify=<hmac>`
+**HMAC**: `HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+timestamp)`
+
+### Endpoints (CONFIRMED)
+
+| Method | Endpoint | Purpose | Status |
+|--------|----------|---------|--------|
+| GET | `/messenger/v2/rpc/get_recent_conversations?filter=UNREAD` | List unread conversations | ✅ 200 |
+| GET | `/messenger/v2/rpc/get_messages?conversation_id={uuid}&limit=50` | Get conversation messages | ✅ 200 |
+| POST | `/messenger/v2/rpc/send_message` | Send message | ✅ 200 (body wrapper) |
+| POST | `/messenger/v2/rpc/send_chat_action/{conv_id}/` | Typing/none action | ✅ 200 |
+| POST | `/messenger/v2/conversation/{uuid}/read/` | Mark read | ✅ (legacy path) |
+
+### Send Message Payload (v0.9.14+)
+
+```
+POST /messenger/v2/rpc/send_message
+Body: { body: { conversation_id, input_text, msg_type: "TEXT", parser: "PLAIN" } }
 ```
 
-### METHOD 3: Token Refresh (v0.9.12 — FALLBACK)
+⚠️ **IMPORTANT**: Payload MUST be wrapped in `body:` key. API returns 422 without it.
 
-**Endpoint**: `POST https://wapi.flowstreamx.com/auth/v1/token/`
+### Get Messages Response
 
-**NO `?verify=` HMAC needed** untuk endpoint ini.
-
-**Request**:
 ```json
 {
-  "access_token": "",
-  "refresh_token": "<stored_refresh_token>",
-  "device_id": "tevi-cs-bot-...",
-  "device_type": "browser",
-  "os": "Windows",
-  "device_name": "Chrome"
-}
-```
-
-**Response**:
-```json
-{
+  "success": true,
   "data": {
-    "access_token": "eyJ...",
-    "refresh_token": "eyJ...",
-    "expires_in": 86400
+    "results": [
+      {
+        "id": "uuid",
+        "sender": { "id": "uuid", "alias": "3290169952", "name": "Bidinisreal" },
+        "type": "TEXT",
+        "text": "kapan live",
+        "images": [],
+        "created_at": 1782308067930
+      }
+    ]
   }
 }
 ```
 
----
-
-## Messenger API v2 (v0.9.12 — WORKING)
-
-**Discovered from**: babyval-autopilot/tevi-api/tevi-dm-sniff.json
-
-**Base**: `https://wapi.flowstreamx.com`
-
-**Auth**: `Authorization: Bearer <wapi_token>` + `?verify=<hmac>`
-
-**HMAC Verify**: `HMAC-SHA256(key=PRDKqnSNCKrMDF9hAt0PSJ6, data=pathname+timestamp)`
-
-### Get Unread Conversations
-
-```
-GET /messenger/v2/rpc/get_recent_conversations?limit=20&filter=UNREAD&verify=<hmac>
-Authorization: Bearer <wapi_token>
+**Filter untuk extract user messages**:
+```javascript
+// Numeric sender alias (392388705 = cutieval = skip)
+// Check both alias AND sender.id
+const isMe = senderAlias === MY_UID || senderId.includes(MY_UID.replace(/-/g, ''));
 ```
 
-**Response**:
+### Get Conversations Response
+
 ```json
 {
   "success": true,
@@ -174,18 +190,10 @@ Authorization: Bearer <wapi_token>
     "count": 548,
     "results": [{
       "id": "uuid-conv-id",
-      "type": "DIRECT",
       "channel_slug": "bidinisreal",
-      "recipient": {
-        "id": "uuid",
-        "tevi_user_alias": 3290169952,
-        "channel_slug": "bidinisreal",
-        "name": "Bidinisreal",
-        "is_my_subscriber": false
-      },
+      "recipient": { "channel_slug": "bidinisreal", "is_my_subscriber": false },
       "latest_message": {
-        "id": "uuid",
-        "type": "TEXT",
+        "sender": { "alias": "3290169952" },  // NUMERIC USER ID
         "text": "kapan live",
         "created_at": 1782308067930
       },
@@ -195,82 +203,14 @@ Authorization: Bearer <wapi_token>
 }
 ```
 
-### Get Conversation + Messages
-
-```
-GET /messenger/v2/conversation/{uuid}/?verify=<hmac>
-Authorization: Bearer <wapi_token>
-```
-
-**Response**:
-```json
-{
-  "data": {
-    "id": "uuid",
-    "messages": [{
-      "id": "uuid",
-      "sender": { "alias": "3290169952", "name": "Bidinisreal" },
-      "type": "TEXT",
-      "text": "kapan live",
-      "images": [],
-      "created_at": 1782308067930
-    }]
-  }
-}
-```
-
-### Send Message
-
-```
-POST /messenger/v2/message/?verify=<hmac>
-Authorization: Bearer <wapi_token>
-Content-Type: application/json
-
-{
-  "conversation_id": "uuid",
-  "type": "TEXT",
-  "parser": "PLAIN",
-  "text": "Halo aku Sukii..."
-}
-```
-
-**Response**: `200 OK` atau `{"success": true}`
-
-### Mark Read
-
-```
-POST /messenger/v2/conversation/{uuid}/read/?verify=<hmac>
-Authorization: Bearer <wapi_token>
-Content-Type: application/json
-{}
-```
-
 ---
 
 ## HMAC Verify Signature
 
-**Key**: `PRDKqnSNCKrMDF9hAt0PSJ6` (from tevi.com JS bundle)
-
+**Key**: `PRDKqnSNCKrMDF9hAt0PSJ6`
 **Formula**: `HMAC-SHA256(key, pathname + timestamp)` → base64 → `timestamp-signature`
-
-**JS Implementation** (Web Crypto API — works in Service Worker):
-```javascript
-async function computeVerifyAsync(url) {
-  const pathname = new URL(url).pathname;
-  const timestamp = Math.floor(Date.now() / 1000);
-  const data = pathname + timestamp;
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw', encoder.encode('PRDKqnSNCKrMDF9hAt0PSJ6'),
-    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-  const b64 = btoa(String.fromCharCode(...new Uint8Array(sig)));
-  return timestamp + '-' + b64;
-}
-```
-
-**Important**: `/auth/v1/token/` endpoint does NOT need `?verify=`. Only Messenger API calls need it.
+**Endpoint**: `?verify=1750867200-base64sig...`
+**Note**: `/auth/v1/token/` does NOT need `?verify=`
 
 ---
 
@@ -281,9 +221,8 @@ async function computeVerifyAsync(url) {
 - **URL**: `https://gateway.olagon.site/anthropic`
 - **Edge Function**: `https://qjemyvydivekolywleji.supabase.co/functions/v1/cs-bot-logger`
 - **Model**: `claude-sonnet-4-6`
-- **Rate Limit**: 20 calls/min per IP
 
-### AI Rules (Sukii v0.9.7)
+### AI Rules (Sukii)
 
 #### BOLEH DIJAWAB
 | Topik | Jawaban |
@@ -302,14 +241,7 @@ async function computeVerifyAsync(url) {
 | Ketemu offline | "Cuma bisa VCS. Offline tidak tersedia." |
 | Kirim konten langsung | "Konten untuk member." |
 
-#### Psikologi — User Belum Pernah Bayar
-```
-Kalau user tanya offline/BO/ketemu tapi belum pernah VCS
-→ "Coba deh VCS dulu.. VCS aja belum emang bakal beneran bayar?"
-```
-
 ### Greeting Template
-
 ```
 Halo aku Sukii, AI Assistant-nya Baby Val 💕
 Kalau mau Chat sama Baby Val, membership dulu ya di Tevi
@@ -377,23 +309,17 @@ Kalau mau VCS bisa bayar di babyval.com
 | last_used_at | timestamptz | Last used |
 | is_active | bool | Active flag |
 
-### tevi_api_endpoints
-| Column | Type | Description |
-|---|---|---|
-| id | serial PK | Auto |
-| method | text | GET/POST/PUT/DELETE |
-| path | text | API path |
-| full_url | text | Full URL |
-| host | text | Domain |
-| discovered_at | timestamptz | When discovered |
-
 ---
 
 ## Version History
 
 | Version | Date | Status | Notes |
 |---|---|---|---|
-| v0.9.12 | 2026-06-26 | **WORKING** | DIRECT API mode: token capture + Messenger v2 API |
+| v0.9.16 | 2026-06-27 | **ACTIVE** | Reset State button in overlay, retry filter logic |
+| v0.9.15 | 2026-06-27 | Pushed | Retry filter: skip done only if recentSuccess && !wasFailed |
+| v0.9.14 | 2026-06-26 | Pushed | Send payload: `{ body: { ... } }` wrapper confirmed |
+| v0.9.13 | 2026-06-26 | Pushed | RPC endpoints confirmed: get_messages, send_message |
+| v0.9.12 | 2026-06-26 | **WORKING** | DIRECT API mode: token capture + Messenger v2 RPC |
 | v0.9.11 | 2026-06-26 | Deprecated | Unify sniffer into CS |
 | v0.9 | 2026-06-26 | Deprecated | API send tabless |
 | v0.8 | 2026-06-26 | Deprecated | DOM conv detection |
@@ -417,21 +343,26 @@ edge://extensions/
 
 ### 3. Token Capture
 1. Buka Tevi tab dan login sebagai cutieval
-2. Reload extension (di edge://extensions/)
-3. Buka tab Tevi.com/messages
-4. CS otomatis capture token dari localStorage
-5. Check log: `[AUTH] Tevi token received from CS: uid=392388705`
+2. CS otomatis capture token dari localStorage
+3. Check log: `[AUTH] Tevi token received from CS: uid=392388705`
 
-### 4. Set AI Key
-Buka popup → tab **Keys** → masukkan Olagon key → Save
+### 4. Set AI Key (Optional)
+Popup → tab **Keys** → masukkan Olagon key → Save
+(Hanya perlu jika pakai AI reply. Fallback template tetap jalan tanpa AI key.)
 
 ### 5. Toggle ON
-Popup → toggle → ON
+Overlay cat → click → panel → toggle ON
+Atau: Popup → toggle → ON
 
-### 6. Watch Log
+### 6. Reset State (If Needed)
+Overlay cat → click → panel → 🗑 Reset State
+(Perlu dilakukan saat bot skip semua convs karena convMeta state lama)
+
+### 7. Watch Log
 ```bash
-pwsh -Command "Get-Content 'tevi-cs-logs.txt' -Tail 30 -Wait"
+curl http://localhost:3131/logs
 ```
+Atau browser console ke `http://localhost:3131/log`
 
 ---
 
@@ -439,40 +370,17 @@ pwsh -Command "Get-Content 'tevi-cs-logs.txt' -Tail 30 -Wait"
 
 | Issue | Cause | Status |
 |---|---|---|
-| Firebase anonymous → wapi token fails | HMAC verify mismatch | WORKAROUND: skip HMAC for /auth/v1/token/ |
-| Token captured from localStorage | CS runs in Tevi tab context | **SOLUTION**: CS captures, sends to BG |
-| Supabase tevi_auth_tokens wrong columns | Old migration | FIXED: use correct columns (no uid/refresh_token/updated_at) |
+| 422 on send_message | Payload missing `body:` wrapper | ✅ FIXED v0.9.14 |
+| Bot skip all convs after failed send | convMeta status='done' but send failed | ✅ FIXED v0.9.15 (retry filter) |
+| Popup tabs not clickable | Content script conflict | ⚠️ Use overlay instead |
+| 404 on /conversation/{id}/ | Wrong URL pattern | ✅ FIXED: use `/rpc/get_messages?conversation_id=` |
+| 401 on /tevi-chat/v1/ | Wrong auth scope | ✅ Avoided: use `/messenger/v2/rpc/` |
 
 ---
 
 ## Reference
 
-### Auth Flow Diagram
-```
-Tevi Tab (already logged in)
-    │
-    │ CS reads localStorage['user_logged_list']
-    │ Extracts access_token + refresh_token
-    │
-    ▼
-BG receives TEVI_TOKEN message
-    │
-    ├─► Save to chrome.storage.local
-    ├─► Sync to Supabase tevi_auth_tokens
-    ├─► Use token for Messenger API calls
-    │
-    ▼
-Messenger API v2
-    │
-    ├─► GET /messenger/v2/rpc/get_recent_conversations?filter=UNREAD
-    ├─► GET /messenger/v2/conversation/{id}/
-    ├─► POST /messenger/v2/message/ (send DM)
-    └─► POST /messenger/v2/conversation/{id}/read/
-```
-
-### Cross-Reference
-- **babyval-autopilot/tevi-api/tevi-dm-sniff.json**: Full network capture with Messenger v2 endpoints
+- **babyval-autopilot/tevi-api/auto-dm-design.md**: Full API discovery + confirmed endpoints
 - **babyval-autopilot/tevi-api/tevi-api-client.js**: Node.js client with auth flow
 - **wapi.flowstreamx.com**: API base domain
 - **PRDKqnSNCKrMDF9hAt0PSJ6**: HMAC sign key (from tevi.com JS bundle)
-- **WAPI_SIGN_KEY**: `PRDKqnSNCKrMDF9hAt0PSJ6`
