@@ -1,5 +1,5 @@
 /**
- * BACKGROUND.JS — Tevi CS Bot v0.9.20
+ * BACKGROUND.JS — Tevi CS Bot v0.9.23
  *
  * Architecture: DIRECT API (no DOM, no tab navigation)
  * - Uses wapi.flowstreamx.com Messenger v2 API
@@ -16,7 +16,20 @@
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.22';
+const EXT = 'Tevi CS v0.9.23';
+// ── Active Hours (UTC) — bot only replies within this window ──────────
+// WIB = UTC+7 → 17:00-05:00 WIB = 10:00-22:00 UTC
+const ACTIVE_HOURS_START = 10; // UTC
+const ACTIVE_HOURS_END = 22;   // UTC
+
+function isWithinActiveHours() {
+  const hour = new Date().getUTCHours();
+  if (ACTIVE_HOURS_START < ACTIVE_HOURS_END) {
+    return hour >= ACTIVE_HOURS_START && hour < ACTIVE_HOURS_END;
+  }
+  // Spans midnight
+  return hour >= ACTIVE_HOURS_START || hour < ACTIVE_HOURS_END;
+}
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -802,6 +815,14 @@ async function runScan() {
     const { botEnabled } = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
     if (!botEnabled) { _scanInProgress = false; return; }
 
+    // Active hours check
+    if (!isWithinActiveHours()) {
+      log('INFO', '[SCAN] Outside active hours (UTC ' + new Date().getUTCHours() + ') — skipping');
+      _scanInProgress = false;
+      await syncOverlay({ botEnabled: true, pollTime: 20, lastScan: Date.now(), note: 'off_hours' });
+      return;
+    }
+
     // Auth check
     const token = await getWapiToken();
     if (!token) {
@@ -932,7 +953,7 @@ async function syncBotStatus(successCount, failCount, consecutiveFails) {
     fail_count: failCount,
     consecutive_fails: consecutiveFails,
     bot_state: state,
-    version: '0.9.21',
+    version: '0.9.23',
   }});
 }
 
@@ -974,7 +995,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.21 starting (DIRECT API mode)...');
+  log('INFO', 'SW v0.9.23 starting (DIRECT API mode)...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
@@ -1091,7 +1112,7 @@ async function init() {
     await runScan();
   }
 
-  log('INFO', 'SW v0.9.18 ready — DIRECT API mode (no DOM, no tabs)');
+  log('INFO', 'SW v0.9.23 ready — DIRECT API mode (no DOM, no tabs)');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));

@@ -146,11 +146,19 @@ Extension popup → toggle ON
 
 ## Active Hours
 
-Aktif: **24/7** — no active hours restriction.
+Aktif: **17:00–05:00 WIB** (UTC 10:00–22:00). Di luar jam aktif, bot scan tapi skip semua reply.
 
 ## Changelog
 
-### v0.9.5 — 2026-06-26
+### v0.9.23 — 2026-06-26
+- **FEAT: Active Hours Filter** — bot hanya reply jam 17:00–05:00 WIB. Scan tetap jalan tapi skip semua reply di luar jam aktif. Log: `[SCAN] Outside active hours (UTC N) — skipping`
+
+### v0.9.22 — 2026-06-26
+- **FEAT: 24h Filter** — skip convs where `latest_message.created_at > 24h` old. Log: `reason=older_than_24h`
+- **FEAT: Heartbeat + Stale Detection** — alarm every 24s, marks stale if no scan for 60s
+- **FEAT: MarkRead Fix** — tries `/read` then `/rpc/mark_conversation_read`, no trailing slash
+- **IMPROVE: syncBotStatus** — writes to chrome.storage.local only (no Supabase dependency)
+- **IMPROVE: convMeta cleanup** — removes entries older than 48h on init
 - **FIX: aiKey storage** — `generateReply()` now correctly reads `tevi_cs_secrets.aiKey` (was always undefined → always fallback)
 - **FIX: apiSendPattern storage** — correctly reads from storage without wrong destructuring
 - **FIX: GET_STATUS** — now returns `hasToken` field so popup always gets full status
