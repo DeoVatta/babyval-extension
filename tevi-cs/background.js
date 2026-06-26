@@ -11,7 +11,7 @@
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.14';
+const EXT = 'Tevi CS v0.9.15';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -774,6 +774,7 @@ async function runScan() {
     log('INFO', '[SCAN] ' + convs.length + ' unread conversations total');
 
     // Filter: skip own conv, skip already processed recently
+    // Always retry 'failed' (send actually failed), retry 'done' only if failedAt is recent (previous send was broken)
     const filtered = [];
     for (const conv of convs) {
       const slug = conv.channel_slug || conv.recipient?.channel_slug || '';
@@ -781,7 +782,14 @@ async function runScan() {
       if (conv.stats?.unread_messages === 0) continue;
       const meta = await getMeta(slug);
       if (meta?.status === 'processing') continue;
-      if (meta?.status === 'done' && (Date.now() - (meta.lastReplyAt || 0)) < 5 * 60 * 1000) continue;
+      // Always retry failed (send broke before), only skip done if it was recent + successful
+      if (meta?.status === 'done') {
+        const wasFailed = meta.failedAt && meta.failedAt > (meta.lastReplyAt || 0);
+        const recentSuccess = (Date.now() - (meta.lastReplyAt || 0)) < 5 * 60 * 1000;
+        if (recentSuccess && !wasFailed) {
+          continue; // Skip: recently successfully replied
+        }
+      }
       filtered.push(conv);
     }
 
@@ -842,7 +850,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.14 starting (DIRECT API mode)...');
+  log('INFO', 'SW v0.9.15 starting (DIRECT API mode)...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
@@ -959,7 +967,7 @@ async function init() {
     await runScan();
   }
 
-  log('INFO', 'SW v0.9.14 ready — DIRECT API mode (no DOM, no tabs)');
+  log('INFO', 'SW v0.9.15 ready — DIRECT API mode (no DOM, no tabs)');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));
