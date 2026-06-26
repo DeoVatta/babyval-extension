@@ -1,5 +1,5 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.9.12
+ * CONTENT SCRIPT — Tevi CS Bot v0.9.13
  *
  * Unified system handles:
  * - SCAN_CONVS: find all convs needing reply (no ✓/✓✓ icon = user last)
@@ -650,7 +650,7 @@
     }
   });
 
-  l('v0.9.12 active — ' + location.href);
+  l('v0.9.13 active — ' + location.href);
 
   // ═══════════════════════════════════════════════════════════════
   // AUTH TOKEN CAPTURE — Read Tevi token from localStorage
@@ -870,7 +870,138 @@
       seenEndpoints.length = 0;
     }
 
+    // PERSISTENT SNIFFER — captures ALL fetch to wapi/flowstreamx continuously
+    (function() {
+      const LOG = 'http://localhost:3131';
+      const _fetch = window.fetch;
+      const _console = { log: console.log.bind(console), error: console.error.bind(console) };
+
+      window.fetch = function(input, init) {
+        const url = typeof input === 'string' ? input : (input && input.url) || '';
+        const method = (init && init.method || 'GET').toUpperCase();
+        const start = Date.now();
+        const isWapi = url.includes('wapi') || url.includes('flowstreamx') ||
+                       url.includes('tevi.com/api');
+
+        return _fetch(input, init).then(res => {
+          const latency = Date.now() - start;
+          const fullUrl = res.url || url;
+          if (isWapi || fullUrl.includes('wapi') || fullUrl.includes('flowstreamx')) {
+            res.clone().text().then(text => {
+              try {
+                _fetch(LOG + '/log', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    source: 'PERSIST_SNIFFER',
+                    level: 'INFO',
+                    message: '[PERSIST] ' + method + ' ' + fullUrl.substring(0, 250) + ' [' + res.status + ' ' + latency + 'ms]',
+                    ts: new Date().toISOString(),
+                    method,
+                    status: res.status,
+                    latency,
+                    url: fullUrl.substring(0, 400),
+                    body: text ? text.substring(0, 400) : null,
+                  }),
+                }).catch(() => {});
+              } catch {}
+            }).catch(() => {});
+          }
+          return res;
+        }).catch(err => {
+          if (isWapi) {
+            try {
+              _fetch(LOG + '/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  source: 'PERSIST_SNIFFER',
+                  level: 'ERROR',
+                  message: '[PERSIST] ' + method + ' ' + url + ' [ERR: ' + err.message + ']',
+                  ts: new Date().toISOString(),
+                }),
+              }).catch(() => {});
+            } catch {}
+          }
+          throw err;
+        });
+      };
+
+      // Signal that sniffer is live
+      try {
+        _fetch(LOG + '/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ source: 'PERSIST_SNIFFER', level: 'INFO', message: 'Persistent sniffer ACTIVE on ' + location.href, ts: new Date().toISOString() }),
+        }).catch(() => {});
+      } catch {}
+    })();
+
     setInterval(reportSummary, 30000);
+
+    // WEBSOCKET INTERCEPTOR — Capture WS messages from Tevi for messages endpoint discovery
+    (function() {
+      const LOG = 'http://localhost:3131';
+      const seenWss = new Set();
+      const wsLogEntries = [];
+
+      function wsLog(level, msg, data) {
+        const entry = { source: 'WS', level, message: '[WS] ' + msg, ts: new Date().toISOString(), ...(data || {}) };
+        wsLogEntries.push(entry);
+        // Backup to chrome.storage.local
+        try { chrome.storage.local.set({ ws_log_entries: wsLogEntries.slice(-100) }); } catch {}
+        // Log to console
+        console.log('[WS]', msg);
+        // Log to server
+        try {
+          fetch(LOG + '/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entry),
+          }).catch(() => {});
+        } catch {}
+      }
+
+      const OrigWS = window.WebSocket;
+      window.__teviWS__ = [];
+      window.WebSocket = function(url, protocols) {
+        const wsUrl = String(url);
+        if (!seenWss.has(wsUrl)) {
+          seenWss.add(wsUrl);
+          wsLog('INFO', 'WS CONNECT: ' + wsUrl.substring(0, 150));
+        }
+        const ws = protocols ? new OrigWS(url, protocols) : new OrigWS(url);
+        const origSend = ws.send.bind(ws);
+        ws.send = function(data) {
+          try {
+            const parsed = JSON.parse(data);
+            window.__teviWS__.push({ dir: 'send', data: parsed, ts: Date.now() });
+            if (parsed.type || parsed.action || parsed.method || parsed.event) {
+              wsLog('INFO', 'WS SEND: ' + JSON.stringify(parsed).substring(0, 200));
+            }
+          } catch {}
+          return origSend(data);
+        };
+        ws.addEventListener('message', function(ev) {
+          try {
+            const parsed = JSON.parse(ev.data);
+            window.__teviWS__.push({ dir: 'recv', data: parsed, ts: Date.now() });
+            if (parsed.type || parsed.action || parsed.data || parsed.event || parsed.id) {
+              wsLog('INFO', 'WS RECV: ' + JSON.stringify(parsed).substring(0, 300));
+            }
+          } catch {}
+        });
+        ws.addEventListener('close', function() {
+          wsLog('WARN', 'WS CLOSE: ' + wsUrl.substring(0, 80));
+        });
+        return ws;
+      };
+      for (const k of ['CONNECTING','OPEN','CLOSING','CLOSED']) {
+        window.WebSocket[k] = OrigWS[k];
+      }
+      wsLog('INFO', 'WS Interceptor active on ' + location.href);
+    })();
+
     setTimeout(() => {
       const domains = [...seenDomains];
       log('INFO', 'Sniffer active 5s — domains: ' + (domains.join(', ') || 'NONE'));
