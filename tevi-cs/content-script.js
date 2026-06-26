@@ -1,5 +1,5 @@
 /**
- * CONTENT SCRIPT — Tevi CS Bot v0.9.13
+ * CONTENT SCRIPT — Tevi CS Bot v0.9.14
  *
  * Unified system handles:
  * - SCAN_CONVS: find all convs needing reply (no ✓/✓✓ icon = user last)
@@ -650,7 +650,7 @@
     }
   });
 
-  l('v0.9.13 active — ' + location.href);
+  l('v0.9.14 active — ' + location.href);
 
   // ═══════════════════════════════════════════════════════════════
   // AUTH TOKEN CAPTURE — Read Tevi token from localStorage

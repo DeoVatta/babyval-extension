@@ -11,7 +11,7 @@
  * Supabase Edge Function: handles AI (Olagon) + all logging
  */
 
-const EXT = 'Tevi CS v0.9.13';
+const EXT = 'Tevi CS v0.9.14';
 const LOG = 'http://localhost:3131';
 const MY_SLUG = 'cutieval';
 const MY_UID = '392388705'; // cutieval Tevi UID
@@ -486,84 +486,27 @@ async function apiGetConversations(filter = 'UNREAD', limit = 20) {
 
 /**
  * Get conversation detail + messages
- * Tries multiple approaches:
- * 1. /tevi-chat/v1/channels/{alias}/messages/ (using tevi_user_alias)
- * 2. /tevi-chat/v1/channels/{channel_uuid}/messages/
- * 3. /core/v3/channel/channels/{slug}/ to get channel UUID, then tevi-chat
+ * Uses correct RPC endpoint from auto-dm-design.md:
+ * GET /messenger/v2/rpc/get_messages?conversation_id={convId}&limit=50
  */
 async function apiGetConversation(conv) {
   const token = await getWapiToken();
   if (!token) return null;
   const convId = conv.id;
-  const slug = conv.channel_slug || conv.recipient?.channel_slug || '';
-  const alias = conv.recipient?.tevi_user_alias || '';
-  const channelUuid = conv.recipient?.id || '';
 
-  // Helper to try a channel-based URL
-  async function tryChannelMessages(channelId) {
-    if (!channelId) return null;
-    const paths = [
-      `/tevi-chat/v1/channels/${channelId}/messages/`,
-      `/tevi-chat/v1/channels/${channelId}/messages/?page=1&size=50`,
-    ];
-    for (const p of paths) {
-      try {
-        const res = await wapiFetch('GET', p, null, token);
-        log('INFO', '[MSG] tryChannelMessages ' + p + ' status=' + res.status);
-        if (res.status === 200 && res.data?.data) return res.data;
-        // 401 = needs different auth, 403 = wrong channel, 404 = not found
-        if (res.status === 401 || res.status === 403 || res.status === 404) continue;
-        if (res.status === 200) return res.data;
-      } catch (e) {
-        log('WARN', '[MSG] tryChannelMessages error: ' + e.message);
-      }
-    }
-    return null;
-  }
-
-  // Try 1: alias (tevi_user_alias) — most likely to work
-  if (alias) {
-    const byAlias = await tryChannelMessages(String(alias));
-    if (byAlias) {
-      log('INFO', '[MSG] Got messages via alias=' + alias);
-      return byAlias;
-    }
-  }
-
-  // Try 2: channel_uuid (recipient.id)
-  if (channelUuid) {
-    const byUuid = await tryChannelMessages(channelUuid);
-    if (byUuid) {
-      log('INFO', '[MSG] Got messages via channelUuid=' + channelUuid);
-      return byUuid;
-    }
-  }
-
-  // Try 3: look up channel UUID via slug, then use it
-  if (slug) {
-    try {
-      const channelRes = await wapiFetch('GET', `/core/v3/channel/channels/${slug}/`, null, token);
-      log('INFO', '[MSG] channelLookup ' + slug + ' status=' + channelRes.status);
-      if (channelRes.status === 200 && channelRes.data?.data?.id) {
-        const resolvedId = channelRes.data.data.id;
-        const byResolved = await tryChannelMessages(resolvedId);
-        if (byResolved) {
-          log('INFO', '[MSG] Got messages via resolved channel id=' + resolvedId);
-          return byResolved;
-        }
-      }
-    } catch (e) {
-      log('WARN', '[MSG] channelLookup error: ' + e.message);
-    }
-  }
-
-  // Try 4: original conv UUID approach (legacy fallback)
   try {
-    const res = await wapiFetch('GET', `/messenger/v2/conversation/${convId}/`, null, token);
-    log('INFO', '[MSG] getConv legacy status=' + res.status + ' conv=' + convId.substring(0, 8));
-    if (res.status === 200 && res.data) return res.data;
+    // ✅ CORRECT ENDPOINT from auto-dm-design.md
+    const res = await wapiFetch('GET',
+      `/messenger/v2/rpc/get_messages?conversation_id=${convId}&limit=50`,
+      null, token
+    );
+    log('INFO', '[MSG] getMessages status=' + res.status + ' conv=' + convId.substring(0, 8));
+    if (res.status === 200 && (res.data?.data || res.data?.results)) {
+      return res.data.data || res.data.results;
+    }
+    log('ERROR', '[MSG] getMessages failed: ' + JSON.stringify(res.data).substring(0, 200));
   } catch (e) {
-    log('WARN', '[MSG] getConv legacy error: ' + e.message);
+    log('ERROR', '[MSG] getMessages error: ' + e.message);
   }
 
   return null;
@@ -588,19 +531,23 @@ async function apiMarkRead(convId) {
 
 /**
  * Send message via Messenger API v2
+ * ✅ CORRECT ENDPOINT from auto-dm-design.md:
+ * POST /messenger/v2/rpc/send_message
+ * Payload: { conversation_id, input_text, msg_type, parser }
  */
 async function apiSendMessage(convId, text) {
   const token = await getWapiToken();
   if (!token) return false;
   try {
-    const res = await wapiFetch('POST', '/messenger/v2/message/', {
+    // ✅ CORRECT: /rpc/send_message, input_text (not text), msg_type (not type)
+    const res = await wapiFetch('POST', '/messenger/v2/rpc/send_message', {
       conversation_id: convId,
-      type: 'TEXT',
+      input_text: text,
+      msg_type: 'TEXT',
       parser: 'PLAIN',
-      text: text,
     }, token);
     if (res.status === 200 || res.status === 201) {
-      log('INFO', '[MSG] Sent OK conv=' + convId.substring(0, 8) + '...');
+      log('INFO', '[MSG] Sent OK conv=' + convId.substring(0, 8) + ' text=' + text.substring(0, 30));
       return true;
     }
     log('ERROR', '[MSG] Send failed status=' + res.status + ' body=' + JSON.stringify(res.data).substring(0, 100));
@@ -748,11 +695,12 @@ async function processConv(conv) {
   }
 
   // Extract user messages (not from me/cutieval)
-  const rawMessages = fullConv.messages || fullConv.data?.messages || fullConv.results || [];
+  // get_messages returns: { results: [...] } or { data: [...] }
+  const rawMessages = (Array.isArray(fullConv) ? fullConv : (fullConv?.results || fullConv?.data || []));
   const messages = rawMessages
     .filter(m => {
       if (!m.text) return false;
-      const senderAlias = m.sender?.alias || '';
+      const senderAlias = String(m.sender?.alias || '');
       const senderId = m.sender?.id || '';
       return senderAlias !== MY_UID && !senderId.includes(MY_UID.replace(/-/g, ''));
     })
@@ -891,7 +839,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ── Init ──────────────────────────────────────────────────────────────
 
 async function init() {
-  log('INFO', 'SW v0.9.13 starting (DIRECT API mode)...');
+  log('INFO', 'SW v0.9.14 starting (DIRECT API mode)...');
 
   const st = (await sg(['tevi_cs_state']) || {}).tevi_cs_state || {};
   st.queueBusy = false;
@@ -1008,7 +956,7 @@ async function init() {
     await runScan();
   }
 
-  log('INFO', 'SW v0.9.13 ready — DIRECT API mode (no DOM, no tabs)');
+  log('INFO', 'SW v0.9.14 ready — DIRECT API mode (no DOM, no tabs)');
 }
 
 init().catch(e => log('ERROR', 'Init failed: ' + e.message));
